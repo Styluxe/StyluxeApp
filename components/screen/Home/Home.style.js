@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: "row",
     gap: 5,
+    alignItems: "center",
   },
   search_input: {
     backgroundColor: "#F2F2F2",
@@ -81,22 +82,6 @@ const styles = StyleSheet.create({
   carousel_img: {
     width: "100%",
     height: "100%",
-  },
-  featured_container: { gap: 7, paddingHorizontal: 15 },
-  featured_title_container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  featured_title: {
-    fontFamily: "bold",
-    color: COLORS.primary,
-    fontSize: 18,
-  },
-  featured_see_all: {
-    fontFamily: "medium",
-    color: COLORS.gray,
-    fontSize: 14,
   },
 });
 

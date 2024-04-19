@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderColor: COLORS.gray2,
+    backgroundColor: COLORS.white,
   },
   stylist_info_container: {
     flexDirection: "row",
@@ -22,7 +23,9 @@ export const styles = StyleSheet.create({
   },
   image_container: {
     width: 32,
-    height: 32,
+    height: 27,
+    borderRadius: 5,
+    overflow: "hidden",
   },
   image: {
     width: "100%",
@@ -38,6 +41,7 @@ export const styles = StyleSheet.create({
     fontFamily: "semibold",
     color: COLORS.primary,
     fontSize: 16,
+    marginTop: 5,
   },
   stylist_date: {
     fontFamily: "regular",

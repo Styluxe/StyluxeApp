@@ -1,12 +1,13 @@
-import React, { useCallback } from "react";
-import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { BottomTabNav } from "./components/navigation";
 import { useFonts } from "expo-font";
-import { Text, View } from "react-native";
-import { Home } from "./components/screen";
+import { StatusBar } from "expo-status-bar";
+import React, { useCallback } from "react";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import { DiscussionDetails } from "./components/screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +32,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <Provider store={store}>
       <StatusBar style="auto" />
       <NavigationContainer>
         <Stack.Navigator>
@@ -40,8 +41,14 @@ export default function App() {
             component={BottomTabNav}
             options={{ headerShown: false }}
           />
+
+          <Stack.Screen
+            name="DiscussionDetails"
+            component={DiscussionDetails}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </Provider>
   );
 }

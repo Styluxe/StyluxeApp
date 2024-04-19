@@ -4,17 +4,15 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  Dimensions,
   ScrollView,
-  FlatList,
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../../../constants";
+import { COLORS, SIZES } from "../../../constants";
 import Carousel from "react-native-reanimated-carousel";
-import { StylistCard } from "../../molecules";
 import styles from "./Home.style";
+import { NewestCollection, PopularStylist } from "../../organism/HomeComponent";
 
 const Home = () => {
   const slides = [
@@ -22,9 +20,6 @@ const Home = () => {
     "https://media.glamourmagazine.co.uk/photos/657b2069cd763cb5be091396/16:9/w_1280,c_limit/AW%20FASHION%20TRENDS%20141223%20AW-FASHION-TRENDS-MAIN.jpg",
     "https://www.womanindonesia.co.id/wp-content/uploads/2021/11/Trend-fashion-2022-terins-dari-flora-dan-fauna_womanindonesia.jpg",
   ];
-
-  const width = Dimensions.get("window").width;
-  const height = Dimensions.get("window").height;
 
   return (
     <SafeAreaView style={{ flex: 1, gap: 24 }}>
@@ -61,7 +56,7 @@ const Home = () => {
         </View>
       </View>
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.tagline_container}>
           <Text style={styles.h1_tagline}>Place to Find</Text>
           <Text style={styles.h2_tagline}>Your Fashion Solution</Text>
@@ -75,16 +70,18 @@ const Home = () => {
             />
           </View>
 
-          <View style={styles.search_btn}>
-            <Ionicons name="search-outline" size={24} color={COLORS.white} />
-          </View>
+          <TouchableOpacity>
+            <View style={styles.search_btn}>
+              <Ionicons name="search-outline" size={24} color={COLORS.white} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.carousel_container}>
           <Carousel
             loop
-            width={width - 30}
-            height={height / 4}
+            width={SIZES.width - 30}
+            height={SIZES.height / 4}
             autoPlay
             scrollAnimationDuration={5000}
             data={slides}
@@ -95,27 +92,8 @@ const Home = () => {
             )}
           />
         </View>
-
-        <View style={styles.featured_container}>
-          <View style={styles.featured_title_container}>
-            <Text style={styles.featured_title}>Popular Fashion Stylist</Text>
-            <TouchableOpacity>
-              <Text style={styles.featured_see_all}>See All</Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={[1, 2, 3, 4, 5]}
-            renderItem={() => <StylistCard />}
-            contentContainerStyle={{
-              gap: 10,
-            }}
-          />
-        </View>
-
-        {/* popular fashin stylist */}
+        <PopularStylist />
+        <NewestCollection />
       </ScrollView>
     </SafeAreaView>
   );

@@ -3,7 +3,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { COLORS } from "../../constants";
 import React from "react";
 import { Text } from "react-native";
-import { Category, Discussion, Home, Stylist } from "../screen";
+import { Category, Home, Stylist } from "../screen";
+import DrawerNavigationDiscussion from "./DrawerNavigationDiscussion";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +23,7 @@ const BottomTabNav = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <Ionicons
-                name={focused ? "home" : "home-outline"}
+                name={focused ? "bag-check" : "bag-check-outline"}
                 size={20}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />
@@ -37,7 +38,7 @@ const BottomTabNav = () => {
                   fontSize: 12,
                 }}
               >
-                Home
+                Featured
               </Text>
             );
           },
@@ -73,7 +74,7 @@ const BottomTabNav = () => {
       />
       <Tab.Screen
         name="Discussion"
-        component={Discussion}
+        component={DrawerNavigationDiscussion}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
