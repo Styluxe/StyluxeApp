@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../../constants";
 import Carousel from "react-native-reanimated-carousel";
 import { StylistCard } from "../../molecules";
+import styles from "./Home.style";
 
 const Home = () => {
   const slides = [
@@ -27,28 +28,16 @@ const Home = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, gap: 24 }}>
-      {/* Header */}
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingTop: 12,
-          paddingBottom: 5,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+      <View style={styles.container}>
+        <View style={styles.header_container}>
           <Ionicons name="location-outline" size={24} color={COLORS.primary} />
-          <Text style={{ fontFamily: "medium", color: COLORS.black }}>
+          <Text style={styles.location_txt}>
             Shipped To
-            <Text style={{ fontFamily: "bold", color: COLORS.primary }}>
-              {" "}
-              Rumah
-            </Text>
+            <Text style={styles.target_location_txt}>{" " + "Rumah"}</Text>
           </Text>
         </View>
 
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
+        <View style={styles.header_action_list}>
           <TouchableOpacity>
             <Ionicons
               name="notifications-outline"
@@ -62,77 +51,36 @@ const Home = () => {
           </TouchableOpacity>
 
           <TouchableOpacity>
-            <View
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 10,
-                overflow: "hidden",
-              }}
-            >
+            <View style={styles.avatar_container}>
               <Image
-                style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+                style={styles.avatar}
                 source={require("../../../assets/content/profpic.png")}
               />
             </View>
           </TouchableOpacity>
         </View>
       </View>
-      {/* Header */}
-      <ScrollView>
-        {/* TagMark */}
-        <View style={{ paddingHorizontal: 15 }}>
-          <Text
-            style={{ fontFamily: "bold", color: COLORS.primary, fontSize: 40 }}
-          >
-            Place to Find
-          </Text>
-          <Text style={{ fontFamily: "bold", color: "#616161", fontSize: 36 }}>
-            Your Fashion Solution
-          </Text>
-        </View>
-        {/* TagMark */}
 
-        {/* search */}
-        <View
-          style={{
-            paddingHorizontal: 15,
-            marginTop: 20,
-            flexDirection: "row",
-            gap: 5,
-          }}
-        >
+      <ScrollView>
+        <View style={styles.tagline_container}>
+          <Text style={styles.h1_tagline}>Place to Find</Text>
+          <Text style={styles.h2_tagline}>Your Fashion Solution</Text>
+        </View>
+
+        <View style={styles.search_container}>
           <View style={{ flex: 1 }}>
             <TextInput
-              style={{
-                backgroundColor: "#F2F2F2",
-                borderRadius: 10,
-                paddingVertical: 5,
-                paddingHorizontal: 10,
-                fontFamily: "medium",
-                color: COLORS.black,
-                borderColor: COLORS.gray,
-                borderWidth: 1,
-              }}
+              style={styles.search_input}
               placeholder="What are you looking for?"
             />
           </View>
 
-          <View
-            style={{
-              padding: 3,
-              backgroundColor: COLORS.primary,
-              borderRadius: 5,
-              justifyContent: "center",
-            }}
-          >
+          <View style={styles.search_btn}>
             <Ionicons name="search-outline" size={24} color={COLORS.white} />
           </View>
         </View>
-        {/* search */}
 
-        {/* Carousels */}
-        <View style={{ paddingVertical: 24, paddingHorizontal: 15 }}>
+        <View style={styles.carousel_container}>
           <Carousel
             loop
             width={width - 30}
@@ -141,53 +89,18 @@ const Home = () => {
             scrollAnimationDuration={5000}
             data={slides}
             renderItem={({ index, item: src }) => (
-              <View
-                style={{
-                  flex: 1,
-                  borderRadius: 10,
-                }}
-              >
-                <Image
-                  source={{ uri: src }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
-                />
+              <View key={index} style={styles.carousel}>
+                <Image source={{ uri: src }} style={styles.carousel_img} />
               </View>
             )}
           />
         </View>
-        {/* Carousels */}
 
-        {/* popular fashin stylist */}
-        <View style={{ gap: 7, paddingHorizontal: 15 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "bold",
-                color: COLORS.primary,
-                fontSize: 18,
-              }}
-            >
-              Popular Fashion Stylist
-            </Text>
+        <View style={styles.featured_container}>
+          <View style={styles.featured_title_container}>
+            <Text style={styles.featured_title}>Popular Fashion Stylist</Text>
             <TouchableOpacity>
-              <Text
-                style={{
-                  fontFamily: "medium",
-                  color: COLORS.gray,
-                  fontSize: 14,
-                }}
-              >
-                See All
-              </Text>
+              <Text style={styles.featured_see_all}>See All</Text>
             </TouchableOpacity>
           </View>
 

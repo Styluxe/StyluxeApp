@@ -1,7 +1,8 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { COLORS } from "../../../constants";
-import { AntDesign, Ionicons, Octicons } from "@expo/vector-icons";
+import { Ionicons, Octicons } from "@expo/vector-icons";
+import { styles } from "./StylistCard.style";
 
 const StylistCard = () => {
   const [liked, setLiked] = useState(false);
@@ -13,38 +14,16 @@ const StylistCard = () => {
   const star = [1, 2, 3, 4, 5];
 
   return (
-    <View
-      style={{
-        width: 240,
-        borderWidth: 1,
-        borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderColor: COLORS.gray2,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-          <View style={{ width: 32, height: 32 }}>
+    <View style={styles.container}>
+      <View style={styles.stylist_info_container}>
+        <View style={styles.stylist_profile_container}>
+          <View style={styles.image_container}>
             <Image
               source={require("../../../assets/content/profpic.png")}
-              style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+              style={styles.image}
             />
           </View>
-          <Text
-            style={{
-              fontFamily: "bold",
-              color: COLORS.black,
-              maxWidth: 100,
-            }}
-            numberOfLines={2}
-          >
+          <Text style={styles.stylist_name} numberOfLines={2}>
             Dan Stylist
           </Text>
         </View>
@@ -58,31 +37,18 @@ const StylistCard = () => {
         </TouchableOpacity>
       </View>
 
-      <Text
-        style={{ fontFamily: "semibold", color: COLORS.primary, fontSize: 16 }}
-      >
-        Wedding Stylist
-      </Text>
+      <Text style={styles.stylist_type}>Wedding Stylist</Text>
 
       <View style={{ flexDirection: "row" }}>
         {date.map((item, index) => (
-          <Text
-            key={index}
-            style={{ fontFamily: "regular", color: COLORS.black }}
-          >
+          <Text key={index} style={styles.stylist_date}>
             {item}
             {index < date.length - 1 && ", "}
           </Text>
         ))}
       </View>
 
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 5,
-          paddingVertical: 10,
-        }}
-      >
+      <View style={styles.star_container}>
         {star.map((item, index) => (
           <Octicons
             key={index}
@@ -92,22 +58,12 @@ const StylistCard = () => {
           />
         ))}
 
-        <Text
-          style={{ fontFamily: "bold", color: COLORS.primary, fontSize: 16 }}
-        >
-          ({total_likes})
-        </Text>
+        <Text style={styles.total_rating}>({total_likes})</Text>
       </View>
 
-      <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
-        <Text style={{ fontFamily: "bold", color: COLORS.black, fontSize: 16 }}>
-          Rp 132.000
-        </Text>
-        <Text
-          style={{ fontFamily: "regular", color: COLORS.black, fontSize: 14 }}
-        >
-          - Per Session
-        </Text>
+      <View style={styles.price_container}>
+        <Text style={styles.price}>Rp 132.000</Text>
+        <Text style={styles.price_info}>- Per Session</Text>
       </View>
     </View>
   );
