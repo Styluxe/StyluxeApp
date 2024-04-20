@@ -1,3 +1,5 @@
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
 import {
   View,
   Text,
@@ -6,12 +8,11 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
-import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import { COLORS, SIZES } from "../../../constants";
 import Carousel from "react-native-reanimated-carousel";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import styles from "./Home.style";
+import { COLORS, SIZES } from "../../../constants";
 import { NewestCollection, PopularStylist } from "../../organism/HomeComponent";
 
 const Home = () => {
@@ -28,7 +29,7 @@ const Home = () => {
           <Ionicons name="location-outline" size={24} color={COLORS.primary} />
           <Text style={styles.location_txt}>
             Shipped To
-            <Text style={styles.target_location_txt}>{" " + "Rumah"}</Text>
+            <Text style={styles.target_location_txt}>{" Rumah"}</Text>
           </Text>
         </View>
 

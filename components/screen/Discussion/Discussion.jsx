@@ -1,3 +1,6 @@
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Animated,
   FlatList,
@@ -5,11 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
 import { PanGestureHandler } from "react-native-gesture-handler";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import { COLORS } from "../../../constants";
 import { discussionExplore } from "../../../mocks/Dummydiscussion";
 import { DiscussionHeader, DiscussionListCard } from "../../organism";
@@ -29,7 +30,7 @@ const Discussion = () => {
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [scrollDirection]);
+  }, [iconOpacity, scrollDirection]);
 
   const handleGesture = ({ nativeEvent }) => {
     if (nativeEvent.translationX > 50) {
@@ -60,13 +61,11 @@ const Discussion = () => {
     scrollViewRef.current.scrollToOffset({ offset: 0, animated: true });
   };
 
-  const discussionRepeater = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <PanGestureHandler onGestureEvent={handleGesture}>
         <View>
-          <DiscussionHeader title={"Explore"} />
+          <DiscussionHeader title="Explore" />
         </View>
       </PanGestureHandler>
 
