@@ -13,7 +13,7 @@ const SubCategoryItems = ({ data }) => {
     >
       <View style={{ width: "100%", height: "60%", overflow: "hidden" }}>
         <Image
-          style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+          style={{ width: "100%", height: "100%", resizeMode: "contain" }}
           source={{ uri: data.imageUrl }}
         />
       </View>

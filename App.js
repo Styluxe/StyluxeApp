@@ -1,13 +1,16 @@
-import * as SplashScreen from "expo-splash-screen";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { BottomTabNav } from "./components/navigation";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback } from "react";
 import { Provider } from "react-redux";
+
+import { BottomTabNav } from "./components/navigation";
+import { DiscussionDetails, ProductDetails } from "./components/screen";
 import store from "./redux/store";
-import { DiscussionDetails } from "./components/screen";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { config } from "@gluestack-ui/config";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,24 +34,34 @@ export default function App() {
     return null;
   }
 
-  return (
-    <Provider store={store}>
-      <StatusBar style="auto" />
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="bottomTab"
-            component={BottomTabNav}
-            options={{ headerShown: false }}
-          />
+  onLayoutRootView();
 
-          <Stack.Screen
-            name="DiscussionDetails"
-            component={DiscussionDetails}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+  return (
+    <GluestackUIProvider config={config}>
+      <Provider store={store}>
+        <StatusBar style="auto" />
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="bottomTab"
+              component={BottomTabNav}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="DiscussionDetails"
+              component={DiscussionDetails}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="ProductDetails"
+              component={ProductDetails}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    </GluestackUIProvider>
   );
 }

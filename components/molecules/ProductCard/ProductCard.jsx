@@ -1,19 +1,10 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
-import { COLORS } from "../../../constants";
 import { Octicons } from "@expo/vector-icons";
-import { styles } from "./ProductCard.style";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 
-const defaultProps = {
-  hasBanner: false,
-  bannerColor: COLORS.primary,
-  bannerText: "BRAND NEW",
-  image: require("../../../assets/content/dummy_shirt.png"),
-  title: "Baju Bagus banget",
-  category: "Shirts",
-  price: "200.000",
-  rating: 4.5,
-};
+import { styles } from "./ProductCard.style";
+import { COLORS } from "../../../constants";
 
 const ProductCard = ({
   hasBanner = false,
@@ -25,8 +16,10 @@ const ProductCard = ({
   price = "200.000",
   rating = 4.5,
 }) => {
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate("ProductDetails")}>
       <View style={styles.container}>
         <View style={styles.image_container}>
           <Image source={{ uri: imageUrl }} style={styles.image} />

@@ -53,9 +53,9 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   total_rating: {
-    fontFamily: "bold",
-    color: COLORS.primary,
-    fontSize: 16,
+    fontFamily: "medium",
+    color: COLORS.gray,
+    fontSize: 18,
   },
   price_container: {
     flexDirection: "row",

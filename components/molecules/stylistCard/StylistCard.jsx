@@ -54,12 +54,12 @@ const StylistCard = () => {
             <Octicons
               key={index}
               name={item <= total_likes ? "star-fill" : "star"}
-              color={COLORS.primary}
+              color="orange"
               size={24}
             />
           ))}
 
-          <Text style={styles.total_rating}>({total_likes})</Text>
+          <Text style={styles.total_rating}>{total_likes}</Text>
         </View>
 
         <View style={styles.price_container}>
