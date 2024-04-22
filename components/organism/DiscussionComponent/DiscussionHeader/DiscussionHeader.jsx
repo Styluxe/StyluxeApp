@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
-import { COLORS } from "../../../../constants";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+
 import { styles } from "./DiscussionHeader.style";
+import { COLORS } from "../../../../constants";
 
 const DiscussionHeader = ({ title }) => {
   const navigation = useNavigation();

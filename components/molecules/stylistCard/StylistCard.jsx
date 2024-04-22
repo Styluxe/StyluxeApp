@@ -1,8 +1,9 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
-import { COLORS } from "../../../constants";
 import { Ionicons, Octicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+
 import { styles } from "./StylistCard.style";
+import { COLORS } from "../../../constants";
 
 const StylistCard = () => {
   const [liked, setLiked] = useState(false);

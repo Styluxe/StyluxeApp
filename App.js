@@ -1,3 +1,5 @@
+import { config } from "@gluestack-ui/config";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
@@ -9,8 +11,6 @@ import { Provider } from "react-redux";
 import { BottomTabNav } from "./components/navigation";
 import { DiscussionDetails, ProductDetails } from "./components/screen";
 import store from "./redux/store";
-import { GluestackUIProvider } from "@gluestack-ui/themed";
-import { config } from "@gluestack-ui/config";
 
 const Stack = createNativeStackNavigator();
 
