@@ -1,6 +1,6 @@
-import { Image, Text, View } from "react-native";
 import React from "react";
-import { COLORS } from "../../../../constants";
+import { Image, Text, View } from "react-native";
+
 import { styles } from "./DiscussionCommentCard.style";
 
 const DiscussionCommentCard = ({ data }) => {

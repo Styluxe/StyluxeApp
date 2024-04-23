@@ -80,7 +80,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 25,
     backgroundColor: COLORS.primary,
     borderRadius: 5,
-    alignSelf: "flex-end",
+    // alignSelf: "flex-end",
   },
   consult_text: {
     fontFamily: "semibold",

@@ -55,14 +55,14 @@ const ProductCard = ({
           <Text
             style={{
               fontFamily: "bold",
-              color: COLORS.tertiary,
+              color: COLORS.black,
               fontSize: 18,
             }}
           >
             <Text
               style={{
                 fontFamily: "bold",
-                color: COLORS.tertiary,
+                color: COLORS.black,
                 fontSize: 14,
               }}
             >

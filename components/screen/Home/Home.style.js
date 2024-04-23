@@ -74,14 +74,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: "center",
   },
-  carousel_container: { paddingVertical: 24, paddingHorizontal: 15 },
+  carousel_container: {
+    paddingVertical: 24,
+  },
   carousel: {
     flex: 1,
-    borderRadius: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: COLORS.gray2,
   },
   carousel_img: {
     width: "100%",
     height: "100%",
+    resizeMode: "cover",
   },
 });
 

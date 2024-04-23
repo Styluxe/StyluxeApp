@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { COLORS } from "../../constants";
 import React from "react";
 import { Text } from "react-native";
-import { Category, Home, Stylist } from "../screen";
+
 import DrawerNavigationDiscussion from "./DrawerNavigationDiscussion";
+import { COLORS } from "../../constants";
+import { Category, Home, Stylist } from "../screen";
 
 const Tab = createBottomTabNavigator();
 

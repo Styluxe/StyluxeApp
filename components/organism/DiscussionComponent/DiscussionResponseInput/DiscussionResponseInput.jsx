@@ -1,5 +1,6 @@
-import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import React from "react";
+import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
+
 import { styles } from "./DiscussionResponseInput.style";
 
 const DiscussionResponseInput = ({ data }) => {

@@ -18,7 +18,11 @@ const DiscussionHeader = ({ title }) => {
         <Text style={styles.title}>{title}</Text>
       </View>
       <TouchableOpacity>
-        <Ionicons name="notifications" size={32} color={COLORS.primary} />
+        <Ionicons
+          name="notifications-outline"
+          size={32}
+          color={COLORS.primary}
+        />
       </TouchableOpacity>
     </View>
   );

@@ -4,3 +4,4 @@ export * from "./Discussion";
 export * from "./Stylist";
 export * from "./DiscussionDetails";
 export * from "./ProductDetails";
+export * from "./StylistDetails";

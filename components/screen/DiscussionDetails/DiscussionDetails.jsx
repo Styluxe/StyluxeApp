@@ -1,14 +1,15 @@
-import React from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { COLORS } from "../../../constants";
-import styles from "./DiscussionDetails.style";
-import { useSelector } from "react-redux";
-import { selectedDiscussionState } from "../../../redux/slice/discussion.slice";
 import moment from "moment";
-import { DiscussionCommentCard, DiscussionResponseInput } from "../../organism";
+import React from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
+
+import styles from "./DiscussionDetails.style";
+import { COLORS } from "../../../constants";
+import { selectedDiscussionState } from "../../../redux/slice/discussion.slice";
+import { DiscussionCommentCard, DiscussionResponseInput } from "../../organism";
 
 const DiscussionDetails = () => {
   const navigation = useNavigation();
@@ -73,10 +74,12 @@ const DiscussionDetails = () => {
                       </View>
                       <Text style={styles.time}>
                         {moment(selectedDiscussion.created_at).format(
+                          // eslint-disable-next-line prettier/prettier
                           "DD/MM/YYYY"
                         )}{" "}
                         •{" "}
                         {moment(selectedDiscussion.created_at).format(
+                          // eslint-disable-next-line prettier/prettier
                           "HH:mm a"
                         )}
                       </Text>

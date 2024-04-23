@@ -1,3 +1,3 @@
 import DiscussionListCard from "./DiscussionListCard";
 
-export { DiscussionListCard }
+export { DiscussionListCard };

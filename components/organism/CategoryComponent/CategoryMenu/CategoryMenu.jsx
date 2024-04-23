@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
-import { COLORS } from "../../../../constants";
 import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+
+import { COLORS } from "../../../../constants";
 
 const CategoryMenu = ({ data, onPress, selectedCategory }) => {
   return (

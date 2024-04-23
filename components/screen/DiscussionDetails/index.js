@@ -1,3 +1,3 @@
 import DiscussionDetails from "./DiscussionDetails";
 
-export { DiscussionDetails }
+export { DiscussionDetails };

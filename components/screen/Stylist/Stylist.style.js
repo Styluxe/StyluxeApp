@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+
 import { COLORS } from "../../../constants";
 
 export const styles = StyleSheet.create({
@@ -47,7 +48,11 @@ export const styles = StyleSheet.create({
     fontFamily: "medium",
     fontSize: 12,
   },
-  card_list_container: { padding: 15, gap: 10 },
+  card_list_container: {
+    padding: 15,
+    gap: 10,
+    flex: 1,
+  },
   header_2: {
     fontFamily: "regular",
     fontSize: 12,

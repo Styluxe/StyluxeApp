@@ -1,5 +1,6 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import React from "react";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
+
 import { styles } from "./PopularStylist.style";
 import { StylistCard } from "../../../molecules";
 

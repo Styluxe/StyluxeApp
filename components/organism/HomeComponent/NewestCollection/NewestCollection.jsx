@@ -1,5 +1,6 @@
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import React from "react";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
+
 import { styles } from "./NewestCollection.style";
 import { ProductCard } from "../../../molecules";
 
@@ -7,7 +8,7 @@ const NewestCollection = () => {
   return (
     <View style={styles.featured_container}>
       <View style={styles.featured_title_container}>
-        <Text style={styles.featured_title}>Newest Collection</Text>
+        <Text style={styles.featured_title}>Latest Collection</Text>
         <TouchableOpacity>
           <Text style={styles.featured_see_all}>See All</Text>
         </TouchableOpacity>

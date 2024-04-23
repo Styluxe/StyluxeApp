@@ -1,4 +1,5 @@
 import { Ionicons, Octicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
@@ -8,6 +9,8 @@ import { COLORS } from "../../../constants";
 const StylistCard = () => {
   const [liked, setLiked] = useState(false);
 
+  const navigation = useNavigation();
+
   const total_likes = 3;
 
   const date = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -15,7 +18,7 @@ const StylistCard = () => {
   const star = [1, 2, 3, 4, 5];
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate("StylistDetails")}>
       <View style={styles.container}>
         <View style={styles.stylist_info_container}>
           <View style={styles.stylist_profile_container}>

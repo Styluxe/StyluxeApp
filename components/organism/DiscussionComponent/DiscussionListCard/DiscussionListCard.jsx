@@ -1,11 +1,12 @@
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import { COLORS } from "../../../../constants";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "./DiscussionListCard.style";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
+import React from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
+
+import styles from "./DiscussionListCard.style";
+import { COLORS } from "../../../../constants";
 import { setSelectedDiscussion } from "../../../../redux/slice/discussion.slice";
 
 const DiscussionListCard = ({ postData }) => {

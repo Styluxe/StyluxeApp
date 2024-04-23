@@ -81,7 +81,7 @@ const Home = () => {
         <View style={styles.carousel_container}>
           <Carousel
             loop
-            width={SIZES.width - 30}
+            width={SIZES.width}
             height={SIZES.height / 4}
             autoPlay
             scrollAnimationDuration={5000}

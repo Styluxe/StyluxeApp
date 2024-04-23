@@ -9,7 +9,11 @@ import React, { useCallback } from "react";
 import { Provider } from "react-redux";
 
 import { BottomTabNav } from "./components/navigation";
-import { DiscussionDetails, ProductDetails } from "./components/screen";
+import {
+  DiscussionDetails,
+  ProductDetails,
+  StylistDetails,
+} from "./components/screen";
 import store from "./redux/store";
 
 const Stack = createNativeStackNavigator();
@@ -57,6 +61,12 @@ export default function App() {
             <Stack.Screen
               name="ProductDetails"
               component={ProductDetails}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="StylistDetails"
+              component={StylistDetails}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

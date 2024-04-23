@@ -21,15 +21,23 @@ const Stylist = () => {
           <TouchableOpacity>
             <Ionicons name="menu" size={32} color={COLORS.primary} />
           </TouchableOpacity>
-          <View style={styles.search_input_container}>
-            <TextInput
-              style={styles.search_input}
-              placeholder="Search your stylist"
-            />
-            <View style={styles.search_btn}>
-              <Ionicons name="search-outline" size={24} color={COLORS.white} />
+
+          <TouchableOpacity style={{ flex: 1 }}>
+            <View style={styles.search_input_container}>
+              <TextInput
+                style={styles.search_input}
+                placeholder="Search your stylist"
+                editable={false}
+              />
+              <View style={styles.search_btn}>
+                <Ionicons
+                  name="search-outline"
+                  size={24}
+                  color={COLORS.white}
+                />
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -39,9 +47,11 @@ const Stylist = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={() => (
-            <View style={styles.category_box}>
-              <Text style={styles.category_text}>Category 1</Text>
-            </View>
+            <TouchableOpacity>
+              <View style={styles.category_box}>
+                <Text style={styles.category_text}>Category 1</Text>
+              </View>
+            </TouchableOpacity>
           )}
           contentContainerStyle={{ gap: 10, paddingHorizontal: 10 }}
         />
@@ -63,6 +73,7 @@ const Stylist = () => {
           renderItem={({ item }) => <StylistDetailCard />}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ gap: 10 }}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </SafeAreaView>

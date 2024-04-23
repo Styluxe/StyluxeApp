@@ -1,12 +1,13 @@
-import React from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../../constants";
+import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+
+import { COLORS } from "../../constants";
 import { Discussion } from "../screen/Discussion";
 
 const DrawerNavigationDiscussion = () => {
