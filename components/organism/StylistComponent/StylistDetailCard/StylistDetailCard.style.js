@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 10,
     gap: 20,
+    backgroundColor: COLORS.white,
   },
   image_container: {
     width: 85,

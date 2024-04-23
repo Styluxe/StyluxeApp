@@ -43,7 +43,12 @@ const Home = () => {
           </TouchableOpacity>
 
           <TouchableOpacity>
-            <Ionicons name="cart-outline" size={24} color={COLORS.primary} />
+            <View>
+              <Ionicons name="cart-outline" size={24} color={COLORS.primary} />
+              <View style={styles.cart_counter_container}>
+                <Text style={styles.cart_counter_text}>0</Text>
+              </View>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity>

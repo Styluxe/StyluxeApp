@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   search_input: {
-    backgroundColor: "#F2F2F2",
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     paddingVertical: 5,
     paddingHorizontal: 10,
@@ -87,6 +87,19 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "cover",
+  },
+  cart_counter_container: {
+    padding: 4,
+    backgroundColor: COLORS.primary,
+    borderRadius: 100,
+    position: "absolute",
+    top: -10,
+    right: -5,
+  },
+  cart_counter_text: {
+    fontFamily: "semibold",
+    color: COLORS.white,
+    fontSize: 8,
   },
 });
 

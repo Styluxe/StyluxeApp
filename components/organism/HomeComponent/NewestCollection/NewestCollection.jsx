@@ -25,7 +25,7 @@ const NewestCollection = () => {
           />
         )}
         contentContainerStyle={{
-          gap: 10,
+          gap: 15,
         }}
       />
     </View>

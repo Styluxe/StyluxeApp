@@ -24,6 +24,8 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.gray,
   },
   search_btn: {
     padding: 3,
@@ -42,6 +44,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     borderColor: COLORS.primary,
+    backgroundColor: COLORS.white,
   },
   category_text: {
     color: COLORS.primary,

@@ -5,7 +5,7 @@ import { COLORS } from "../../../constants";
 export const styles = StyleSheet.create({
   container: {
     padding: 10,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: COLORS.gray2,
     borderRadius: 5,
   },
