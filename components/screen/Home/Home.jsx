@@ -14,8 +14,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./Home.style";
 import { COLORS, SIZES } from "../../../constants";
 import { NewestCollection, PopularStylist } from "../../organism/HomeComponent";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
+  const navigation = useNavigation();
   const slides = [
     "https://tlz.ae/wp-content/uploads/2022/10/TZ_featured-image.png",
     "https://media.glamourmagazine.co.uk/photos/657b2069cd763cb5be091396/16:9/w_1280,c_limit/AW%20FASHION%20TRENDS%20141223%20AW-FASHION-TRENDS-MAIN.jpg",
@@ -42,7 +44,7 @@ const Home = () => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("ShoppingCart")}>
             <View>
               <Ionicons name="cart-outline" size={24} color={COLORS.primary} />
               <View style={styles.cart_counter_container}>

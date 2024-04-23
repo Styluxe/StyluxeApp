@@ -6,3 +6,4 @@ export * from "./DiscussionDetails";
 export * from "./ProductDetails";
 export * from "./StylistDetails";
 export * from "./StylistDate";
+export * from "./ShoppingCart";
