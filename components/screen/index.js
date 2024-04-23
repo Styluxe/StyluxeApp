@@ -5,3 +5,4 @@ export * from "./Stylist";
 export * from "./DiscussionDetails";
 export * from "./ProductDetails";
 export * from "./StylistDetails";
+export * from "./StylistDate";

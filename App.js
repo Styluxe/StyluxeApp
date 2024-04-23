@@ -12,6 +12,7 @@ import { BottomTabNav } from "./components/navigation";
 import {
   DiscussionDetails,
   ProductDetails,
+  StylistDate,
   StylistDetails,
 } from "./components/screen";
 import store from "./redux/store";
@@ -67,6 +68,12 @@ export default function App() {
             <Stack.Screen
               name="StylistDetails"
               component={StylistDetails}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="StylistDate"
+              component={StylistDate}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

@@ -177,12 +177,20 @@ const StylistDetails = () => {
       />
 
       <View style={styles.footer_container}>
-        <View style={styles.like_btn}>
-          <AntDesign name="hearto" size={24} color={COLORS.primary} />
-        </View>
-        <View style={styles.consult_btn}>
-          <Text style={styles.consult_text}>Consult Now</Text>
-        </View>
+        <TouchableOpacity>
+          <View style={styles.like_btn}>
+            <AntDesign name="hearto" size={24} color={COLORS.primary} />
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate("StylistDate")}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.consult_btn}>
+            <Text style={styles.consult_text}>Consult Now</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
