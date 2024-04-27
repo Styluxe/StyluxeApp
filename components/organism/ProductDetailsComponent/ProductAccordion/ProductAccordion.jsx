@@ -49,15 +49,6 @@ const ProductAccordion = ({ accordionData }) => {
       title: "Details ",
       content: (
         <View style={{ gap: 5 }}>
-          <View>
-            {accordionData.details.map((item) => (
-              <Text
-                style={{ fontFamily: "regular" }}
-                key={item}
-              >{`\u2022 ${item}`}</Text>
-            ))}
-          </View>
-
           <Text style={{ fontFamily: "regular" }}>
             {accordionData.description}
           </Text>

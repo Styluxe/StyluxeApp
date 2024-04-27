@@ -89,11 +89,15 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   cart_counter_container: {
-    padding: 4,
+    justifyContent: "center",
+    padding: 1,
     backgroundColor: COLORS.primary,
+    alignItems: "center",
+    minWidth: 18,
+    height: 18,
     borderRadius: 100,
     position: "absolute",
-    top: -10,
+    top: -5,
     right: -5,
   },
   cart_counter_text: {

@@ -24,7 +24,7 @@ const ProductImageSlider = ({ images }) => {
         {images.map((item, index) => (
           <View key={index} style={{ flex: 1 }}>
             <Image
-              source={{ uri: item }}
+              source={{ uri: item?.image_url }}
               style={{
                 width: "100%",
                 height: "100%",

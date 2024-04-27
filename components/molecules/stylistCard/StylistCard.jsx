@@ -6,12 +6,10 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { styles } from "./StylistCard.style";
 import { COLORS } from "../../../constants";
 
-const StylistCard = () => {
+const StylistCard = ({ image, name, dates, rating, price, type }) => {
   const [liked, setLiked] = useState(false);
 
   const navigation = useNavigation();
-
-  const total_likes = 3;
 
   const date = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -24,12 +22,16 @@ const StylistCard = () => {
           <View style={styles.stylist_profile_container}>
             <View style={styles.image_container}>
               <Image
-                source={require("../../../assets/content/profpic.png")}
+                source={
+                  !image
+                    ? require("../../../assets/content/profpic.png")
+                    : { uri: image }
+                }
                 style={styles.image}
               />
             </View>
             <Text style={styles.stylist_name} numberOfLines={2}>
-              Dan Stylist
+              {name}
             </Text>
           </View>
 
@@ -42,7 +44,7 @@ const StylistCard = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.stylist_type}>Wedding Stylist</Text>
+        <Text style={styles.stylist_type}>{type}</Text>
 
         <View style={{ flexDirection: "row" }}>
           {date.map((item, index) => (
@@ -57,17 +59,17 @@ const StylistCard = () => {
           {star.map((item, index) => (
             <Octicons
               key={index}
-              name={item <= total_likes ? "star-fill" : "star"}
+              name={item <= rating ? "star-fill" : "star"}
               color="orange"
               size={24}
             />
           ))}
 
-          <Text style={styles.total_rating}>{total_likes}</Text>
+          <Text style={styles.total_rating}>{rating}</Text>
         </View>
 
         <View style={styles.price_container}>
-          <Text style={styles.price}>Rp 132.000</Text>
+          <Text style={styles.price}>Rp {price}</Text>
           <Text style={styles.price_info}>- Per Session</Text>
         </View>
       </View>

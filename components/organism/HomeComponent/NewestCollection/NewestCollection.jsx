@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 
 import { styles } from "./NewestCollection.style";
+import { dummyLatestCollection } from "../../../../mocks/DummyHome";
 import { ProductCard } from "../../../molecules";
 
 const NewestCollection = () => {
@@ -17,11 +18,15 @@ const NewestCollection = () => {
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={[1, 2, 3, 4, 5]}
-        renderItem={() => (
+        data={dummyLatestCollection}
+        renderItem={(data) => (
           <ProductCard
             hasBanner
-            imageUrl="https://img.lazcdn.com/g/p/49b09ac65cd105a535c7342974984cb3.jpg_720x720q80.jpg"
+            imageUrl={data.item.image_url}
+            category={data.item.category}
+            price={data.item.price}
+            rating={data.item.rating}
+            title={data.item.name}
           />
         )}
         contentContainerStyle={{

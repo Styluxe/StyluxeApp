@@ -2,9 +2,10 @@ import React from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 
 import { styles } from "./PopularStylist.style";
+import { dummyPopularStylist } from "../../../../mocks/DummyHome";
 import { StylistCard } from "../../../molecules";
 
-const PopularStylist = ({ listData }) => {
+const PopularStylist = () => {
   return (
     <View style={styles.featured_container}>
       <View style={styles.featured_title_container}>
@@ -17,8 +18,16 @@ const PopularStylist = ({ listData }) => {
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={[1, 2, 3, 4, 5]}
-        renderItem={() => <StylistCard />}
+        data={dummyPopularStylist}
+        renderItem={(data) => (
+          <StylistCard
+            image={data.item.image}
+            name={data.item.name}
+            price={data.item.price}
+            rating={data.item.rating}
+            type={data.item.type}
+          />
+        )}
         contentContainerStyle={{
           gap: 10,
         }}

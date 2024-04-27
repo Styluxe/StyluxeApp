@@ -4,9 +4,11 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 import { styles } from "./StylistDetailCard.style";
+import { COLORS } from "../../../../constants";
 
 const StylistDetailCard = () => {
   const navigation = useNavigation();
+  const date = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
   return (
     <TouchableOpacity onPress={() => navigation.navigate("StylistDetails")}>
       <View style={styles.container}>
@@ -39,16 +41,25 @@ const StylistDetailCard = () => {
             <Text style={styles.rating}>5</Text>
           </View>
 
+          <View style={{ flexDirection: "row" }}>
+            {date.map((item, index) => (
+              <Text
+                key={index}
+                style={{
+                  fontFamily: "regular",
+                  color: COLORS.black,
+                }}
+              >
+                {item}
+                {index < date.length - 1 && ", "}
+              </Text>
+            ))}
+          </View>
+
           <View style={styles.price_container}>
             <Text style={styles.price}>Rp 132.000</Text>
             <Text style={styles.price_info}>- Per Session</Text>
           </View>
-
-          {/* <TouchableOpacity>
-            <View style={styles.consult_button}>
-              <Text style={styles.consult_text}>Consult</Text>
-            </View>
-          </TouchableOpacity> */}
         </View>
       </View>
     </TouchableOpacity>

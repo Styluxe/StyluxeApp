@@ -13,43 +13,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { styles } from "./StylistDetail.style";
 import { COLORS } from "../../../constants";
+import { dummyStylistDetail } from "../../../mocks/DummyStylist";
 import { ReviewBox, StarRating } from "../../molecules";
 
 const StylistDetails = () => {
   const navigation = useNavigation();
   const [numToShow, setNumToShow] = useState(3);
   const [dayToShow, setDayToShow] = useState(3);
-
-  const schedule = [
-    {
-      day: "Sunday",
-      time: "Unavailable",
-    },
-    {
-      day: "Monday",
-      time: "10:00 - 20:00",
-    },
-    {
-      day: "Tuesday",
-      time: "10:00 - 20:00",
-    },
-    {
-      day: "Wednesday",
-      time: "10:00 - 20:00",
-    },
-    {
-      day: "Thursday",
-      time: "10:00 - 20:00",
-    },
-    {
-      day: "Friday",
-      time: "10:00 - 20:00",
-    },
-    {
-      day: "Saturday",
-      time: "10:00 - 18:00",
-    },
-  ];
 
   const loadMoreItems = () => {
     setNumToShow(numToShow + 3);
@@ -80,22 +50,28 @@ const StylistDetails = () => {
 
               <View style={styles.info_container}>
                 <View style={styles.info_wrapper}>
-                  <Text style={styles.stylist_header}>Hanny's Stylist</Text>
+                  <Text style={styles.stylist_header}>
+                    {dummyStylistDetail.name}
+                  </Text>
 
                   <View style={styles.stylist_status_container}>
                     <FontAwesome name="circle" size={10} color="#3A70E2" />
-                    <Text style={styles.status_text}>Available</Text>
+                    <Text style={styles.status_text}>
+                      {dummyStylistDetail.online_status}
+                    </Text>
                   </View>
                 </View>
 
-                <Text style={styles.category_text}>Party Stylist</Text>
+                <Text style={styles.category_text}>
+                  {dummyStylistDetail.type}
+                </Text>
               </View>
 
-              <StarRating />
+              <StarRating total_likes={dummyStylistDetail.rating} />
 
               <View style={styles.price_container}>
                 <Text style={styles.price_text}>
-                  Rp 132.000{" "}
+                  Rp {dummyStylistDetail.price}{" "}
                   <Text style={styles.price_info_text}>- per Session</Text>
                 </Text>
               </View>
@@ -111,35 +87,34 @@ const StylistDetails = () => {
             <View style={styles.card_container}>
               <Text style={styles.stylist_header}>About Stylist</Text>
               <Text style={styles.stylist_content_text}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum
+                {dummyStylistDetail.about}
               </Text>
             </View>
 
             <View style={styles.card_container}>
               <Text style={styles.stylist_header}>Stylist Schedule</Text>
               <View style={{ gap: 10 }}>
-                {schedule.slice(0, dayToShow).map((day, index) => (
-                  <View key={index} style={styles.schedule_container}>
-                    <Text style={styles.schedule_label}>{day.day}</Text>
-                    <Text
-                      style={[
-                        styles.schedule_text,
-                        {
-                          color:
-                            day.time === "Unavailable"
-                              ? "red"
-                              : COLORS.darkGray,
-                        },
-                      ]}
-                    >
-                      {day.time}
-                    </Text>
-                  </View>
-                ))}
+                {dummyStylistDetail.schedule
+                  .slice(0, dayToShow)
+                  .map((day, index) => (
+                    <View key={index} style={styles.schedule_container}>
+                      <Text style={styles.schedule_label}>{day.day}</Text>
+                      <Text
+                        style={[
+                          styles.schedule_text,
+                          {
+                            color:
+                              day?.times.length === 0 ? "red" : COLORS.darkGray,
+                          },
+                        ]}
+                      >
+                        {day?.times.length === 0
+                          ? "Unavailable"
+                          : day?.times[0]?.time}{" "}
+                        - {day?.times[day?.times.length - 1]?.time}
+                      </Text>
+                    </View>
+                  ))}
 
                 <TouchableOpacity
                   style={styles.load_container}
@@ -156,8 +131,16 @@ const StylistDetails = () => {
               <Text style={styles.stylist_header}>Customer's Review</Text>
 
               <FlatList
-                data={[1, 2, 3, 4, 5].slice(0, numToShow)}
-                renderItem={() => <ReviewBox />}
+                data={dummyStylistDetail.customer_review.slice(0, numToShow)}
+                renderItem={(data) => (
+                  <ReviewBox
+                    name={data.item.name}
+                    rating={data.item.rating}
+                    comment={data.item.comment}
+                    created_at={data.item.created_at}
+                    image={data.item.image_url}
+                  />
+                )}
                 showsVerticalScrollIndicator={false}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 ListFooterComponentStyle={{ paddingVertical: 10 }}

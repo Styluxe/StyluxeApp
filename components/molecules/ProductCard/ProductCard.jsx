@@ -22,7 +22,14 @@ const ProductCard = ({
     <TouchableOpacity onPress={() => navigation.navigate("ProductDetails")}>
       <View style={styles.container}>
         <View style={styles.image_container}>
-          <Image source={{ uri: imageUrl }} style={styles.image} />
+          <Image
+            source={
+              !imageUrl
+                ? require("../../../assets/content/empty_product.png")
+                : { uri: imageUrl }
+            }
+            style={styles.image}
+          />
           {hasBanner && (
             <View
               style={[

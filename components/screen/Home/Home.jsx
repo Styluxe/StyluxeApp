@@ -1,5 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -10,27 +12,41 @@ import {
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./Home.style";
+import useAuth from "../../../API/AuthAPI";
 import { COLORS, SIZES } from "../../../constants";
+import {
+  authKeyState,
+  setLoginModalOpen,
+} from "../../../redux/slice/app.slice";
+import { LoginModal } from "../../molecules";
 import { NewestCollection, PopularStylist } from "../../organism/HomeComponent";
-import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const slides = [
     "https://tlz.ae/wp-content/uploads/2022/10/TZ_featured-image.png",
     "https://media.glamourmagazine.co.uk/photos/657b2069cd763cb5be091396/16:9/w_1280,c_limit/AW%20FASHION%20TRENDS%20141223%20AW-FASHION-TRENDS-MAIN.jpg",
     "https://www.womanindonesia.co.id/wp-content/uploads/2021/11/Trend-fashion-2022-terins-dari-flora-dan-fauna_womanindonesia.jpg",
   ];
+  const auth = useSelector(authKeyState);
+
+  const { checkExpiryDate } = useAuth();
+
+  useEffect(() => {
+    checkExpiryDate();
+  }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, gap: 24 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.header_container}>
           <Ionicons name="location-outline" size={24} color={COLORS.primary} />
           <Text style={styles.location_txt}>
-            Shipped To
+            Welcome
             <Text style={styles.target_location_txt}>{" Rumah"}</Text>
           </Text>
         </View>
@@ -53,7 +69,13 @@ const Home = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              auth
+                ? navigation.navigate("Profile")
+                : dispatch(setLoginModalOpen(true));
+            }}
+          >
             <View style={styles.avatar_container}>
               <Image
                 style={styles.avatar}
@@ -70,20 +92,21 @@ const Home = () => {
           <Text style={styles.h2_tagline}>Your Fashion Solution</Text>
         </View>
 
-        <View style={styles.search_container}>
-          <View style={{ flex: 1 }}>
-            <TextInput
-              style={styles.search_input}
-              placeholder="What are you looking for?"
-            />
-          </View>
+        <TouchableOpacity>
+          <View style={styles.search_container}>
+            <View style={{ flex: 1 }}>
+              <TextInput
+                style={styles.search_input}
+                placeholder="What are you looking for?"
+                editable={false}
+              />
+            </View>
 
-          <TouchableOpacity>
             <View style={styles.search_btn}>
               <Ionicons name="search-outline" size={24} color={COLORS.white} />
             </View>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
 
         <View style={styles.carousel_container}>
           <Carousel
@@ -103,6 +126,8 @@ const Home = () => {
         <PopularStylist />
         <NewestCollection />
       </ScrollView>
+
+      <LoginModal />
     </SafeAreaView>
   );
 };

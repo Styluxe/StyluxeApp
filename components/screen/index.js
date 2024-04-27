@@ -7,3 +7,5 @@ export * from "./ProductDetails";
 export * from "./StylistDetails";
 export * from "./StylistDate";
 export * from "./ShoppingCart";
+export * from "./Register";
+export * from "./Profile";

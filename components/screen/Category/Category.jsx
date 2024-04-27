@@ -57,12 +57,9 @@ const Category = () => {
               data={selectedCategory.subCategory}
               renderItem={({ item }) => <SubCategoryItems data={item} />}
               numColumns={3}
-              contentContainerStyle={{
-                gap: 10,
-                // alignItems: "center",
-                padding: 5,
+              columnWrapperStyle={{
+                justifyContent: "space-between",
               }}
-              columnWrapperStyle={{ gap: 15 }}
             />
           </View>
         </View>
