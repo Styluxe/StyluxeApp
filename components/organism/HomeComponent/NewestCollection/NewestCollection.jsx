@@ -18,7 +18,7 @@ const NewestCollection = () => {
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={dummyLatestCollection}
+        data={dummyLatestCollection.products}
         renderItem={(data) => (
           <ProductCard
             hasBanner

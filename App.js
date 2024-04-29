@@ -12,6 +12,7 @@ import { BottomTabNav } from "./components/navigation";
 import {
   DiscussionDetails,
   ProductDetails,
+  ProductList,
   Profile,
   Register,
   ShoppingCart,
@@ -59,6 +60,12 @@ export default function App() {
             <Stack.Screen
               name="DiscussionDetails"
               component={DiscussionDetails}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="ProductList"
+              component={ProductList}
               options={{ headerShown: false }}
             />
 

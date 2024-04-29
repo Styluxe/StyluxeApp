@@ -1,4 +1,5 @@
 export const dummyProductDetails = {
+  id: 1,
   name: "Blue Long Sleeve Shirt",
   category: "Shirts",
   description:

@@ -30,6 +30,7 @@ const useAuth = () => {
       setError(null);
     } catch (error) {
       setError(error);
+      setLoading(false);
     }
     setLoading(false);
   };

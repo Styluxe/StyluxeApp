@@ -20,7 +20,7 @@ import {
   useToast,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -36,6 +36,13 @@ const LoginModal = () => {
   const showModal = useSelector(loginModalState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (showModal) {
+      setEmail("");
+      setPassword("");
+    }
+  }, [showModal]);
 
   const { loading, login } = useAuth();
   const toast = useToast();

@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import {
@@ -21,7 +20,7 @@ import {
   authKeyState,
   setLoginModalOpen,
 } from "../../../redux/slice/app.slice";
-import { LoginModal } from "../../molecules";
+import { CartIcon, LoginModal } from "../../molecules";
 import { NewestCollection, PopularStylist } from "../../organism/HomeComponent";
 
 const Home = () => {
@@ -38,7 +37,11 @@ const Home = () => {
 
   useEffect(() => {
     checkExpiryDate();
-  }, []);
+
+    // if (!auth) {
+    //   dispatch(setLoginModalOpen(true));
+    // }
+  }, [auth, checkExpiryDate, dispatch]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -46,7 +49,7 @@ const Home = () => {
         <View style={styles.header_container}>
           <Ionicons name="location-outline" size={24} color={COLORS.primary} />
           <Text style={styles.location_txt}>
-            Welcome
+            Shipped to
             <Text style={styles.target_location_txt}>{" Rumah"}</Text>
           </Text>
         </View>
@@ -60,17 +63,11 @@ const Home = () => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate("ShoppingCart")}>
-            <View>
-              <Ionicons name="cart-outline" size={24} color={COLORS.primary} />
-              <View style={styles.cart_counter_container}>
-                <Text style={styles.cart_counter_text}>0</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+          <CartIcon />
 
           <TouchableOpacity
             onPress={() => {
+              // eslint-disable-next-line no-unused-expressions
               auth
                 ? navigation.navigate("Profile")
                 : dispatch(setLoginModalOpen(true));

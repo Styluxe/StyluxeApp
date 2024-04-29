@@ -1,9 +1,15 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 
 const SubCategoryItems = ({ data }) => {
+  const navigation = useNavigation();
+  const handleTouch = () => {
+    navigation.navigate("ProductList");
+  };
+
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={handleTouch}>
       <View
         style={{
           width: 80,

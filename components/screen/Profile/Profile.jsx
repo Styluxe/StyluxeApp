@@ -9,14 +9,15 @@ import {
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 import useAuth from "../../../API/AuthAPI";
+import useProfile from "../../../API/UserAPI";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
-import useProfile from "../../../API/UserAPI";
+import { SelectionList } from "../../molecules";
 
 const Profile = () => {
   const userData = useSelector(userDataState);
@@ -29,16 +30,57 @@ const Profile = () => {
 
   const navigation = useNavigation();
   const toast = useToast();
+
+  const handleLogout = () => {
+    logout();
+    navigation.navigate("Home");
+    toast.show({
+      description: "Login success!",
+      placement: "bottom",
+      render: ({ id }) => {
+        const toastId = "toast-" + id;
+        return (
+          <Toast nativeID={toastId} action="success" variant="solid">
+            <VStack>
+              <ToastTitle>Logout Success</ToastTitle>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
         style={{
           paddingVertical: 20,
-          alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 20, fontFamily: "bold" }}>Profile</Text>
-        <Avatar size="2xl" marginTop={5}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Ionicons
+            onPress={() => navigation.goBack()}
+            name="arrow-back"
+            size={24}
+            color={COLORS.primary}
+          />
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "bold",
+              textAlign: "center",
+              flex: 1,
+            }}
+          >
+            Profile
+          </Text>
+        </View>
+        <Avatar alignSelf="center" size="2xl" marginTop={5}>
           <AvatarImage
             source={require("../../../assets/content/profpic.png")}
             alt="profpic"
@@ -51,6 +93,7 @@ const Profile = () => {
             fontFamily: "semibold",
             marginTop: 18,
             color: COLORS.primary,
+            alignSelf: "center",
           }}
         >
           {loading
@@ -59,71 +102,14 @@ const Profile = () => {
         </Text>
       </View>
       <View style={{ paddingHorizontal: 10 }}>
-        <TouchableOpacity>
-          <View
-            style={{
-              padding: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              borderBottomWidth: 1,
-              borderBottomColor: COLORS.gray2,
-            }}
-          >
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
-            >
-              <Ionicons
-                name="person-outline"
-                size={24}
-                color={COLORS.primary}
-              />
-              <Text style={{ fontFamily: "medium", fontSize: 16 }}>
-                My Profile
-              </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            logout();
-            navigation.navigate("Home");
-            toast.show({
-              description: "Login success!",
-              placement: "bottom",
-              render: ({ id }) => {
-                const toastId = "toast-" + id;
-                return (
-                  <Toast nativeID={toastId} action="success" variant="solid">
-                    <VStack>
-                      <ToastTitle>Logout Success</ToastTitle>
-                    </VStack>
-                  </Toast>
-                );
-              },
-            });
-          }}
-        >
-          <View
-            style={{
-              padding: 15,
-              flexDirection: "row",
-              alignItems: "center",
-              borderBottomWidth: 1,
-              borderBottomColor: COLORS.gray2,
-            }}
-          >
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
-            >
-              <Ionicons
-                name="person-outline"
-                size={24}
-                color={COLORS.primary}
-              />
-              <Text style={{ fontFamily: "medium", fontSize: 16 }}>Logout</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+        <SelectionList iconName="person-outline" text="My Profile" />
+        <SelectionList iconName="bookmarks-outline" text="My Address" />
+        <SelectionList iconName="clipboard-outline" text="My Activity" />
+        <SelectionList
+          iconName="exit-outline"
+          text="Logout"
+          onPress={handleLogout}
+        />
       </View>
     </SafeAreaView>
   );

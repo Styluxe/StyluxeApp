@@ -10,19 +10,20 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import { useSelector } from "react-redux";
 
 import { COLORS } from "../../constants";
-import { userDataState } from "../../redux/slice/app.slice";
+import { authKeyState, userDataState } from "../../redux/slice/app.slice";
 import { Discussion } from "../screen/Discussion";
 
 const DrawerNavigationDiscussion = () => {
   const Drawer = createDrawerNavigator();
   const userData = useSelector(userDataState);
-  const token = AsyncStorage.getItem("token");
+
+  const auth = useSelector(authKeyState);
 
   // Custom drawer content component
   const CustomDrawerContent = (props) => {
     return (
       <DrawerContentScrollView {...props}>
-        {token ? (
+        {auth ? (
           <View style={styles.drawerHeader}>
             <Image
               style={styles.profileImage}

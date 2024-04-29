@@ -26,7 +26,7 @@ const ShoppingCart = () => {
         }}
       >
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={30} color="black" />
+          <Ionicons name="arrow-back" size={30} color={COLORS.primary} />
         </TouchableOpacity>
         <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={{ fontFamily: "semibold", fontSize: 20 }}>

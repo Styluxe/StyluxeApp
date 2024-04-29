@@ -9,3 +9,4 @@ export * from "./StylistDate";
 export * from "./ShoppingCart";
 export * from "./Register";
 export * from "./Profile";
+export * from "./ProductList";

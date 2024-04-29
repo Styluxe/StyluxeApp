@@ -46,50 +46,55 @@ export const dummyPopularStylist = [
   },
 ];
 
-export const dummyLatestCollection = [
-  {
-    id: 1,
-    name: "Blue Shirt",
-    image_url:
-      "https://thetshirtco.com.au/cdn/shop/files/TSCO_5000_Essential_Heavy_Tee_royal.jpg?v=1692254864",
-    category: "Shirts",
-    price: "120.000",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Navy Chino",
-    image_url:
-      "https://dynamic.zacdn.com/3Zxk2Tcokzu-digaLHdbZu3aZLs=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/qlob-id-9862-7455813-1.jpg",
-    category: "Pants",
-    price: "430.000",
-    rating: 4,
-  },
-  {
-    id: 3,
-    name: "Black Jacket",
-    image_url:
-      "https://lp2.hm.com/hmgoepprod?set=quality%5B79%5D%2Csource%5B%2F14%2Fbb%2F14bb3dc083f44b96ed13dc5095f913b822ce837d.jpg%5D%2Corigin%5Bdam%5D%2Ccategory%5B%5D%2Ctype%5BDESCRIPTIVESTILLLIFE%5D%2Cres%5Bm%5D%2Chmver%5B2%5D&call=url[file:/product/main]",
-    category: "Jackets",
-    price: "220.000",
-    rating: 4,
-  },
-  {
-    id: 4,
-    name: "White Dress",
-    image_url:
-      "https://dynamic.zacdn.com/BQUI9Jbx9XBwVEeSpy_cQ7s8zFQ=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/house-of-cuff-6164-6876083-1.jpg",
-    category: "Dresses",
-    price: "820.000",
-    rating: 5,
-  },
-  {
-    id: 5,
-    name: "Black Jersey",
-    image_url:
-      "https://mills.co.id/cdn/shop/products/201118172059_WhatsApp_20Image_202020-11-18_20at_2014.56.24_ori.jpg?v=1706091890&width=1445",
-    category: "Sport",
-    price: "80.000",
-    rating: 5,
-  },
-];
+export const dummyLatestCollection = {
+  product_category_id: 1,
+  category_name: "shirts",
+  category_description: "all about shirts",
+  products: [
+    {
+      id: 1,
+      name: "Blue Shirt",
+      image_url:
+        "https://thetshirtco.com.au/cdn/shop/files/TSCO_5000_Essential_Heavy_Tee_royal.jpg?v=1692254864",
+      category: "Shirts",
+      price: "120.000",
+      rating: 5,
+    },
+    {
+      id: 2,
+      name: "Navy Chino",
+      image_url:
+        "https://dynamic.zacdn.com/3Zxk2Tcokzu-digaLHdbZu3aZLs=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/qlob-id-9862-7455813-1.jpg",
+      category: "Pants",
+      price: "430.000",
+      rating: 4,
+    },
+    {
+      id: 3,
+      name: "Black Jacket",
+      image_url:
+        "https://lp2.hm.com/hmgoepprod?set=quality%5B79%5D%2Csource%5B%2F14%2Fbb%2F14bb3dc083f44b96ed13dc5095f913b822ce837d.jpg%5D%2Corigin%5Bdam%5D%2Ccategory%5B%5D%2Ctype%5BDESCRIPTIVESTILLLIFE%5D%2Cres%5Bm%5D%2Chmver%5B2%5D&call=url[file:/product/main]",
+      category: "Jackets",
+      price: "220.000",
+      rating: 4,
+    },
+    {
+      id: 4,
+      name: "White Dress",
+      image_url:
+        "https://dynamic.zacdn.com/BQUI9Jbx9XBwVEeSpy_cQ7s8zFQ=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/house-of-cuff-6164-6876083-1.jpg",
+      category: "Dresses",
+      price: "820.000",
+      rating: 5,
+    },
+    {
+      id: 5,
+      name: "Black Jersey",
+      image_url:
+        "https://mills.co.id/cdn/shop/products/201118172059_WhatsApp_20Image_202020-11-18_20at_2014.56.24_ori.jpg?v=1706091890&width=1445",
+      category: "Sport",
+      price: "80.000",
+      rating: 5,
+    },
+  ],
+};
