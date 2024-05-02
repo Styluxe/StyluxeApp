@@ -33,7 +33,12 @@ const ProductList = () => {
           </Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-          <Ionicons name="search" size={24} color={COLORS.primary} />
+          <Ionicons
+            onPress={() => navigation.navigate("Search")}
+            name="search"
+            size={24}
+            color={COLORS.primary}
+          />
           <CartIcon />
         </View>
       </View>

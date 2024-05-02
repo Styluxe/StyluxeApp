@@ -40,15 +40,17 @@ const styles = StyleSheet.create({
   },
   tagline_container: {
     paddingHorizontal: 15,
+    backgroundColor: "rgba(0,0,0, 0.60)",
   },
   h1_tagline: {
     fontFamily: "bold",
-    color: COLORS.primary,
+    color: COLORS.secondary,
     fontSize: 40,
   },
   h2_tagline: {
+    alignSelf: "flex-end",
     fontFamily: "bold",
-    color: "#616161",
+    color: COLORS.offwhite,
     fontSize: 36,
   },
   search_container: {

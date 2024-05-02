@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
   TouchableOpacity,
@@ -14,6 +15,7 @@ import { COLORS } from "../../../constants";
 import { StylistDetailCard } from "../../organism";
 
 const Stylist = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header_container}>
@@ -22,7 +24,10 @@ const Stylist = () => {
             <Ionicons name="menu" size={32} color={COLORS.primary} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            onPress={() => navigation.navigate("Search")}
+          >
             <View style={styles.search_input_container}>
               <TextInput
                 style={styles.search_input}

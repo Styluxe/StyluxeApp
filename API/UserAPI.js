@@ -14,6 +14,10 @@ const useProfile = () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        dispatch(setUserData(null));
+      }
       const response = await axios.get("http://10.0.2.2:8080/user/profile", {
         headers: {
           Authorization: `Bearer ${token}`,

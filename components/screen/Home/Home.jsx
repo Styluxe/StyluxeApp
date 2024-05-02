@@ -8,6 +8,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./Home.style";
 import useAuth from "../../../API/AuthAPI";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, images } from "../../../constants";
 import {
   authKeyState,
   setLoginModalOpen,
@@ -34,6 +35,33 @@ const Home = () => {
   const auth = useSelector(authKeyState);
 
   const { checkExpiryDate } = useAuth();
+
+  const serviceMenu = [
+    {
+      id: 1,
+      title: "Online\nFashion\nConsultation",
+      image: require("../../../assets/content/consult_ilust.png"),
+      onPress: () => {
+        navigation.navigate("Stylist");
+      },
+    },
+    {
+      id: 2,
+      title: "Variety of Fashion Products",
+      image: require("../../../assets/content/shopping_ilust.png"),
+      onPress: () => {
+        navigation.navigate("Category");
+      },
+    },
+    {
+      id: 3,
+      title: "Discussion about Fashion",
+      image: require("../../../assets/content/discussion_ilust.png"),
+      onPress: () => {
+        navigation.navigate("Discussion");
+      },
+    },
+  ];
 
   useEffect(() => {
     checkExpiryDate();
@@ -55,7 +83,7 @@ const Home = () => {
         </View>
 
         <View style={styles.header_action_list}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("ChatRoom")}>
             <Ionicons
               name="notifications-outline"
               size={24}
@@ -84,12 +112,22 @@ const Home = () => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.tagline_container}>
-          <Text style={styles.h1_tagline}>Place to Find</Text>
-          <Text style={styles.h2_tagline}>Your Fashion Solution</Text>
+        <View style={{ height: 200 }}>
+          <Image
+            style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+            source={require("../../../assets/content/dummy_header.jpg")}
+          />
+          {/* <ImageBackground
+            source={require("../../../assets/content/dummy_header.jpg")}
+          >
+            <View style={styles.tagline_container}>
+              <Text style={styles.h1_tagline}>Place to Find</Text>
+              <Text style={styles.h2_tagline}>Your Fashion Solution</Text>
+            </View>
+          </ImageBackground> */}
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Search")}>
           <View style={styles.search_container}>
             <View style={{ flex: 1 }}>
               <TextInput
@@ -105,26 +143,63 @@ const Home = () => {
           </View>
         </TouchableOpacity>
 
-        <View style={styles.carousel_container}>
-          <Carousel
-            loop
-            width={SIZES.width}
-            height={SIZES.height / 4}
-            autoPlay
-            scrollAnimationDuration={5000}
-            data={slides}
-            renderItem={({ index, item: src }) => (
-              <View key={index} style={styles.carousel}>
-                <Image source={{ uri: src }} style={styles.carousel_img} />
-              </View>
-            )}
-          />
+        <View style={{ gap: 16, paddingHorizontal: 14, paddingVertical: 24 }}>
+          <Text
+            style={{ fontSize: 18, fontFamily: "bold", color: COLORS.primary }}
+          >
+            Featured
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            {serviceMenu.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  flex: 1,
+                  borderRadius: 24,
+                  overflow: "hidden",
+                  borderWidth: 2,
+                  borderColor: COLORS.primary,
+                }}
+                onPress={item.onPress}
+              >
+                <View
+                  style={{
+                    height: 172,
+                    paddingHorizontal: 12,
+                    paddingTop: 16,
+                    justifyContent: "space-between",
+                    backgroundColor: COLORS.cream,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: COLORS.primary,
+                      fontFamily: "bold",
+                      fontSize: 14,
+                    }}
+                  >
+                    {item.title}
+                  </Text>
+
+                  <Image
+                    style={{ height: 72, width: "100%", resizeMode: "contain" }}
+                    source={item.image}
+                  />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
         <PopularStylist />
         <NewestCollection />
       </ScrollView>
-
-      <LoginModal />
     </SafeAreaView>
   );
 };

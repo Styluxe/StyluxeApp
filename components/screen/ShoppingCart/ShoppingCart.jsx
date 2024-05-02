@@ -58,7 +58,7 @@ const ShoppingCart = () => {
             Sub Total: Rp. 150,000
           </Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Checkout")}>
             <View
               style={{
                 borderRadius: 10,

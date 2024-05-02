@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button, ButtonText } from "@gluestack-ui/themed";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -7,15 +7,20 @@ import {
 } from "@react-navigation/drawer";
 import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { COLORS } from "../../constants";
-import { authKeyState, userDataState } from "../../redux/slice/app.slice";
+import {
+  authKeyState,
+  setLoginModalOpen,
+  userDataState,
+} from "../../redux/slice/app.slice";
 import { Discussion } from "../screen/Discussion";
 
 const DrawerNavigationDiscussion = () => {
   const Drawer = createDrawerNavigator();
   const userData = useSelector(userDataState);
+  const dispatch = useDispatch();
 
   const auth = useSelector(authKeyState);
 
@@ -48,24 +53,20 @@ const DrawerNavigationDiscussion = () => {
           </View>
         ) : (
           <View style={styles.drawerHeader}>
-            <View>
+            <View style={{ flexDirection: "column", gap: 10 }}>
               <Text style={{ fontFamily: "bold" }}>
                 Please Login to share your thoughts
               </Text>
 
-              <View
-                style={{
-                  padding: 5,
-                  alignItems: "center",
-                  borderRadius: 5,
-                  backgroundColor: COLORS.primary,
-                  marginTop: 10,
-                }}
+              <Button
+                onPress={() => dispatch(setLoginModalOpen(true))}
+                variant="solid"
+                backgroundColor={COLORS.primary}
               >
-                <Text style={{ fontFamily: "bold", color: COLORS.white }}>
+                <ButtonText style={{ color: COLORS.white, fontFamily: "bold" }}>
                   Login
-                </Text>
-              </View>
+                </ButtonText>
+              </Button>
             </View>
           </View>
         )}

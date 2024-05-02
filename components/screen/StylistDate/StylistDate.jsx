@@ -154,7 +154,7 @@ const StylistDate = () => {
           </View>
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Checkout")}>
           <View
             style={{
               backgroundColor: COLORS.primary,

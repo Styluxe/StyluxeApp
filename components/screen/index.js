@@ -10,3 +10,6 @@ export * from "./ShoppingCart";
 export * from "./Register";
 export * from "./Profile";
 export * from "./ProductList";
+export * from "./Search";
+export * from "./ChatRoom";
+export * from "./Checkout";

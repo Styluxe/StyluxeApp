@@ -8,6 +8,7 @@ const SelectionList = ({
   iconName = "person-outline",
   onPress,
   text = "Isi disini",
+  hasIcon,
 }) => {
   return (
     <TouchableOpacity onPress={onPress}>
@@ -22,7 +23,9 @@ const SelectionList = ({
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-          <Ionicons name={iconName} size={24} color={COLORS.primary} />
+          {hasIcon ? (
+            <Ionicons name={iconName} size={24} color={COLORS.primary} />
+          ) : null}
           <Text style={{ fontFamily: "medium", fontSize: 16 }}>{text}</Text>
         </View>
 

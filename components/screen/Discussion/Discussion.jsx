@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "../../../constants";
 import { discussionExplore } from "../../../mocks/Dummydiscussion";
 import { DiscussionHeader, DiscussionListCard } from "../../organism";
+import { LoginModal } from "../../molecules";
 
 const Discussion = () => {
   const navigation = useNavigation();

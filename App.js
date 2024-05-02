@@ -8,16 +8,20 @@ import { StatusBar } from "expo-status-bar";
 import React, { useCallback } from "react";
 import { Provider } from "react-redux";
 
+import { LoginModal } from "./components/molecules";
 import { BottomTabNav } from "./components/navigation";
 import {
+  ChatRoom,
   DiscussionDetails,
   ProductDetails,
   ProductList,
   Profile,
   Register,
+  Search,
   ShoppingCart,
   StylistDate,
   StylistDetails,
+  Checkout,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -88,8 +92,20 @@ export default function App() {
             />
 
             <Stack.Screen
+              name="ChatRoom"
+              component={ChatRoom}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
               name="ShoppingCart"
               component={ShoppingCart}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="Checkout"
+              component={Checkout}
               options={{ headerShown: false }}
             />
 
@@ -104,7 +120,16 @@ export default function App() {
               component={Profile}
               options={{ headerShown: false }}
             />
+
+            <Stack.Screen
+              name="Search"
+              component={Search}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
+
+          {/* Login Modal */}
+          <LoginModal />
         </NavigationContainer>
       </Provider>
     </GluestackUIProvider>

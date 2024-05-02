@@ -162,7 +162,7 @@ const Register = () => {
                   textDecorationLine: "underline",
                 }}
                 onPress={() => {
-                  navigation.navigate("Home");
+                  navigation.goBack();
                   dispatch(setLoginModalOpen(true));
                 }}
               >

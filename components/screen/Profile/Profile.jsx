@@ -8,7 +8,7 @@ import {
   useToast,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -17,9 +17,10 @@ import useAuth from "../../../API/AuthAPI";
 import useProfile from "../../../API/UserAPI";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
-import { SelectionList } from "../../molecules";
+import { LogoutSheet, SelectionList } from "../../molecules";
 
 const Profile = () => {
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
   const userData = useSelector(userDataState);
   const { logout } = useAuth();
   const { getProfile, loading } = useProfile();
@@ -33,6 +34,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     logout();
+    setShowBottomSheet(false);
     navigation.navigate("Home");
     toast.show({
       description: "Login success!",
@@ -49,6 +51,7 @@ const Profile = () => {
       },
     });
   };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -102,15 +105,25 @@ const Profile = () => {
         </Text>
       </View>
       <View style={{ paddingHorizontal: 10 }}>
-        <SelectionList iconName="person-outline" text="My Profile" />
-        <SelectionList iconName="bookmarks-outline" text="My Address" />
-        <SelectionList iconName="clipboard-outline" text="My Activity" />
+        <SelectionList hasIcon iconName="person-outline" text="My Profile" />
+        <SelectionList hasIcon iconName="bookmarks-outline" text="My Address" />
         <SelectionList
+          hasIcon
+          iconName="clipboard-outline"
+          text="My Activity"
+        />
+        <SelectionList
+          hasIcon
           iconName="exit-outline"
           text="Logout"
-          onPress={handleLogout}
+          onPress={() => setShowBottomSheet(true)}
         />
       </View>
+      <LogoutSheet
+        setShowBottomSheet={setShowBottomSheet}
+        showBottomSheet={showBottomSheet}
+        handleLogout={handleLogout}
+      />
     </SafeAreaView>
   );
 };
