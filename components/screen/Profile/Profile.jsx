@@ -105,7 +105,12 @@ const Profile = () => {
         </Text>
       </View>
       <View style={{ paddingHorizontal: 10 }}>
-        <SelectionList hasIcon iconName="person-outline" text="My Profile" />
+        <SelectionList
+          hasIcon
+          iconName="person-outline"
+          text="My Profile"
+          onPress={() => navigation.navigate("MyProfile")}
+        />
         <SelectionList hasIcon iconName="bookmarks-outline" text="My Address" />
         <SelectionList
           hasIcon

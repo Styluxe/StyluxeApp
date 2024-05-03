@@ -22,6 +22,7 @@ import {
   StylistDate,
   StylistDetails,
   Checkout,
+  MyProfile,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -118,6 +119,12 @@ export default function App() {
             <Stack.Screen
               name="Profile"
               component={Profile}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="MyProfile"
+              component={MyProfile}
               options={{ headerShown: false }}
             />
 

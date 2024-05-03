@@ -13,3 +13,4 @@ export * from "./ProductList";
 export * from "./Search";
 export * from "./ChatRoom";
 export * from "./Checkout";
+export * from "./MyProfile";

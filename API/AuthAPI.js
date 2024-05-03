@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import moment from "moment";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -22,10 +23,10 @@ const useAuth = () => {
         email,
         password,
       });
-      const { token, expiresIn } = response?.data;
+      const { token, data } = response?.data;
 
       await AsyncStorage.setItem("token", token);
-      await AsyncStorage.setItem("expiryDate", String(expiresIn));
+      await AsyncStorage.setItem("expiryDate", String(data?.exp));
       dispatch(setAuthKey(token));
       setError(null);
     } catch (error) {
@@ -35,26 +36,31 @@ const useAuth = () => {
     setLoading(false);
   };
 
-  const checkExpiryDate = async () => {
-    const expiryDate = await AsyncStorage.getItem("expiryDate");
-    const currentTime = Math.floor(Date.now() / 1000);
-    const token = await AsyncStorage.getItem("token");
-
-    if (token) {
-      dispatch(setAuthKey(token));
-    }
-
-    if (expiryDate && parseInt(expiryDate, 10) < currentTime) {
-      logout();
-    }
-  };
-
   const logout = async () => {
     await AsyncStorage.removeItem("token");
     await AsyncStorage.removeItem("expiryDate");
     dispatch(setUserData(null));
     dispatch(setAuthKey(null));
     console.log("logout");
+  };
+
+  const checkExpiryDate = async () => {
+    const token = await AsyncStorage.getItem("token");
+    const expiryDate = await AsyncStorage.getItem("expiryDate");
+
+    const current = Date.now();
+
+    const currentDate = moment(current);
+    const expiryToDate = moment(expiryDate * 1000);
+
+    if (token) {
+      dispatch(setAuthKey(token));
+      console.log("token found");
+    }
+
+    if (expiryDate && currentDate.isAfter(expiryToDate)) {
+      logout();
+    }
   };
 
   return { user: userData, error, loading, login, logout, checkExpiryDate };

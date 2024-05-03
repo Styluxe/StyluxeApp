@@ -147,7 +147,7 @@ const Home = () => {
           <Text
             style={{ fontSize: 18, fontFamily: "bold", color: COLORS.primary }}
           >
-            Featured
+            Features
           </Text>
           <View
             style={{
@@ -175,7 +175,7 @@ const Home = () => {
                     paddingHorizontal: 12,
                     paddingTop: 16,
                     justifyContent: "space-between",
-                    backgroundColor: COLORS.cream,
+                    backgroundColor: COLORS.lightBrown,
                   }}
                 >
                   <Text
