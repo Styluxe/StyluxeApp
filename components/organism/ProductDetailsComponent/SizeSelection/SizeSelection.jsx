@@ -12,9 +12,14 @@ const SizeSelection = ({ data, selectedSize, onPress }) => {
           paddingHorizontal: 15,
           borderWidth: 2,
           borderColor:
-            selectedSize?.id === data?.id ? COLORS.primary : COLORS.gray2,
+            selectedSize?.product_size_id === data?.product_size_id
+              ? COLORS.primary
+              : COLORS.gray2,
           borderRadius: 5,
-          backgroundColor: selectedSize?.id === data?.id ? COLORS.gray2 : null,
+          backgroundColor:
+            selectedSize?.product_size_id === data?.product_size_id
+              ? COLORS.gray2
+              : null,
         }}
       >
         <Text>{data?.size}</Text>

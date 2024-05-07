@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import { Spinner } from "@gluestack-ui/themed";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useCategoryApi } from "../../../API/CategoryAPI";
 import { COLORS } from "../../../constants";
-import { categoryData } from "../../../mocks/DummyCategory";
 import { CategoryMenu, SubCategoryItems } from "../../organism";
 
 const Category = () => {
-  const [selectedCategory, setSelectedCategory] = useState(categoryData[0]);
+  const { getCategory, category, loading } = useCategoryApi();
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  useEffect(() => {
+    getCategory();
+  }, []);
+
+  useEffect(() => {
+    setSelectedCategory(category[0]);
+  }, [category]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -35,9 +45,9 @@ const Category = () => {
             borderColor: COLORS.gray,
           }}
         >
-          {categoryData.map((item) => (
+          {category?.map((item, index) => (
             <CategoryMenu
-              key={item.id}
+              key={index}
               data={item}
               onPress={() => setSelectedCategory(item)}
               selectedCategory={selectedCategory}
@@ -47,21 +57,27 @@ const Category = () => {
 
         {/* category sub menu */}
         <View style={{ flex: 7 }}>
-          <View style={{ padding: 10 }}>
-            <Text style={{ fontFamily: "medium", fontSize: 16 }}>
-              {selectedCategory.name}
-            </Text>
-          </View>
-          <View style={{ padding: 10 }}>
-            <FlatList
-              data={selectedCategory.subCategory}
-              renderItem={({ item }) => <SubCategoryItems data={item} />}
-              numColumns={3}
-              columnWrapperStyle={{
-                justifyContent: "space-between",
-              }}
-            />
-          </View>
+          {loading ? (
+            <Spinner />
+          ) : (
+            <>
+              <View style={{ padding: 10 }}>
+                <Text style={{ fontFamily: "medium", fontSize: 16 }}>
+                  {selectedCategory?.category_name}
+                </Text>
+              </View>
+              <View style={{ padding: 10 }}>
+                <FlatList
+                  data={selectedCategory?.sub_categories}
+                  renderItem={({ item }) => <SubCategoryItems data={item} />}
+                  numColumns={3}
+                  columnWrapperStyle={{
+                    justifyContent: "space-evenly",
+                  }}
+                />
+              </View>
+            </>
+          )}
         </View>
       </View>
     </SafeAreaView>

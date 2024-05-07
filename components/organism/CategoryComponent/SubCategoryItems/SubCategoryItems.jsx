@@ -5,7 +5,9 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 const SubCategoryItems = ({ data }) => {
   const navigation = useNavigation();
   const handleTouch = () => {
-    navigation.navigate("ProductList");
+    navigation.navigate("ProductList", {
+      subCategoryId: data?.product_sub_category_id,
+    });
   };
 
   return (
@@ -21,7 +23,7 @@ const SubCategoryItems = ({ data }) => {
         <View style={{ width: "100%", height: "60%", overflow: "hidden" }}>
           <Image
             style={{ width: "100%", height: "100%", resizeMode: "contain" }}
-            source={{ uri: data.imageUrl }}
+            source={{ uri: data?.sub_category_image }}
           />
         </View>
         <Text
@@ -34,7 +36,7 @@ const SubCategoryItems = ({ data }) => {
             minWidth: 50,
           }}
         >
-          {data.name}
+          {data?.sub_category_name}
         </Text>
       </View>
     </TouchableOpacity>

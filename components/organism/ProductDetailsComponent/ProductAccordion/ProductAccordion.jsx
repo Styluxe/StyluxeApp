@@ -19,27 +19,27 @@ const ProductAccordion = ({ accordionData }) => {
     {
       id: 1,
       title: "Washing",
-      content: accordionData.care.washing,
+      content: accordionData.cares?.washing,
     },
     {
       id: 2,
       title: "Bleaching",
-      content: accordionData.care.bleaching,
+      content: accordionData.cares?.bleaching,
     },
     {
       id: 3,
       title: "Drying",
-      content: accordionData.care.drying,
+      content: accordionData.cares?.drying,
     },
     {
       id: 4,
       title: "Iron",
-      content: accordionData.care.iron,
+      content: accordionData.cares?.iron,
     },
     {
       id: 5,
       title: "Dry Clean",
-      content: accordionData.care.dry_clean,
+      content: accordionData.cares?.dry_clean,
     },
   ];
 
@@ -50,7 +50,7 @@ const ProductAccordion = ({ accordionData }) => {
       content: (
         <View style={{ gap: 5 }}>
           <Text style={{ fontFamily: "regular" }}>
-            {accordionData.description}
+            {accordionData?.product_description}
           </Text>
 
           <TouchableOpacity>
@@ -71,7 +71,7 @@ const ProductAccordion = ({ accordionData }) => {
           <View style={styles.detail_container}>
             <Text style={styles.detail_label}>Fabric</Text>
             <Text style={styles.detail_content}>
-              {accordionData.materials.fabric}
+              {accordionData.materials?.fabric}
             </Text>
           </View>
           <View style={styles.detail_container}>
@@ -81,7 +81,7 @@ const ProductAccordion = ({ accordionData }) => {
                 {[1, 2, 3, 4, 5].map((item) => (
                   <FontAwesome
                     name={
-                      item <= accordionData.materials.Transparency
+                      item <= accordionData.materials?.transparency
                         ? "circle"
                         : "circle-o"
                     }
@@ -100,7 +100,7 @@ const ProductAccordion = ({ accordionData }) => {
                 {[1, 2, 3, 4, 5].map((item) => (
                   <FontAwesome
                     name={
-                      item <= accordionData.materials.Thickness
+                      item <= accordionData.materials?.thickness
                         ? "circle"
                         : "circle-o"
                     }
@@ -119,7 +119,7 @@ const ProductAccordion = ({ accordionData }) => {
                 {[1, 2, 3, 4, 5].map((item) => (
                   <FontAwesome
                     name={
-                      item <= accordionData.materials.stretchiness
+                      item <= accordionData.materials?.stretchiness
                         ? "circle"
                         : "circle-o"
                     }

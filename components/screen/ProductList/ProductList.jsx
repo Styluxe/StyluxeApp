@@ -1,14 +1,24 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useEffect } from "react";
 import { View, Text, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useProductCategoryApi } from "../../../API/CategoryAPI";
 import { COLORS } from "../../../constants";
 import { CartIcon, ProductCard } from "../../molecules";
 
 const ProductList = () => {
   const navigation = useNavigation();
+  const { getProductCategory, productCategory } = useProductCategoryApi();
+
+  const route = useRoute();
+  const { subCategoryId } = route.params;
+
+  useEffect(() => {
+    getProductCategory({ categoryId: subCategoryId });
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -29,7 +39,7 @@ const ProductList = () => {
             color={COLORS.primary}
           />
           <Text style={{ fontFamily: "semibold", fontSize: 16 }}>
-            Men's T Shirt
+            {productCategory?.sub_category_name}
           </Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
@@ -44,7 +54,7 @@ const ProductList = () => {
       </View>
       <View style={{ flex: 1 }}>
         <FlatList
-          data={[1, 2, 3, 4, 5]}
+          data={productCategory.products}
           numColumns={2}
           columnWrapperStyle={{
             justifyContent: "space-between",
@@ -61,7 +71,8 @@ const ProductList = () => {
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
                 Showing Products from{" "}
                 <Text style={{ fontFamily: "semibold", color: COLORS.primary }}>
-                  Men's T shirts (5)
+                  {productCategory?.sub_category_name} (
+                  {productCategory?.products?.length})
                 </Text>
               </Text>
 
@@ -69,7 +80,19 @@ const ProductList = () => {
             </View>
           )}
           contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
-          renderItem={() => <ProductCard />}
+          renderItem={({ item }) => (
+            <ProductCard
+              category={productCategory?.sub_category_name}
+              imageUrl={item?.images[0]?.image_url}
+              price={parseFloat(item?.product_price).toLocaleString("id-ID")}
+              title={item?.product_name}
+              onPress={() =>
+                navigation.navigate("ProductDetails", {
+                  product_id: item?.product_id,
+                })
+              }
+            />
+          )}
         />
       </View>
     </SafeAreaView>

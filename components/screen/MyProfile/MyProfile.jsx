@@ -18,12 +18,17 @@ import {
   Button,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
-import useProfile from "../../../API/UserAPI";
+import {
+  useGetProfileApi,
+  useProfileApi,
+  useProfilePictureApi,
+} from "../../../API/ProfileApi";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
 
@@ -40,7 +45,9 @@ const MyProfile = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [showRepeatPassword, setShowRepeatPassword] = useState(true);
   const navigation = useNavigation();
-  const { updateProfile } = useProfile();
+  const { updateProfileImage } = useProfilePictureApi();
+  const { updateProfile, code } = useProfileApi();
+  const { getProfile } = useGetProfileApi();
 
   const handleUpdateProfile = () => {
     updateProfile(
@@ -51,6 +58,35 @@ const MyProfile = () => {
       // eslint-disable-next-line prettier/prettier
       profileData.gender
     );
+  };
+
+  console.log("cd", code);
+
+  const handleImagePick = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log("result", result);
+
+      if (!result.canceled) {
+        const newFile = {
+          uri: result.assets[0].uri,
+          type: result.assets[0].mimeType,
+          name: "testing.jpeg",
+        };
+
+        updateProfileImage(newFile);
+      }
+    } catch (error) {
+      // Handle any errors that occur during the image picking process
+      console.error("Error picking image:", error);
+      // Provide feedback to the user that an error occurred
+    }
   };
 
   return (
@@ -76,12 +112,18 @@ const MyProfile = () => {
       <View style={{ flex: 1 }}>
         <ScrollView>
           <View style={{ paddingVertical: 23 }}>
-            <Avatar alignSelf="center" size="2xl" marginTop={5}>
-              <AvatarImage
-                source={require("../../../assets/content/profpic.png")}
-                alt="profpic"
-              />
-            </Avatar>
+            <TouchableOpacity onPress={handleImagePick}>
+              <Avatar alignSelf="center" size="2xl" marginTop={5}>
+                <AvatarImage
+                  source={
+                    userData?.profile_picture
+                      ? { uri: userData?.profile_picture }
+                      : require("../../../assets/content/profpic.png")
+                  }
+                  alt="profpic"
+                />
+              </Avatar>
+            </TouchableOpacity>
           </View>
           <View style={{ paddingHorizontal: 30, paddingVertical: 20 }}>
             <Text

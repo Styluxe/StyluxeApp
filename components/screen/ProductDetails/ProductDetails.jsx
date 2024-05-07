@@ -1,6 +1,7 @@
 import { FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
 import { Divider } from "@gluestack-ui/themed";
-import React, { useState } from "react";
+import { useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -19,9 +20,20 @@ import {
   ProductImageSlider,
   SizeSelection,
 } from "../../organism";
+import { useGetSingleProductApi } from "../../../API/ProductAPI";
 
 const ProductDetails = () => {
   const star = [1, 2, 3, 4, 5];
+
+  const route = useRoute();
+
+  const { product_id } = route.params;
+
+  const { getProduct, product } = useGetSingleProductApi();
+
+  useEffect(() => {
+    getProduct({ productId: product_id });
+  }, []);
 
   const [selectedSize, setSelectedSize] = useState(null);
   const [count, setCount] = useState(1);
@@ -36,27 +48,28 @@ const ProductDetails = () => {
       setCount(count - 1);
     }
   };
+
+  console.log("images", product?.images?.length);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 9 }}>
         <ScrollView>
-          <ProductImageSlider images={dummyProductDetails.images} />
+          <ProductImageSlider images={product?.images} />
 
           <View style={styles.information_container}>
             <View style={styles.product_info_container}>
               <View style={{ gap: 5 }}>
-                <Text style={styles.product_name}>
-                  {dummyProductDetails.name}
-                </Text>
+                <Text style={styles.product_name}>{product?.product_name}</Text>
                 <Text style={styles.product_category}>
-                  {dummyProductDetails.category}
+                  {product?.sub_category?.sub_category_name}
                 </Text>
               </View>
 
               <View style={{ alignItems: "flex-end" }}>
                 <Text style={styles.product_price}>
                   <Text style={{ fontFamily: "semibold" }}>Rp</Text>
-                  {dummyProductDetails.price}
+                  {parseFloat(product?.product_price).toLocaleString("id-ID")}
                 </Text>
 
                 <View style={styles.rating_container}>
@@ -98,7 +111,7 @@ const ProductDetails = () => {
               </View>
               <View style={styles.size_button_container}>
                 <FlatList
-                  data={dummyProductDetails.sizes}
+                  data={product?.sizes}
                   renderItem={({ item }) => (
                     <SizeSelection
                       onPress={() => setSelectedSize(item)}
@@ -142,7 +155,7 @@ const ProductDetails = () => {
               </View>
             </View>
             <Divider marginTop={20} bg="$backgroundLight400" />
-            <ProductAccordion accordionData={dummyProductDetails} />
+            <ProductAccordion accordionData={product} />
           </View>
         </ScrollView>
       </View>

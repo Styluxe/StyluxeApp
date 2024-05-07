@@ -21,18 +21,31 @@ const ProductImageSlider = ({ images }) => {
           <AntDesign name="arrowleft" size={24} color={COLORS.primary} />
         }
       >
-        {images.map((item, index) => (
-          <View key={index} style={{ flex: 1 }}>
+        {!images ? (
+          <View style={{ flex: 1 }}>
             <Image
-              source={{ uri: item?.image_url }}
+              source={require("../../../../assets/content/empty_product.png")}
               style={{
                 width: "100%",
                 height: "100%",
-                resizeMode: "contain",
+                resizeMode: "cover",
               }}
             />
           </View>
-        ))}
+        ) : (
+          images?.map((item, index) => (
+            <View key={index} style={{ flex: 1 }}>
+              <Image
+                source={{ uri: item?.image_url }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  resizeMode: "contain",
+                }}
+              />
+            </View>
+          ))
+        )}
       </Swiper>
 
       <TouchableOpacity

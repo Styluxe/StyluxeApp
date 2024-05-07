@@ -12,6 +12,7 @@ const Tab = createBottomTabNavigator();
 const screenOptions = {
   tabBarHideOnKeyboard: true,
   headerShown: false,
+  unmountOnBlur: true,
 };
 
 const BottomTabNav = () => {

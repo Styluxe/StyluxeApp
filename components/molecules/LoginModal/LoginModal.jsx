@@ -44,7 +44,7 @@ const LoginModal = () => {
     }
   }, [showModal]);
 
-  const { loading, login } = useAuth();
+  const { loading, login, code, message, error } = useAuth();
   const toast = useToast();
 
   const dispatch = useDispatch();
@@ -52,23 +52,42 @@ const LoginModal = () => {
 
   const handleLogin = () => {
     login(email, password);
-    setEmail("");
-    setPassword("");
-    dispatch(setLoginModalOpen(false));
-    toast.show({
-      description: "Login success!",
-      placement: "bottom",
-      render: ({ id }) => {
-        const toastId = "toast-" + id;
-        return (
-          <Toast nativeID={toastId} action="success" variant="solid">
-            <VStack>
-              <ToastTitle>Login Success</ToastTitle>
-            </VStack>
-          </Toast>
-        );
-      },
-    });
+
+    if (code === 200) {
+      setEmail("");
+      setPassword("");
+      dispatch(setLoginModalOpen(false));
+      toast.show({
+        description: "Login success!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Login Success</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+    } else {
+      console.log(error);
+      toast.show({
+        description: "Login failed!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="danger" variant="solid">
+              <VStack>
+                <ToastTitle>Login Failed</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+    }
   };
 
   return (

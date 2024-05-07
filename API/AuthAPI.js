@@ -15,6 +15,8 @@ const useAuth = () => {
   const userData = useSelector(userDataState);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -23,12 +25,15 @@ const useAuth = () => {
         email,
         password,
       });
-      const { token, data } = response?.data;
+      const { token, data, code, message } = response?.data;
 
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("expiryDate", String(data?.exp));
+      setCode(code);
       dispatch(setAuthKey(token));
-      setError(null);
+      setError(code);
+      setMessage(message);
+      console.log("login");
     } catch (error) {
       setError(error);
       setLoading(false);
@@ -63,7 +68,16 @@ const useAuth = () => {
     }
   };
 
-  return { user: userData, error, loading, login, logout, checkExpiryDate };
+  return {
+    user: userData,
+    error,
+    loading,
+    login,
+    logout,
+    checkExpiryDate,
+    code,
+    message,
+  };
 };
 
 export default useAuth;

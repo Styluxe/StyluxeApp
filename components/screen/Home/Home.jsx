@@ -16,25 +16,29 @@ import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./Home.style";
 import useAuth from "../../../API/AuthAPI";
-import { COLORS, SIZES, images } from "../../../constants";
+import { useGetProfileApi } from "../../../API/ProfileApi";
+import { COLORS } from "../../../constants";
 import {
   authKeyState,
   setLoginModalOpen,
+  userDataState,
 } from "../../../redux/slice/app.slice";
-import { CartIcon, LoginModal } from "../../molecules";
+import { CartIcon } from "../../molecules";
 import { NewestCollection, PopularStylist } from "../../organism/HomeComponent";
 
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const slides = [
-    "https://tlz.ae/wp-content/uploads/2022/10/TZ_featured-image.png",
-    "https://media.glamourmagazine.co.uk/photos/657b2069cd763cb5be091396/16:9/w_1280,c_limit/AW%20FASHION%20TRENDS%20141223%20AW-FASHION-TRENDS-MAIN.jpg",
-    "https://www.womanindonesia.co.id/wp-content/uploads/2021/11/Trend-fashion-2022-terins-dari-flora-dan-fauna_womanindonesia.jpg",
-  ];
+  // const slides = [
+  //   "https://tlz.ae/wp-content/uploads/2022/10/TZ_featured-image.png",
+  //   "https://media.glamourmagazine.co.uk/photos/657b2069cd763cb5be091396/16:9/w_1280,c_limit/AW%20FASHION%20TRENDS%20141223%20AW-FASHION-TRENDS-MAIN.jpg",
+  //   "https://www.womanindonesia.co.id/wp-content/uploads/2021/11/Trend-fashion-2022-terins-dari-flora-dan-fauna_womanindonesia.jpg",
+  // ];
   const auth = useSelector(authKeyState);
+  const profile = useSelector(userDataState);
 
   const { checkExpiryDate } = useAuth();
+  const { getProfile } = useGetProfileApi();
 
   const serviceMenu = [
     {
@@ -66,10 +70,13 @@ const Home = () => {
   useEffect(() => {
     checkExpiryDate();
 
+    if (auth) {
+      getProfile();
+    }
     // if (!auth) {
     //   dispatch(setLoginModalOpen(true));
     // }
-  }, [auth, checkExpiryDate, dispatch]);
+  }, [auth]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -104,7 +111,11 @@ const Home = () => {
             <View style={styles.avatar_container}>
               <Image
                 style={styles.avatar}
-                source={require("../../../assets/content/profpic.png")}
+                source={
+                  profile?.profile_picture
+                    ? { uri: profile.profile_picture }
+                    : require("../../../assets/content/profpic.png")
+                }
               />
             </View>
           </TouchableOpacity>

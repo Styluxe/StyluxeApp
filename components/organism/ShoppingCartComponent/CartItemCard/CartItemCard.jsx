@@ -4,8 +4,8 @@ import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 
 import { COLORS, SHADOWS, SIZES } from "../../../../constants";
 
-const CartItemCard = () => {
-  const [count, setCount] = useState(1);
+const CartItemCard = ({ title, size, price, image, quantity = 1 }) => {
+  const [count, setCount] = useState(quantity);
   const countDisabled = count === 1;
 
   const increment = () => {
@@ -30,10 +30,12 @@ const CartItemCard = () => {
     >
       <View style={{ width: 110, height: 115 }}>
         <Image
-          style={{ width: "100%", height: "100%", resizeMode: "contain" }}
-          source={{
-            uri: "https://www.thekooples.com/dw/image/v2/BGQL_PRD/on/demandware.static/-/Sites-skp-master-catalog/default/dw82b86445/images/hi-res/HCCL26153KBLU01_A.jpg?sw=900&sh=1105",
-          }}
+          style={{ width: "100%", height: "100%", resizeMode: "cover" }}
+          source={
+            !image
+              ? require("../../../../assets/content/empty_product.png")
+              : { uri: image }
+          }
         />
       </View>
       <View style={{ gap: 8, flex: 1 }}>
@@ -43,14 +45,14 @@ const CartItemCard = () => {
             justifyContent: "space-between",
           }}
         >
-          <Text style={{ fontFamily: "semibold" }}>Blue Shirt</Text>
+          <Text style={{ fontFamily: "semibold" }}>{title}</Text>
           <TouchableOpacity>
             <Ionicons name="trash-outline" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        <Text style={{ fontFamily: "regular" }}>Size: S</Text>
+        <Text style={{ fontFamily: "regular" }}>Size: {size}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ fontFamily: "semibold" }}>Rp. 150,000</Text>
+          <Text style={{ fontFamily: "semibold" }}>Rp. {price}</Text>
           <View
             style={{
               flexDirection: "row",

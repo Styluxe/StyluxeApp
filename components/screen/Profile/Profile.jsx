@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 import useAuth from "../../../API/AuthAPI";
-import useProfile from "../../../API/UserAPI";
+import { useGetProfileApi } from "../../../API/ProfileApi";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
 import { LogoutSheet, SelectionList } from "../../molecules";
@@ -23,7 +23,7 @@ const Profile = () => {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const userData = useSelector(userDataState);
   const { logout } = useAuth();
-  const { getProfile, loading } = useProfile();
+  const { getProfile, loading } = useGetProfileApi();
 
   useEffect(() => {
     getProfile();
@@ -85,7 +85,11 @@ const Profile = () => {
         </View>
         <Avatar alignSelf="center" size="2xl" marginTop={5}>
           <AvatarImage
-            source={require("../../../assets/content/profpic.png")}
+            source={
+              userData?.profile_picture
+                ? { uri: userData?.profile_picture }
+                : require("../../../assets/content/profpic.png")
+            }
             alt="profpic"
           />
         </Avatar>
@@ -111,7 +115,12 @@ const Profile = () => {
           text="My Profile"
           onPress={() => navigation.navigate("MyProfile")}
         />
-        <SelectionList hasIcon iconName="bookmarks-outline" text="My Address" />
+        <SelectionList
+          hasIcon
+          iconName="bookmarks-outline"
+          text="My Address"
+          onPress={() => navigation.navigate("MyAddress")}
+        />
         <SelectionList
           hasIcon
           iconName="clipboard-outline"

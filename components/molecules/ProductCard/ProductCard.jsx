@@ -15,11 +15,10 @@ const ProductCard = ({
   category = "Shirts",
   price = "200.000",
   rating = 4.5,
+  onPress = () => {},
 }) => {
-  const navigation = useNavigation();
-
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("ProductDetails")}>
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
         <View style={styles.image_container}>
           <Image

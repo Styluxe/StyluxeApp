@@ -13,22 +13,31 @@ const CategoryMenu = ({ data, onPress, selectedCategory }) => {
           alignItems: "center",
           padding: 5,
           backgroundColor:
-            selectedCategory.id === data.id ? COLORS.lightWhite : null,
+            selectedCategory?.product_category_id === data?.product_category_id
+              ? COLORS.lightWhite
+              : null,
         }}
       >
         <Ionicons
-          name={data.icon}
+          name={data.category_icon}
           size={24}
-          color={selectedCategory.id === data.id ? COLORS.primary : "#616161"}
+          color={
+            selectedCategory?.product_category_id === data?.product_category_id
+              ? COLORS.primary
+              : "#616161"
+          }
         />
         <Text
           style={{
             fontFamily: "semibold",
             fontSize: 12,
-            color: selectedCategory.id === data.id ? COLORS.primary : "#616161",
+            color:
+              selectedCategory?.product_category_id === data.product_category_id
+                ? COLORS.primary
+                : "#616161",
           }}
         >
-          {data.name}
+          {data?.category_name}
         </Text>
       </View>
     </TouchableOpacity>
