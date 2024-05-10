@@ -5,7 +5,7 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
-import { useViewCartApi } from "../../../API/CheckoutAPI";
+import { useRemoveFromCartApi, useViewCartApi } from "../../../API/CheckoutAPI";
 import { COLORS } from "../../../constants";
 import { useKeyboardVisibility } from "../../../hook/hook";
 import { authKeyState } from "../../../redux/slice/app.slice";
@@ -16,7 +16,15 @@ const ShoppingCart = () => {
   const [isFooterVisible, setIsFooterVisible] = useState(true);
   useKeyboardVisibility(setIsFooterVisible);
   const { viewCart, loading, getCart } = useViewCartApi();
+  const { code } = useRemoveFromCartApi();
+
   const auth = useSelector(authKeyState);
+
+  useEffect(() => {
+    if (code === 200) {
+      getCart();
+    }
+  }, [code]);
 
   useEffect(() => {
     if (auth) {
@@ -67,6 +75,7 @@ const ShoppingCart = () => {
         data={viewCart.cart_items}
         renderItem={({ item }) => (
           <CartItemCard
+            cartId={item?.cart_item_id}
             title={item.product?.product_name}
             price={parseFloat(item.product.product_price).toLocaleString(
               // eslint-disable-next-line prettier/prettier

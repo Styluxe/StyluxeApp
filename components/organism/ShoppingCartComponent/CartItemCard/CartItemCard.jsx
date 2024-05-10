@@ -2,11 +2,13 @@ import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 
+import { useRemoveFromCartApi } from "../../../../API/CheckoutAPI";
 import { COLORS, SHADOWS, SIZES } from "../../../../constants";
 
-const CartItemCard = ({ title, size, price, image, quantity = 1 }) => {
+const CartItemCard = ({ cartId, title, size, price, image, quantity = 1 }) => {
   const [count, setCount] = useState(quantity);
   const countDisabled = count === 1;
+  const { removeFromCart } = useRemoveFromCartApi();
 
   const increment = () => {
     setCount(count + 1);
@@ -16,6 +18,10 @@ const CartItemCard = ({ title, size, price, image, quantity = 1 }) => {
     if (count > 1) {
       setCount(count - 1);
     }
+  };
+
+  const handleDelete = () => {
+    removeFromCart(cartId);
   };
   return (
     <View
@@ -46,7 +52,7 @@ const CartItemCard = ({ title, size, price, image, quantity = 1 }) => {
           }}
         >
           <Text style={{ fontFamily: "semibold" }}>{title}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDelete}>
             <Ionicons name="trash-outline" size={24} color="black" />
           </TouchableOpacity>
         </View>

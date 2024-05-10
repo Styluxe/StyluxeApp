@@ -24,18 +24,20 @@ import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
+import useAuth from "../../../API/AuthAPI";
 import { COLORS } from "../../../constants";
 import {
+  authKeyState,
   loginModalState,
   setLoginModalOpen,
 } from "../../../redux/slice/app.slice";
-import useAuth from "../../../API/AuthAPI";
 
 const LoginModal = () => {
   const [showPassword, setShowPassword] = useState(false);
   const showModal = useSelector(loginModalState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const auth = useSelector(authKeyState);
 
   useEffect(() => {
     if (showModal) {
@@ -44,15 +46,13 @@ const LoginModal = () => {
     }
   }, [showModal]);
 
-  const { loading, login, code, message, error } = useAuth();
+  const { loading, login, code, error } = useAuth();
   const toast = useToast();
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const handleLogin = () => {
-    login(email, password);
-
+  useEffect(() => {
     if (code === 200) {
       setEmail("");
       setPassword("");
@@ -71,7 +71,7 @@ const LoginModal = () => {
           );
         },
       });
-    } else {
+    } else if (code === 401) {
       console.log(error);
       toast.show({
         description: "Login failed!",
@@ -88,6 +88,10 @@ const LoginModal = () => {
         },
       });
     }
+  }, [code]);
+
+  const handleLogin = () => {
+    login(email, password);
   };
 
   return (

@@ -1,6 +1,6 @@
 import { FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
 import { Divider } from "@gluestack-ui/themed";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { styles } from "./ProductDetails.style";
+import { useGetSingleProductApi } from "../../../API/ProductAPI";
 import { dummyProductDetails } from "../../../mocks/DummyProduct";
 import {
   ProductAccordion,
@@ -20,24 +21,41 @@ import {
   ProductImageSlider,
   SizeSelection,
 } from "../../organism";
-import { useGetSingleProductApi } from "../../../API/ProductAPI";
+import { useAddToCartApi, useViewCartApi } from "../../../API/CheckoutAPI";
 
 const ProductDetails = () => {
   const star = [1, 2, 3, 4, 5];
 
   const route = useRoute();
-
   const { product_id } = route.params;
 
+  const navigation = useNavigation();
+
   const { getProduct, product } = useGetSingleProductApi();
+  const { getCart } = useViewCartApi();
+  const { addToCart, code } = useAddToCartApi();
 
   useEffect(() => {
     getProduct({ productId: product_id });
   }, []);
 
+  useEffect(() => {
+    if (code === 200) {
+      alert("Added to cart");
+      getCart();
+      // navigation.navigate("ShoppingCart");
+    }
+  }, [code]);
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [count, setCount] = useState(1);
   const countDisabled = count === 1;
+
+  const CartData = {
+    product_id,
+    quantity: count,
+    size: selectedSize?.size,
+  };
 
   const increment = () => {
     setCount(count + 1);
@@ -48,8 +66,6 @@ const ProductDetails = () => {
       setCount(count - 1);
     }
   };
-
-  console.log("images", product?.images?.length);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -159,7 +175,13 @@ const ProductDetails = () => {
           </View>
         </ScrollView>
       </View>
-      <ProductDetailFooter />
+      <ProductDetailFooter
+        onPress={() => {
+          console.log(CartData);
+          addToCart(CartData.product_id, CartData.quantity, CartData.size);
+        }}
+        isDisabled={!selectedSize?.size}
+      />
     </SafeAreaView>
   );
 };

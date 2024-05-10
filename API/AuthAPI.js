@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   setAuthKey,
+  setCartCount,
   setUserData,
   userDataState,
 } from "../redux/slice/app.slice";
@@ -46,6 +47,7 @@ const useAuth = () => {
     await AsyncStorage.removeItem("expiryDate");
     dispatch(setUserData(null));
     dispatch(setAuthKey(null));
+    dispatch(setCartCount(0));
     console.log("logout");
   };
 

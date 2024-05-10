@@ -9,3 +9,4 @@ export * from "./SelectionList";
 export * from "./LogoutSheet";
 export * from "./ChatBox";
 export * from "./AddressCard";
+export * from "./PaymentMethodCard";

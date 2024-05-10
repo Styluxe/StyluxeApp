@@ -46,7 +46,7 @@ const MyProfile = () => {
   const [showRepeatPassword, setShowRepeatPassword] = useState(true);
   const navigation = useNavigation();
   const { updateProfileImage } = useProfilePictureApi();
-  const { updateProfile, code } = useProfileApi();
+  const { updateProfile } = useProfileApi();
   const { getProfile } = useGetProfileApi();
 
   const handleUpdateProfile = () => {
@@ -59,8 +59,6 @@ const MyProfile = () => {
       profileData.gender
     );
   };
-
-  console.log("cd", code);
 
   const handleImagePick = async () => {
     try {

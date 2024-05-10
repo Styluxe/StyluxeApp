@@ -20,6 +20,7 @@ const ProductImageSlider = ({ images }) => {
         prevButton={
           <AntDesign name="arrowleft" size={24} color={COLORS.primary} />
         }
+        containerStyle={{ backgroundColor: "white" }}
       >
         {!images ? (
           <View style={{ flex: 1 }}>

@@ -30,6 +30,13 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 5,
   },
+  button_cart_disabled: {
+    padding: 10,
+    backgroundColor: COLORS.gray2,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+  },
   button_text: {
     fontFamily: "bold",
     color: COLORS.white,

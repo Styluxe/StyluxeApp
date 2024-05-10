@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { styles } from "./ProductDetailFooter.style";
 import { COLORS } from "../../../../constants";
 
-const ProductDetailFooter = () => {
+const ProductDetailFooter = ({ onPress, isDisabled }) => {
   return (
     <View style={styles.container}>
       <View style={styles.button_container}>
@@ -15,8 +15,16 @@ const ProductDetailFooter = () => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{ flex: 1 }}>
-          <View style={styles.button_cart}>
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={onPress}
+          disabled={isDisabled}
+        >
+          <View
+            style={
+              isDisabled ? styles.button_cart_disabled : styles.button_cart
+            }
+          >
             <Text style={styles.button_text}>Add To Cart</Text>
           </View>
         </TouchableOpacity>

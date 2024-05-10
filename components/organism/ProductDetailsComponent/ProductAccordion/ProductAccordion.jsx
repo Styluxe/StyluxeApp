@@ -34,7 +34,7 @@ const ProductAccordion = ({ accordionData }) => {
     {
       id: 4,
       title: "Iron",
-      content: accordionData.cares?.iron,
+      content: accordionData.cares?.ironing,
     },
     {
       id: 5,

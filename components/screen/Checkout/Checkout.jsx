@@ -2,10 +2,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { Button, ButtonText } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "../../../constants";
+import { PaymentMethodCard } from "../../molecules";
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -31,109 +32,181 @@ const Checkout = () => {
           Payment Summary
         </Text>
       </View>
-      <View style={{ flex: 1, backgroundColor: COLORS.bgGray, gap: 6 }}>
-        <View
-          style={{
-            paddingVertical: 16,
-            paddingHorizontal: 10,
-            gap: 20,
-            flexDirection: "row",
-            backgroundColor: COLORS.white,
-          }}
-        >
-          <View style={{ height: 100, width: 100 }}>
-            <Image
-              style={{ height: "100%", width: "100%", resizeMode: "cover" }}
-              source={{
-                uri: "https://www.mrporter.com/variants/images/3633577411310824/in/w2000_q60.jpg",
+      <View style={{ flex: 1, backgroundColor: COLORS.bgGray }}>
+        <ScrollView contentContainerStyle={{ gap: 10 }}>
+          <View
+            style={{
+              paddingVertical: 16,
+              paddingHorizontal: 10,
+              backgroundColor: COLORS.white,
+            }}
+          >
+            <View
+              style={{
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: COLORS.gray2,
+                padding: 5,
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
-            />
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                  Delivery to Bryan, 13460
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    fontFamily: "medium",
+                    fontSize: 14,
+                    maxWidth: "80%",
+                  }}
+                >
+                  Jl. Cempedak Raya No. 1 Jl. Cempedak Raya No. 1 Jl. Cempedak
+                  Raya No. 1
+                </Text>
+              </View>
+
+              <View style={{ justifyContent: "center" }}>
+                <TouchableOpacity>
+                  <View
+                    style={{
+                      paddingVertical: 2,
+                      paddingHorizontal: 5,
+                      borderRadius: 5,
+                      backgroundColor: COLORS.primary,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: COLORS.white,
+                        fontFamily: "medium",
+                        fontSize: 12,
+                      }}
+                    >
+                      Change
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              paddingVertical: 16,
+              paddingHorizontal: 10,
+              gap: 20,
+              flexDirection: "row",
+              backgroundColor: COLORS.white,
+            }}
+          >
+            <View style={{ height: 100, width: 100 }}>
+              <Image
+                style={{ height: "100%", width: "100%", resizeMode: "cover" }}
+                source={{
+                  uri: "https://www.mrporter.com/variants/images/3633577411310824/in/w2000_q60.jpg",
+                }}
+              />
+            </View>
+
+            <View>
+              <Text style={{ fontFamily: "bold", fontSize: 16 }}>
+                Baju Hitam
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "medium",
+                  fontSize: 12,
+                  color: COLORS.gray,
+                }}
+              >
+                Size: XL
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "medium",
+                  fontSize: 12,
+                  color: COLORS.gray,
+                }}
+              >
+                x2
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "medium",
+                  fontSize: 12,
+                  color: COLORS.primary,
+                }}
+              >
+                Rp. 40.000
+              </Text>
+            </View>
           </View>
 
-          <View>
-            <Text style={{ fontFamily: "bold", fontSize: 16 }}>Baju Hitam</Text>
-            <Text
-              style={{ fontFamily: "medium", fontSize: 12, color: COLORS.gray }}
+          <View
+            style={{
+              paddingHorizontal: 10,
+              paddingVertical: 16,
+              backgroundColor: COLORS.white,
+            }}
+          >
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              Size: XL
-            </Text>
-            <Text
-              style={{ fontFamily: "medium", fontSize: 12, color: COLORS.gray }}
+              <Text style={{ fontFamily: "medium", fontSize: 14 }}>Total</Text>
+              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                Rp. 80.000
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              x2
-            </Text>
-            <Text
-              style={{
-                fontFamily: "medium",
-                fontSize: 12,
-                color: COLORS.primary,
-              }}
+              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                Service Fee
+              </Text>
+              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                Rp. 2.000
+              </Text>
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
-              Rp. 40.000
-            </Text>
+              <Text
+                style={{
+                  fontFamily: "semibold",
+                  fontSize: 14,
+                  color: COLORS.primary,
+                }}
+              >
+                Your Payment
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "semibold",
+                  fontSize: 14,
+                  color: COLORS.primary,
+                }}
+              >
+                Rp. 82.000
+              </Text>
+            </View>
           </View>
-        </View>
+          <View
+            style={{
+              paddingHorizontal: 10,
+              paddingVertical: 16,
+              backgroundColor: COLORS.white,
+              flex: 1,
+            }}
+          >
+            <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+              Choose your Payment Method
+            </Text>
 
-        <View
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 16,
-            backgroundColor: COLORS.white,
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontFamily: "medium", fontSize: 14 }}>Total</Text>
-            <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-              Rp. 80.000
-            </Text>
+            <PaymentMethodCard />
           </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-              Service Fee
-            </Text>
-            <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-              Rp. 2.000
-            </Text>
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text
-              style={{
-                fontFamily: "semibold",
-                fontSize: 14,
-                color: COLORS.primary,
-              }}
-            >
-              Your Payment
-            </Text>
-            <Text
-              style={{
-                fontFamily: "semibold",
-                fontSize: 14,
-                color: COLORS.primary,
-              }}
-            >
-              Rp. 82.000
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 16,
-            backgroundColor: COLORS.white,
-            flex: 1,
-          }}
-        >
-          <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-            Choose your Payment Method
-          </Text>
-        </View>
+        </ScrollView>
       </View>
       <View
         style={{

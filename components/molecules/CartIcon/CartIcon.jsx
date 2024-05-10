@@ -7,11 +7,12 @@ import { useSelector } from "react-redux";
 import { styles } from "./CartIcon.style";
 import { useViewCartApi } from "../../../API/CheckoutAPI";
 import { COLORS } from "../../../constants";
-import { authKeyState } from "../../../redux/slice/app.slice";
+import { authKeyState, cartCountState } from "../../../redux/slice/app.slice";
 
 const CartIcon = () => {
-  const { getCart, viewCart, loading } = useViewCartApi();
+  const { getCart } = useViewCartApi();
   const auth = useSelector(authKeyState);
+  const cartCount = useSelector(cartCountState);
 
   useEffect(() => {
     getCart();
@@ -23,9 +24,7 @@ const CartIcon = () => {
       <View>
         <Ionicons name="cart-outline" size={24} color={COLORS.primary} />
         <View style={styles.cart_counter_container}>
-          <Text style={styles.cart_counter_text}>
-            {loading ? 0 : viewCart.cart_items ? viewCart.cart_items.length : 0}
-          </Text>
+          <Text style={styles.cart_counter_text}>{cartCount}</Text>
         </View>
       </View>
     </TouchableOpacity>
