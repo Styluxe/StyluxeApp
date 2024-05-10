@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "../../../constants";
 import { PaymentMethodCard } from "../../molecules";
+import { CheckoutAddressCard, CheckoutItemCard } from "../../organism";
 
 const Checkout = () => {
   const navigation = useNavigation();
@@ -41,107 +42,17 @@ const Checkout = () => {
               backgroundColor: COLORS.white,
             }}
           >
-            <View
-              style={{
-                borderWidth: 1,
-                borderRadius: 5,
-                borderColor: COLORS.gray2,
-                padding: 5,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                  Delivery to Bryan, 13460
-                </Text>
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    fontFamily: "medium",
-                    fontSize: 14,
-                    maxWidth: "80%",
-                  }}
-                >
-                  Jl. Cempedak Raya No. 1 Jl. Cempedak Raya No. 1 Jl. Cempedak
-                  Raya No. 1
-                </Text>
-              </View>
-
-              <View style={{ justifyContent: "center" }}>
-                <TouchableOpacity>
-                  <View
-                    style={{
-                      paddingVertical: 2,
-                      paddingHorizontal: 5,
-                      borderRadius: 5,
-                      backgroundColor: COLORS.primary,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: COLORS.white,
-                        fontFamily: "medium",
-                        fontSize: 12,
-                      }}
-                    >
-                      Change
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <CheckoutAddressCard />
           </View>
           <View
             style={{
               paddingVertical: 16,
               paddingHorizontal: 10,
-              gap: 20,
-              flexDirection: "row",
               backgroundColor: COLORS.white,
+              gap: 15,
             }}
           >
-            <View style={{ height: 100, width: 100 }}>
-              <Image
-                style={{ height: "100%", width: "100%", resizeMode: "cover" }}
-                source={{
-                  uri: "https://www.mrporter.com/variants/images/3633577411310824/in/w2000_q60.jpg",
-                }}
-              />
-            </View>
-
-            <View>
-              <Text style={{ fontFamily: "bold", fontSize: 16 }}>
-                Baju Hitam
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "medium",
-                  fontSize: 12,
-                  color: COLORS.gray,
-                }}
-              >
-                Size: XL
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "medium",
-                  fontSize: 12,
-                  color: COLORS.gray,
-                }}
-              >
-                x2
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "medium",
-                  fontSize: 12,
-                  color: COLORS.primary,
-                }}
-              >
-                Rp. 40.000
-              </Text>
-            </View>
+            <CheckoutItemCard />
           </View>
 
           <View
@@ -157,16 +68,6 @@ const Checkout = () => {
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>Total</Text>
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
                 Rp. 80.000
-              </Text>
-            </View>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                Service Fee
-              </Text>
-              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                Rp. 2.000
               </Text>
             </View>
             <View
@@ -188,7 +89,7 @@ const Checkout = () => {
                   color: COLORS.primary,
                 }}
               >
-                Rp. 82.000
+                Rp. 80.000
               </Text>
             </View>
           </View>
@@ -198,6 +99,7 @@ const Checkout = () => {
               paddingVertical: 16,
               backgroundColor: COLORS.white,
               flex: 1,
+              gap: 15,
             }}
           >
             <Text style={{ fontFamily: "medium", fontSize: 14 }}>
@@ -205,6 +107,35 @@ const Checkout = () => {
             </Text>
 
             <PaymentMethodCard />
+
+            <TouchableOpacity style={{ alignSelf: "flex-start" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingVertical: 3,
+                  paddingHorizontal: 10,
+                  backgroundColor: COLORS.gray2,
+                  borderRadius: 20,
+                  gap: 11,
+                  alignItems: "center",
+                }}
+              >
+                <View>
+                  <Text style={{ fontFamily: "bold", fontSize: 10 }}>
+                    Use Styluxe Point
+                  </Text>
+                  <Text style={{ fontFamily: "semibold", fontSize: 8 }}>
+                    25.000 points
+                  </Text>
+                </View>
+
+                <Ionicons
+                  name="radio-button-off-outline"
+                  size={16}
+                  color="black"
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
@@ -232,6 +163,15 @@ const Checkout = () => {
           </Text>
           <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
             Rp 82.000
+          </Text>
+          <Text
+            style={{
+              fontFamily: "medium",
+              fontSize: 10,
+              color: "green",
+            }}
+          >
+            you saved 25.000 from using styluxe point!
           </Text>
         </View>
 
