@@ -3,7 +3,13 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 import { COLORS } from "../../../../constants";
 
-const CheckoutAddressCard = () => {
+const CheckoutAddressCard = ({
+  address_name = "address name",
+  user_name = "user name",
+  address = "address",
+  phone = "phone",
+  onPress = () => {},
+}) => {
   return (
     <View
       style={{
@@ -16,8 +22,14 @@ const CheckoutAddressCard = () => {
       }}
     >
       <View style={{ flex: 1 }}>
+        <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
+          {address_name}
+        </Text>
         <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-          Delivery to Bryan, 13460
+          <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+            {user_name}
+          </Text>
+          , {phone}
         </Text>
         <Text
           numberOfLines={1}
@@ -27,13 +39,12 @@ const CheckoutAddressCard = () => {
             maxWidth: "80%",
           }}
         >
-          Jl. Cempedak Raya No. 1 Jl. Cempedak Raya No. 1 Jl. Cempedak Raya No.
-          1
+          {address}
         </Text>
       </View>
 
       <View style={{ justifyContent: "center" }}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPress}>
           <View
             style={{
               paddingVertical: 2,

@@ -25,6 +25,8 @@ import {
   MyProfile,
   MyAddress,
   MyActivity,
+  OrderDetails,
+  PaymentDetails,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -145,6 +147,18 @@ export default function App() {
             <Stack.Screen
               name="Search"
               component={Search}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="OrderDetails"
+              component={OrderDetails}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="PaymentDetails"
+              component={PaymentDetails}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

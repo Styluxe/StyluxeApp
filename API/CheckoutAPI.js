@@ -4,12 +4,11 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { API_URL } from "./constant";
-import { setCartCount } from "../redux/slice/app.slice";
+import { setCartCount, setCartData } from "../redux/slice/app.slice";
 
 const useViewCartApi = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [viewCart, setViewCart] = useState({});
   const dispatch = useDispatch();
 
   const getCart = async () => {
@@ -33,7 +32,7 @@ const useViewCartApi = () => {
 
       console.log("fetch cart");
 
-      setViewCart(data);
+      dispatch(setCartData(data));
       dispatch(setCartCount(data?.cart_items?.length || 0));
 
       setLoading(false);
@@ -43,7 +42,7 @@ const useViewCartApi = () => {
     }
   };
 
-  return { viewCart, loading, error, getCart };
+  return { loading, error, getCart };
 };
 
 const useAddToCartApi = () => {
@@ -137,4 +136,59 @@ const useRemoveFromCartApi = () => {
   return { code, loading, error, removeFromCart };
 };
 
-export { useViewCartApi, useAddToCartApi, useRemoveFromCartApi };
+const useUpdateQuantityApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+  const { getCart } = useViewCartApi();
+
+  const updateQuantity = async (cartItemId, quantity) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+
+      console.log("cart", cartItemId);
+      console.log("quantity", quantity);
+
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/order/update-quantity`,
+        {
+          cartItemId,
+          quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          // eslint-disable-next-line prettier/prettier
+        }
+      );
+
+      const { code } = response?.data;
+
+      getCart();
+
+      setCode(code);
+
+      console.log("cart updated");
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+    }
+  };
+
+  return { code, loading, error, updateQuantity };
+};
+
+export {
+  useViewCartApi,
+  useAddToCartApi,
+  useRemoveFromCartApi,
+  useUpdateQuantityApi,
+};

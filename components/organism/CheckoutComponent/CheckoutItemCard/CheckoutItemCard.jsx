@@ -3,7 +3,13 @@ import { View, Text, Image } from "react-native";
 
 import { COLORS } from "../../../../constants";
 
-const CheckoutItemCard = () => {
+const CheckoutItemCard = ({
+  image,
+  name = "Nama Produk",
+  size = "XL",
+  quantity = 2,
+  price = 40000,
+}) => {
   return (
     <View
       style={{
@@ -13,15 +19,19 @@ const CheckoutItemCard = () => {
     >
       <View style={{ height: 100, width: 100 }}>
         <Image
-          style={{ height: "100%", width: "100%", resizeMode: "cover" }}
-          source={{
-            uri: "https://www.mrporter.com/variants/images/3633577411310824/in/w2000_q60.jpg",
-          }}
+          style={{ height: "100%", width: "100%", resizeMode: "contain" }}
+          source={
+            image
+              ? {
+                  uri: image,
+                }
+              : require("../../../../assets/content/empty_product.png")
+          }
         />
       </View>
 
       <View>
-        <Text style={{ fontFamily: "bold", fontSize: 16 }}>Baju Hitam</Text>
+        <Text style={{ fontFamily: "bold", fontSize: 16 }}>{name}</Text>
         <Text
           style={{
             fontFamily: "medium",
@@ -29,7 +39,7 @@ const CheckoutItemCard = () => {
             color: COLORS.gray,
           }}
         >
-          Size: XL
+          Size: {size}
         </Text>
         <Text
           style={{
@@ -38,7 +48,7 @@ const CheckoutItemCard = () => {
             color: COLORS.gray,
           }}
         >
-          x2
+          x{quantity}
         </Text>
         <Text
           style={{
@@ -47,7 +57,7 @@ const CheckoutItemCard = () => {
             color: COLORS.primary,
           }}
         >
-          Rp. 40.000
+          Rp. {parseFloat(price).toLocaleString("id-ID")}
         </Text>
       </View>
     </View>

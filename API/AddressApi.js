@@ -17,7 +17,7 @@ const useAddressApi = () => {
         setLoading(false);
       }
 
-      const response = await axios.get(`${API_URL}/address`, {
+      const response = await axios.get(`${API_URL}/user/address`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -27,6 +27,7 @@ const useAddressApi = () => {
       console.log("fetch address");
       setLoading(false);
       setAddress(data);
+      console.log("alamat", data);
       return data;
     } catch (error) {
       setError(error);

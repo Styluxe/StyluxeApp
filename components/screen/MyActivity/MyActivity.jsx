@@ -1,6 +1,6 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "../../../constants";
 import { ActivityFilterMenu, ActivityHistoryCard } from "../../molecules";
+import { useGetOrderApi } from "../../../API/OrderAPI";
 
 const MyActivity = () => {
   const navigation = useNavigation();
@@ -23,6 +24,12 @@ const MyActivity = () => {
   ];
   const [selectedFilter, setSelectedFilter] = useState(filterItems[0]);
   const filterRef = useRef(null);
+
+  const { error, loading, getAllOrder, orderData } = useGetOrderApi();
+
+  useEffect(() => {
+    getAllOrder();
+  }, []);
 
   const handlePressOutsideFilter = () => {
     setShowFilter(false);
@@ -76,13 +83,13 @@ const MyActivity = () => {
             </TouchableOpacity>
           </View>
           <FlatList
-            data={[1]}
+            data={orderData}
             contentContainerStyle={{
               flex: 1,
               paddingVertical: 7,
               paddingHorizontal: 10,
             }}
-            renderItem={() => <ActivityHistoryCard />}
+            renderItem={({ item }) => <ActivityHistoryCard item={item} />}
           />
 
           {showFilter && (

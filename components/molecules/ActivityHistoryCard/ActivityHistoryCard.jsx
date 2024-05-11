@@ -1,12 +1,21 @@
+import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 
 import { COLORS, SHADOWS } from "../../../constants";
-import { Ionicons } from "@expo/vector-icons";
 
-const ActivityHistoryCard = () => {
+const ActivityHistoryCard = ({ item }) => {
+  const navigation = useNavigation();
+
+  const product_image = item.order_items[0].product.images[0];
+
   return (
-    <View
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("OrderDetails", { order_id: item.order_id })
+      }
+      activeOpacity={0.8}
       style={{
         padding: 8,
         gap: 10,
@@ -22,30 +31,48 @@ const ActivityHistoryCard = () => {
             height: 74,
             resizeMode: "cover",
           }}
-          source={require("../../../assets/content/empty_product.png")}
+          source={
+            product_image
+              ? { uri: product_image.image_url }
+              : require("../../../assets/content/empty_product.png")
+          }
         />
         <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontFamily: "semibold",
-              fontSize: 14,
-              alignSelf: "flex-end",
-              marginBottom: 5,
-              color: COLORS.primary,
-            }}
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            12 April 2022
-          </Text>
+            <Text
+              style={{
+                fontFamily: "semibold",
+                fontSize: 14,
+                color:
+                  item.order_status === "pending" ? COLORS.red : COLORS.black,
+              }}
+            >
+              {item.order_status}
+            </Text>
+            <Text
+              style={{
+                fontFamily: "semibold",
+                fontSize: 14,
+                alignSelf: "flex-end",
+                marginBottom: 5,
+                color: COLORS.primary,
+              }}
+            >
+              {moment(item.created_at).format("DD MMM YYYY")}
+            </Text>
+          </View>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-              Baju biru Bagus
+              {item.order_items[0].product.product_name}
             </Text>
             <Text
               style={{ fontFamily: "medium", fontSize: 14, color: COLORS.gray }}
             >
-              x2
+              x{item.order_items[0].quantity}
             </Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
@@ -56,7 +83,11 @@ const ActivityHistoryCard = () => {
                 color: COLORS.black,
               }}
             >
-              Rp. 100.000
+              Rp.{" "}
+              {parseFloat(
+                // eslint-disable-next-line prettier/prettier
+                item.order_items[0].product.product_price
+              ).toLocaleString("id-ID")}
             </Text>
           </View>
           <View style={{ alignSelf: "flex-end", flexDirection: "row", gap: 5 }}>
@@ -65,7 +96,7 @@ const ActivityHistoryCard = () => {
             >
               Order's Total:
             </Text>
-            <Text>Rp. 200.000</Text>
+            <Text>Rp. {parseFloat(item.total).toLocaleString("id-ID")}</Text>
           </View>
         </View>
       </View>
@@ -77,10 +108,10 @@ const ActivityHistoryCard = () => {
             color: COLORS.darkGray,
           }}
         >
-          Show all Products
+          Show Detail Products
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

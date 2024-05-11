@@ -1,16 +1,24 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Button, ButtonText } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "../../../constants";
 import { PaymentMethodCard } from "../../molecules";
 import { CheckoutAddressCard, CheckoutItemCard } from "../../organism";
+import { useGetPaymentSummary } from "../../../API/OrderAPI";
 
 const Checkout = () => {
   const navigation = useNavigation();
+
+  const { getPaymentSummary, summaryData } = useGetPaymentSummary();
+
+  useEffect(() => {
+    getPaymentSummary();
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -42,7 +50,13 @@ const Checkout = () => {
               backgroundColor: COLORS.white,
             }}
           >
-            <CheckoutAddressCard />
+            <CheckoutAddressCard
+              address_name={summaryData.address?.name}
+              user_name={summaryData.address?.receiver_name}
+              address={summaryData.address?.address}
+              phone={summaryData.address?.mobile}
+              onPress={() => navigation.navigate("MyAddress")}
+            />
           </View>
           <View
             style={{
@@ -52,7 +66,16 @@ const Checkout = () => {
               gap: 15,
             }}
           >
-            <CheckoutItemCard />
+            {summaryData.cartItems?.map((item) => (
+              <CheckoutItemCard
+                key={item.cart_item_id}
+                image={item.product.images[0]?.image_url}
+                name={item.product.product_name}
+                price={item.product.product_price}
+                quantity={item.quantity}
+                size={item.size}
+              />
+            ))}
           </View>
 
           <View
@@ -67,7 +90,8 @@ const Checkout = () => {
             >
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>Total</Text>
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                Rp. 80.000
+                Rp.{" "}
+                {parseInt(summaryData.total_price, 10).toLocaleString("id-ID")}
               </Text>
             </View>
             <View
@@ -89,7 +113,8 @@ const Checkout = () => {
                   color: COLORS.primary,
                 }}
               >
-                Rp. 80.000
+                Rp.{" "}
+                {parseInt(summaryData.total_price, 10).toLocaleString("id-ID")}
               </Text>
             </View>
           </View>
@@ -162,7 +187,7 @@ const Checkout = () => {
             Your Total
           </Text>
           <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-            Rp 82.000
+            Rp {parseInt(summaryData.total_price, 10).toLocaleString("id-ID")}
           </Text>
           <Text
             style={{

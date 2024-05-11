@@ -16,3 +16,5 @@ export * from "./Checkout";
 export * from "./MyProfile";
 export * from "./MyAddress";
 export * from "./MyActivity";
+export * from "./OrderDetails";
+export * from "./PaymentDetails";
