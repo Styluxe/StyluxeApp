@@ -15,3 +15,4 @@ export * from "./ChatRoom";
 export * from "./Checkout";
 export * from "./MyProfile";
 export * from "./MyAddress";
+export * from "./MyActivity";

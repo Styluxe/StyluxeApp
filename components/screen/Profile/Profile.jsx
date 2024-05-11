@@ -125,6 +125,7 @@ const Profile = () => {
           hasIcon
           iconName="clipboard-outline"
           text="My Activity"
+          onPress={() => navigation.navigate("MyActivity")}
         />
         <SelectionList
           hasIcon

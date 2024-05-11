@@ -24,6 +24,7 @@ import {
   Checkout,
   MyProfile,
   MyAddress,
+  MyActivity,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -132,6 +133,12 @@ export default function App() {
             <Stack.Screen
               name="MyAddress"
               component={MyAddress}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="MyActivity"
+              component={MyActivity}
               options={{ headerShown: false }}
             />
 
