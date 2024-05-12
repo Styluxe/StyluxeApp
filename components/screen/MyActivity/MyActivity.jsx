@@ -1,6 +1,6 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useState, useRef, useEffect } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useGetOrderApi } from "../../../API/OrderAPI";
 import { COLORS } from "../../../constants";
 import { ActivityFilterMenu, ActivityHistoryCard } from "../../molecules";
-import { useGetOrderApi } from "../../../API/OrderAPI";
 
 const MyActivity = () => {
   const navigation = useNavigation();
@@ -25,11 +25,13 @@ const MyActivity = () => {
   const [selectedFilter, setSelectedFilter] = useState(filterItems[0]);
   const filterRef = useRef(null);
 
-  const { error, loading, getAllOrder, orderData } = useGetOrderApi();
+  const { getAllOrder, orderData } = useGetOrderApi();
 
-  useEffect(() => {
-    getAllOrder();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getAllOrder();
+    }, []),
+  );
 
   const handlePressOutsideFilter = () => {
     setShowFilter(false);
@@ -54,7 +56,7 @@ const MyActivity = () => {
                 name="arrow-back"
                 size={24}
                 color={COLORS.primary}
-                onPress={() => navigation.goBack()}
+                onPress={() => navigation.navigate("Profile")}
               />
               <Text style={{ fontFamily: "medium", fontSize: 16 }}>
                 Activity History
@@ -85,9 +87,9 @@ const MyActivity = () => {
           <FlatList
             data={orderData}
             contentContainerStyle={{
-              flex: 1,
               paddingVertical: 7,
               paddingHorizontal: 10,
+              gap: 10,
             }}
             renderItem={({ item }) => <ActivityHistoryCard item={item} />}
           />

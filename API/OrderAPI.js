@@ -111,4 +111,94 @@ const useGetPaymentSummary = () => {
   return { error, loading, getPaymentSummary, summaryData };
 };
 
-export { useGetOrderApi, useGetOrderById, useGetPaymentSummary };
+const useCreateOrder = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [responseData, setResponseData] = useState(null);
+
+  const createOrder = async (payment_provider, address_id) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.post(
+        `${API_URL}/order/create-order`,
+        { payment_provider, address_id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { data } = response?.data;
+
+      console.log("create order");
+      setResponseData(data);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, createOrder, responseData };
+};
+
+const useUpdateStatus = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [responseData, setResponseData] = useState(null);
+  const [code, setCode] = useState(null);
+
+  const updateStatus = async (order_id, payment_status, order_status) => {
+    setLoading(true);
+
+    console.log("update status", order_id, payment_status, order_status);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/order/order-status/${order_id}`,
+        { payment_status, order_status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { data, code } = response?.data;
+
+      console.log("update status");
+      setResponseData(data);
+      setLoading(false);
+      setCode(code);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, updateStatus, responseData, code };
+};
+
+export {
+  useGetOrderApi,
+  useGetOrderById,
+  useGetPaymentSummary,
+  useCreateOrder,
+  useUpdateStatus,
+};

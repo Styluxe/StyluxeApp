@@ -57,7 +57,7 @@ const useProfileApi = () => {
     last_name,
     email,
     mobile,
-    gender
+    gender,
   ) => {
     setLoading(true);
     try {
@@ -81,7 +81,7 @@ const useProfileApi = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const { data, code } = response;
@@ -129,7 +129,7 @@ const useProfilePictureApi = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.data.code === 200) {
@@ -157,7 +157,7 @@ const useProfilePictureApi = () => {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const uploadData = await uploadResponse.json();
@@ -167,4 +167,36 @@ const useProfilePictureApi = () => {
   return { error, loading, updateProfileImage };
 };
 
-export { useProfilePictureApi, useProfileApi, useGetProfileApi };
+const useRegisterApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const register = async (loginData) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_URL}/auth/register`, loginData);
+      const { code } = response.data;
+      console.log("Register successful");
+
+      if (code === 200) {
+        console.log("Register successful");
+        setCode(code);
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.error("Error registering", error);
+    }
+  };
+
+  return { register, loading, error, code };
+};
+
+export {
+  useProfilePictureApi,
+  useProfileApi,
+  useGetProfileApi,
+  useRegisterApi,
+};

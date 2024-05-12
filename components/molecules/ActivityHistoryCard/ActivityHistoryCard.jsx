@@ -10,6 +10,38 @@ const ActivityHistoryCard = ({ item }) => {
 
   const product_image = item.order_items[0].product.images[0];
 
+  const statusSwitch = (status) => {
+    switch (status) {
+      case "pending":
+        return {
+          color: COLORS.red,
+          message: "Waiting for Payment",
+        };
+      case "waiting for confirmation":
+        return {
+          color: COLORS.primary,
+          message: "Waiting for Confirmation",
+        };
+      case "processing":
+        return {
+          color: COLORS.primary,
+          message: "Processing",
+        };
+      case "shipped":
+        return {
+          color: COLORS.primary,
+          message: "Shipped",
+        };
+      case "delivered":
+        return {
+          color: COLORS.green,
+          message: "Delivered",
+        };
+      default:
+        return status;
+    }
+  };
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -45,11 +77,10 @@ const ActivityHistoryCard = ({ item }) => {
               style={{
                 fontFamily: "semibold",
                 fontSize: 14,
-                color:
-                  item.order_status === "pending" ? COLORS.red : COLORS.black,
+                color: statusSwitch(item.order_status).color || COLORS.primary,
               }}
             >
-              {item.order_status}
+              {statusSwitch(item.order_status).message}
             </Text>
             <Text
               style={{
@@ -86,7 +117,7 @@ const ActivityHistoryCard = ({ item }) => {
               Rp.{" "}
               {parseFloat(
                 // eslint-disable-next-line prettier/prettier
-                item.order_items[0].product.product_price
+                item.order_items[0].product.product_price,
               ).toLocaleString("id-ID")}
             </Text>
           </View>
@@ -108,7 +139,7 @@ const ActivityHistoryCard = ({ item }) => {
             color: COLORS.darkGray,
           }}
         >
-          Show Detail Products
+          Show Detail Products ({item?.order_items.length || 0} items)
         </Text>
       </View>
     </TouchableOpacity>

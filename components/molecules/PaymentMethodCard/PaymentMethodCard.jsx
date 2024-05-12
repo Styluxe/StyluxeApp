@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 import { COLORS } from "../../../constants";
 
-const PaymentMethodCard = () => {
+const PaymentMethodCard = ({ setSelectedPayment, selectedPayment }) => {
   const paymentMethod = [
     {
       id: 1,
@@ -63,7 +63,6 @@ const PaymentMethodCard = () => {
   ];
 
   const [selectedMenu, setSelectedMenu] = React.useState(paymentMethod[0]);
-  const [selectedPayment, setSelectedPayment] = React.useState(null);
 
   return (
     <View

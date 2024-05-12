@@ -1,26 +1,73 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button, Divider, HStack, VStack } from "@gluestack-ui/themed";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import moment from "moment";
+import React, { useCallback, useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGetOrderById } from "../../../API/OrderAPI";
 import { COLORS, SHADOWS } from "../../../constants";
 import { CheckoutItemCard } from "../../organism";
-import moment from "moment";
 
 const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { getOrderById, orderData } = useGetOrderById();
 
-  const { order_id } = route.params;
+  const { order_id, routeFrom } = route.params;
 
-  // eslint-disable-next-line no-undef
-  useEffect(() => {
-    getOrderById(order_id);
-  }, [order_id]);
+  useFocusEffect(
+    useCallback(() => {
+      getOrderById(order_id);
+    }, [order_id]),
+  );
+
+  const isPaid = orderData?.payment_details?.payment_status === "paid";
+  const isRouteFromCheckout = routeFrom === "Checkout";
+
+  console.log("route", isRouteFromCheckout);
+
+  const statusSwitch = (status) => {
+    switch (status) {
+      case "pending":
+        return {
+          color: COLORS.red,
+          message: "Waiting for Payment",
+        };
+      case "waiting for confirmation":
+        return {
+          color: COLORS.primary,
+          message: "Waiting for Confirmation",
+        };
+      case "processing":
+        return {
+          color: COLORS.primary,
+          message: "Processing",
+        };
+      case "shipped":
+        return {
+          color: COLORS.primary,
+          message: "Shipped",
+        };
+      case "delivered":
+        return {
+          color: COLORS.green,
+          message: "Delivered",
+        };
+      default:
+        return {
+          color: COLORS.primary,
+          message: status,
+        };
+    }
+  };
+
+  const isCancelBtnVisible = orderData?.order_status === "pending";
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -40,7 +87,11 @@ const OrderDetails = () => {
               name="arrow-back"
               size={24}
               color={COLORS.primary}
-              onPress={() => navigation.goBack()}
+              onPress={() =>
+                isRouteFromCheckout
+                  ? navigation.navigate("MyActivity")
+                  : navigation.goBack()
+              }
             />
             <Text style={{ fontFamily: "bold", fontSize: 16 }}>
               Orders # {orderData.order_number}
@@ -58,19 +109,16 @@ const OrderDetails = () => {
               gap: 10,
             }}
           >
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            <Text
+              style={{
+                fontFamily: "semibold",
+                fontSize: 14,
+                color:
+                  statusSwitch(orderData.order_status)?.color || COLORS.primary,
+              }}
             >
-              <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-                Pending Payment
-              </Text>
-
-              <MaterialCommunityIcons
-                name="clock-alert-outline"
-                size={24}
-                color={COLORS.primary}
-              />
-            </View>
+              {statusSwitch(orderData.order_status)?.message}
+            </Text>
             <Divider bg={COLORS.gray2} />
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -123,15 +171,19 @@ const OrderDetails = () => {
             </View>
             <Button
               size="sm"
-              bg={COLORS.primary}
+              bg={isPaid ? COLORS.green : COLORS.primary}
+              disabled={isPaid}
               onPress={() => {
-                navigation.navigate("PaymentDetails");
+                navigation.navigate("PaymentDetails", {
+                  routeFrom: "OrderDetails",
+                  order_id,
+                });
               }}
             >
               <Text
-                style={{ fontFamily: "medium", fontSize: 14, color: "white" }}
+                style={{ fontFamily: "semibold", fontSize: 14, color: "white" }}
               >
-                Pay Now
+                {isPaid ? "Paid" : "Pay"}
               </Text>
             </Button>
           </View>
@@ -224,13 +276,15 @@ const OrderDetails = () => {
             </HStack>
           </View>
 
-          <Button size="sm" bg="$red900">
-            <Text
-              style={{ fontFamily: "medium", fontSize: 14, color: "white" }}
-            >
-              Cancel Order
-            </Text>
-          </Button>
+          {isCancelBtnVisible && (
+            <Button size="sm" bg="$red900">
+              <Text
+                style={{ fontFamily: "medium", fontSize: 14, color: "white" }}
+              >
+                Cancel Order
+              </Text>
+            </Button>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

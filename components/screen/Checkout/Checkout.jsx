@@ -1,23 +1,41 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Button, ButtonText } from "@gluestack-ui/themed";
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useCreateOrder, useGetPaymentSummary } from "../../../API/OrderAPI";
 import { COLORS } from "../../../constants";
 import { PaymentMethodCard } from "../../molecules";
 import { CheckoutAddressCard, CheckoutItemCard } from "../../organism";
-import { useGetPaymentSummary } from "../../../API/OrderAPI";
 
 const Checkout = () => {
   const navigation = useNavigation();
 
   const { getPaymentSummary, summaryData } = useGetPaymentSummary();
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const { createOrder, loading, responseData } = useCreateOrder();
+
+  useFocusEffect(
+    useCallback(() => {
+      getPaymentSummary();
+    }, []),
+  );
+
+  const handleCheckout = () => {
+    createOrder(selectedPayment, summaryData.address?.address_id);
+  };
 
   useEffect(() => {
-    getPaymentSummary();
-  }, []);
+    if (responseData) {
+      console.log("re", responseData.order_id);
+      navigation.navigate("PaymentDetails", {
+        routeFrom: "Checkout",
+        order_id: responseData.order_id,
+      });
+    }
+  }, [responseData]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -131,7 +149,10 @@ const Checkout = () => {
               Choose your Payment Method
             </Text>
 
-            <PaymentMethodCard />
+            <PaymentMethodCard
+              selectedPayment={selectedPayment}
+              setSelectedPayment={setSelectedPayment}
+            />
 
             <TouchableOpacity style={{ alignSelf: "flex-start" }}>
               <View
@@ -200,7 +221,11 @@ const Checkout = () => {
           </Text>
         </View>
 
-        <Button bgColor={COLORS.primary}>
+        <Button
+          disabled={!selectedPayment}
+          bgColor={!selectedPayment ? COLORS.gray2 : COLORS.primary}
+          onPress={handleCheckout}
+        >
           <ButtonText
             style={{
               color: COLORS.white,

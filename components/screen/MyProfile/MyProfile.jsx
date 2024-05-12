@@ -56,7 +56,7 @@ const MyProfile = () => {
       profileData.email,
       profileData.mobile,
       // eslint-disable-next-line prettier/prettier
-      profileData.gender
+      profileData.gender,
     );
   };
 
@@ -102,7 +102,7 @@ const MyProfile = () => {
           name="arrow-back"
           size={24}
           onPress={() => {
-            navigation.goBack();
+            navigation.navigate("Home");
           }}
         />
         <Text style={{ fontFamily: "medium", fontSize: 18 }}>My Profile</Text>

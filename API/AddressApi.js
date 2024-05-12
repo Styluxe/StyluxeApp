@@ -27,7 +27,6 @@ const useAddressApi = () => {
       console.log("fetch address");
       setLoading(false);
       setAddress(data);
-      console.log("alamat", data);
       return data;
     } catch (error) {
       setError(error);

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -66,17 +66,16 @@ const Home = () => {
       },
     },
   ];
+  useFocusEffect(
+    useCallback(() => {
+      checkExpiryDate();
 
-  useEffect(() => {
-    checkExpiryDate();
-
-    if (auth) {
-      getProfile();
-    }
-    // if (!auth) {
-    //   dispatch(setLoginModalOpen(true));
-    // }
-  }, [auth]);
+      if (auth) {
+        getProfile();
+      }
+      // eslint-disable-next-line prettier/prettier
+    }, [auth])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

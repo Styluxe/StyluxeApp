@@ -4,9 +4,13 @@ import moment from "moment";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { useViewCartApi } from "./CheckoutAPI";
+import { useGetProfileApi } from "./ProfileApi";
+import { API_URL } from "./constant";
 import {
   setAuthKey,
   setCartCount,
+  setCartData,
   setUserData,
   userDataState,
 } from "../redux/slice/app.slice";
@@ -18,11 +22,13 @@ const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState(null);
   const [message, setMessage] = useState(null);
+  const { getProfile } = useGetProfileApi();
+  const { getCart } = useViewCartApi();
 
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const response = await axios.post("http://10.0.2.2:8080/auth/login", {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         email,
         password,
       });
@@ -34,6 +40,8 @@ const useAuth = () => {
       dispatch(setAuthKey(token));
       setError(code);
       setMessage(message);
+      getProfile();
+      getCart();
       console.log("login");
     } catch (error) {
       setError(error);
@@ -48,6 +56,7 @@ const useAuth = () => {
     dispatch(setUserData(null));
     dispatch(setAuthKey(null));
     dispatch(setCartCount(0));
+    dispatch(setCartData({}));
     console.log("logout");
   };
 

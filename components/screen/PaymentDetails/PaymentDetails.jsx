@@ -1,19 +1,52 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Divider } from "@gluestack-ui/themed";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import { Button } from "@gluestack-ui/themed";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import moment from "moment";
+import React, { useCallback, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useGetOrderById, useUpdateStatus } from "../../../API/OrderAPI";
 import { COLORS, SHADOWS } from "../../../constants";
 
 const PaymentDetails = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const { routeFrom, order_id } = route.params || {};
+
+  const { getOrderById, orderData } = useGetOrderById();
+  const { updateStatus, code, loading } = useUpdateStatus();
+
+  useFocusEffect(
+    useCallback(() => {
+      getOrderById(order_id);
+    }, [order_id]),
+  );
+
+  useEffect(() => {
+    if (code === 200) {
+      navigation.navigate("MyActivity");
+    }
+  }, [code]);
+
+  const handlePayment = () => {
+    updateStatus(order_id, "paid", "waiting for confirmation");
+  };
+
+  const isFromCheckout = routeFrom === "Checkout";
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ alignItems: "flex-start", padding: 10 }}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            isFromCheckout ? navigation.navigate("Home") : navigation.goBack()
+          }
           style={{
             alignItems: "flex-start",
             ...SHADOWS.medium,
@@ -34,7 +67,7 @@ const PaymentDetails = () => {
         }}
       >
         <Text style={{ fontFamily: "medium", fontSize: 20 }}>
-          BCA Transfer Payment
+          {orderData?.payment_details?.provider} Payment
         </Text>
         <Text
           style={{ fontFamily: "regular", fontSize: 14, textAlign: "center" }}
@@ -43,11 +76,11 @@ const PaymentDetails = () => {
           {"\n"}
           IMPORTANT! Make payment before{" "}
           <Text style={{ color: COLORS.primary, fontFamily: "semibold" }}>
-            08 March 2024
+            {moment(orderData?.payment_details?.payment_deadline).format("ll")}
           </Text>{" "}
           at{" "}
           <Text style={{ color: COLORS.primary, fontFamily: "semibold" }}>
-            17:17
+            {moment(orderData?.payment_details?.payment_deadline).format("LT")}
           </Text>{" "}
           or your order will be automatically canceled by the system
         </Text>
@@ -77,7 +110,7 @@ const PaymentDetails = () => {
               fontSize: 14,
             }}
           >
-            STLX1323132121
+            {orderData?.order_number}
           </Text>
         </View>
         <View
@@ -104,7 +137,7 @@ const PaymentDetails = () => {
               fontSize: 14,
             }}
           >
-            BCA Transfer
+            {orderData.payment_details?.provider}
           </Text>
         </View>
         <View
@@ -170,7 +203,11 @@ const PaymentDetails = () => {
                 fontSize: 14,
               }}
             >
-              Rp 80.123
+              Rp{" "}
+              {parseInt(
+                orderData.payment_details?.transfer_amount,
+                10,
+              ).toLocaleString("id-ID")}
             </Text>
 
             <Text
@@ -228,7 +265,7 @@ const PaymentDetails = () => {
           button below
         </Text>
 
-        <Button bg={COLORS.primary}>
+        <Button bg={COLORS.primary} onPress={handlePayment}>
           <Text
             style={{
               fontFamily: "medium",
@@ -236,7 +273,7 @@ const PaymentDetails = () => {
               color: COLORS.white,
             }}
           >
-            I Have Paid
+            {loading ? "Loading..." : "I Have Paid"}
           </Text>
         </Button>
       </View>

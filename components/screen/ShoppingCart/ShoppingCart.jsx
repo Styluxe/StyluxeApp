@@ -45,7 +45,7 @@ const ShoppingCart = () => {
         console.error("Error removing item from cart:", error);
       }
     },
-    [removeFromCart, getCart]
+    [removeFromCart, getCart],
   );
 
   const calculateTotalPrice = () => {
@@ -54,12 +54,12 @@ const ShoppingCart = () => {
       .reduce(
         (total, item) =>
           total + parseFloat(item.product.product_price) * item.quantity,
-        0
+        0,
       )
       .toLocaleString("id-ID");
   };
 
-  const emptyCart = cartData?.cart_items?.length === 0;
+  const emptyCart = cartData?.cart_items?.length === 0 || !cartData;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -83,6 +83,15 @@ const ShoppingCart = () => {
           </Text>
         </View>
       </View>
+      {emptyCart && (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontFamily: "medium", fontSize: 20 }}>
+            Cart Is Empty
+          </Text>
+        </View>
+      )}
       <FlatList
         contentContainerStyle={{
           flex: 1,
@@ -96,7 +105,7 @@ const ShoppingCart = () => {
             cartId={item?.cart_item_id}
             title={item.product?.product_name}
             price={parseFloat(item.product.product_price).toLocaleString(
-              "id-ID"
+              "id-ID",
             )}
             size={item?.size}
             quantity={item?.quantity}

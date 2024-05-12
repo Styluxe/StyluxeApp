@@ -10,20 +10,80 @@ import {
   View,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 
 import { COLORS } from "../../../constants";
 import { setLoginModalOpen } from "../../../redux/slice/app.slice";
+import { useRegisterApi } from "../../../API/ProfileApi";
 
 const Register = () => {
-  const [showPassword, setShowPassword] = useState(true);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+  const { register, loading, code } = useRegisterApi();
+  const [registerData, setRegisterData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    mobile: "",
+    password: "",
+    repeat_password: "",
+  });
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  console.log("code", code);
+
+  useEffect(() => {
+    if (code === 201) {
+      dispatch(setLoginModalOpen(true));
+      navigation.navigate("Home");
+    } else if (code === 400) {
+      console.log("error");
+      alert("Error registering, please try again");
+    }
+  }, [code]);
+
+  const validatePassword = () => {
+    if (registerData.password !== registerData.repeat_password) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleRegister = () => {
+    if (validatePassword() && isFormValid()) {
+      setRegisterData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        mobile: "",
+        password: "",
+        repeat_password: "",
+      });
+      register(registerData);
+    } else {
+      console.log("error");
+      alert("Error validating, please Input again");
+    }
+  };
+
+  const isFormValid = () => {
+    if (
+      registerData.first_name === "" ||
+      registerData.last_name === "" ||
+      registerData.email === "" ||
+      registerData.mobile === "" ||
+      registerData.password === "" ||
+      registerData.repeat_password === ""
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -68,7 +128,13 @@ const Register = () => {
                 </Text>
               </FormControlLabel>
               <Input borderRadius={10}>
-                <InputField placeholder="Enter your first name" />
+                <InputField
+                  value={registerData.first_name}
+                  onChangeText={(e) =>
+                    setRegisterData({ ...registerData, first_name: e })
+                  }
+                  placeholder="Enter your first name"
+                />
               </Input>
             </FormControl>
             <FormControl>
@@ -78,7 +144,13 @@ const Register = () => {
                 </Text>
               </FormControlLabel>
               <Input borderRadius={10}>
-                <InputField placeholder="Enter your Last name" />
+                <InputField
+                  value={registerData.last_name}
+                  onChangeText={(e) =>
+                    setRegisterData({ ...registerData, last_name: e })
+                  }
+                  placeholder="Enter your Last name"
+                />
               </Input>
             </FormControl>
             <FormControl>
@@ -91,6 +163,10 @@ const Register = () => {
                 <InputField
                   keyboardType="email-address"
                   placeholder="Enter your email"
+                  value={registerData.email}
+                  onChangeText={(e) =>
+                    setRegisterData({ ...registerData, email: e })
+                  }
                 />
               </Input>
             </FormControl>
@@ -104,6 +180,10 @@ const Register = () => {
                 <InputField
                   keyboardType="number-pad"
                   placeholder="Enter your email"
+                  value={registerData.mobile}
+                  onChangeText={(e) =>
+                    setRegisterData({ ...registerData, mobile: e })
+                  }
                 />
               </Input>
             </FormControl>
@@ -116,7 +196,14 @@ const Register = () => {
                 </Text>
               </FormControlLabel>
               <Input borderRadius={10}>
-                <InputField type="password" placeholder="Enter your password" />
+                <InputField
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={registerData.password}
+                  onChangeText={(e) =>
+                    setRegisterData({ ...registerData, password: e })
+                  }
+                />
                 <InputSlot
                   pr="$3"
                   onPress={() => setShowPassword(!showPassword)}
@@ -136,10 +223,17 @@ const Register = () => {
                 </Text>
               </FormControlLabel>
               <Input borderRadius={10}>
-                <InputField type="password" placeholder="Repeat password" />
+                <InputField
+                  value={registerData.repeat_password}
+                  onChangeText={(e) =>
+                    setRegisterData({ ...registerData, repeat_password: e })
+                  }
+                  type={showRepeatPassword ? "text" : "password"}
+                  placeholder="Repeat password"
+                />
                 <InputSlot
                   pr="$3"
-                  onPress={() => setShowRepeatPassword(!showPassword)}
+                  onPress={() => setShowRepeatPassword(!showRepeatPassword)}
                 >
                   <Ionicons
                     name={
@@ -171,7 +265,11 @@ const Register = () => {
             </View>
           </VStack>
           <View>
-            <Button onPress={() => {}} backgroundColor={COLORS.primary}>
+            <Button
+              onPress={handleRegister}
+              isDisabled={!isFormValid()}
+              backgroundColor={!isFormValid() ? COLORS.gray2 : COLORS.primary}
+            >
               <Text
                 style={{
                   color: COLORS.white,
