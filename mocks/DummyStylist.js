@@ -1,61 +1,66 @@
 export const dummyStylistDetail = {
   id: 1,
   name: "Hanny's Stylist",
-  image_url:
-    "https://media.voguebusiness.com/photos/5d9746ff4f244c00081cd1df/2:3/w_2560%2Cc_limit/stylists-oct-credit-nat-michelle-month-19-article.jpg",
   type: "Wedding Stylist",
   online_status: "Available",
   rating: 5,
   price: "132.000",
   about:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum laudantium ipsummaiores iusto est voluptates consequatur nobis obcaecati quas eaque expedita vitae sequi unde et, tenetur voluptatibus asperiores! Quis, voluptatum!",
+    "Lorem ipsum dolor sitet consectetur adipisicing elit. Lorem ipsum dolor sitet consectetur adipisicing elit. Eum laudantium ipsummaiores iusto est voluptates consequatur nobis obcaecati quas eaque expedita vitae sequi unde et, tenetur voluptatibus asperiores! Quis, voluptatum!",
+  images: [
+    {
+      id: 1,
+      image_url:
+        "https://media.voguebusiness.com/photos/5d9746ff4f244c00081cd1df/2:3/w_2560%2Cc_limit/stylists-oct-credit-nat-michelle-month-19-article.jpg",
+    },
+  ],
   schedule: [
     {
       id: 1,
       day: "Monday",
       times: [
         {
-          time: "10:00 AM",
+          time: "10:00",
           status: "unavailable",
         },
         {
-          time: "11:00 AM",
+          time: "11:00",
           status: "available",
         },
         {
-          time: "12:00 PM",
+          time: "12:00",
           status: "available",
         },
         {
-          time: "13:00 PM",
+          time: "13:00",
           status: "available",
         },
         {
-          time: "14:00 PM",
+          time: "14:00",
           status: "available",
         },
         {
-          time: "15:00 PM",
+          time: "15:00",
           status: "available",
         },
         {
-          time: "16:00 PM",
+          time: "16:00",
           status: "available",
         },
         {
-          time: "17:00 PM",
+          time: "17:00",
           status: "available",
         },
         {
-          time: "18:00 PM",
+          time: "18:00",
           status: "available",
         },
         {
-          time: "19:00 PM",
+          time: "19:00",
           status: "available",
         },
         {
-          time: "20:00 PM",
+          time: "20:00",
           status: "available",
         },
       ],
@@ -65,47 +70,47 @@ export const dummyStylistDetail = {
       day: "Tuesday",
       times: [
         {
-          time: "10:00 AM",
+          time: "10:00",
           status: "unavailable",
         },
         {
-          time: "11:00 AM",
+          time: "11:00",
           status: "available",
         },
         {
-          time: "12:00 PM",
+          time: "12:00",
           status: "available",
         },
         {
-          time: "13:00 PM",
+          time: "13:00",
           status: "available",
         },
         {
-          time: "14:00 PM",
+          time: "14:00",
           status: "available",
         },
         {
-          time: "15:00 PM",
+          time: "15:00",
           status: "available",
         },
         {
-          time: "16:00 PM",
+          time: "16:00",
           status: "available",
         },
         {
-          time: "17:00 PM",
+          time: "17:00",
           status: "available",
         },
         {
-          time: "18:00 PM",
+          time: "18:00",
           status: "available",
         },
         {
-          time: "19:00 PM",
+          time: "19:00",
           status: "available",
         },
         {
-          time: "20:00 PM",
+          time: "20:00",
           status: "available",
         },
       ],
@@ -115,23 +120,23 @@ export const dummyStylistDetail = {
       day: "Wednesday",
       times: [
         {
-          time: "10:00 AM",
+          time: "10:00",
           status: "unavailable",
         },
         {
-          time: "11:00 AM",
+          time: "11:00",
           status: "available",
         },
         {
-          time: "12:00 PM",
+          time: "12:00",
           status: "available",
         },
         {
-          time: "13:00 PM",
+          time: "13:00",
           status: "available",
         },
         {
-          time: "14:00 PM",
+          time: "14:00",
           status: "available",
         },
       ],
@@ -141,15 +146,15 @@ export const dummyStylistDetail = {
       day: "Thursday",
       times: [
         {
-          time: "10:00 AM",
+          time: "10:00",
           status: "unavailable",
         },
         {
-          time: "11:00 AM",
+          time: "11:00",
           status: "available",
         },
         {
-          time: "12:00 PM",
+          time: "12:00",
           status: "available",
         },
       ],
@@ -159,11 +164,11 @@ export const dummyStylistDetail = {
       day: "Friday",
       times: [
         {
-          time: "10:00 AM",
+          time: "10:00",
           status: "unavailable",
         },
         {
-          time: "11:00 AM",
+          time: "11:00",
           status: "available",
         },
       ],
@@ -201,178 +206,51 @@ export const dummyStylistDetail = {
   ],
 };
 
-export const dummyDateList = [
+export const dummyOrder = [
   {
-    id: 1,
-    day: "Monday",
-    times: [
-      {
-        time: "10:00 AM",
-        status: "unavailable",
+    booking_id: 1,
+    booking_number: "STLS3213312",
+    stylist: {
+      user_id: 1,
+      name: "Stylist 1",
+    },
+    customer: {
+      user_id: 1,
+      name: "Customer 1",
+    },
+    status: "Accepted",
+    booking_details: {
+      booking_details_id: 1,
+      booking_id: 1,
+      booking_time: "11:00",
+      booking_date: "2024-05-15",
+      payment_details: {
+        payment_id: 1,
+        payment_type: "BCA Transfer",
       },
-      {
-        time: "11:00 AM",
-        status: "available",
-      },
-      {
-        time: "12:00 PM",
-        status: "available",
-      },
-      {
-        time: "13:00 PM",
-        status: "available",
-      },
-      {
-        time: "14:00 PM",
-        status: "available",
-      },
-      {
-        time: "15:00 PM",
-        status: "available",
-      },
-      {
-        time: "16:00 PM",
-        status: "available",
-      },
-      {
-        time: "17:00 PM",
-        status: "available",
-      },
-      {
-        time: "18:00 PM",
-        status: "available",
-      },
-      {
-        time: "19:00 PM",
-        status: "available",
-      },
-      {
-        time: "20:00 PM",
-        status: "available",
-      },
-    ],
+    },
   },
   {
-    id: 2,
-    day: "Tuesday",
-    times: [
-      {
-        time: "10:00 AM",
-        status: "unavailable",
+    booking_id: 2,
+    booking_number: "STLS3213312",
+    stylist: {
+      user_id: 1,
+      name: "Stylist 1",
+    },
+    customer: {
+      user_id: 2,
+      name: "Customer 2",
+    },
+    status: "Accepted",
+    booking_details: {
+      booking_details_id: 2,
+      booking_id: 2,
+      booking_time: "13:00",
+      booking_date: "2024-05-15",
+      payment_details: {
+        payment_id: 1,
+        payment_type: "BCA Transfer",
       },
-      {
-        time: "11:00 AM",
-        status: "available",
-      },
-      {
-        time: "12:00 PM",
-        status: "available",
-      },
-      {
-        time: "13:00 PM",
-        status: "available",
-      },
-      {
-        time: "14:00 PM",
-        status: "available",
-      },
-      {
-        time: "15:00 PM",
-        status: "available",
-      },
-      {
-        time: "16:00 PM",
-        status: "available",
-      },
-      {
-        time: "17:00 PM",
-        status: "available",
-      },
-      {
-        time: "18:00 PM",
-        status: "available",
-      },
-      {
-        time: "19:00 PM",
-        status: "available",
-      },
-      {
-        time: "20:00 PM",
-        status: "available",
-      },
-    ],
-  },
-  {
-    id: 3,
-    day: "Wednesday",
-    times: [
-      {
-        time: "10:00 AM",
-        status: "unavailable",
-      },
-      {
-        time: "11:00 AM",
-        status: "available",
-      },
-      {
-        time: "12:00 PM",
-        status: "available",
-      },
-      {
-        time: "13:00 PM",
-        status: "available",
-      },
-      {
-        time: "14:00 PM",
-        status: "available",
-      },
-    ],
-  },
-  {
-    id: 4,
-    day: "Thursday",
-    times: [
-      {
-        time: "10:00 AM",
-        status: "unavailable",
-      },
-      {
-        time: "11:00 AM",
-        status: "available",
-      },
-      {
-        time: "12:00 PM",
-        status: "available",
-      },
-    ],
-  },
-  {
-    id: 5,
-    day: "Friday",
-    times: [
-      {
-        time: "10:00 AM",
-        status: "unavailable",
-      },
-      {
-        time: "11:00 AM",
-        status: "available",
-      },
-    ],
-  },
-  {
-    id: 6,
-    day: "Saturday",
-    times: [
-      {
-        time: "Unavailable",
-        status: "unavailable",
-      },
-    ],
-  },
-  {
-    id: 7,
-    day: "Sunday",
-    times: [],
+    },
   },
 ];

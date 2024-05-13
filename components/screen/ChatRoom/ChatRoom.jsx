@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS, SHADOWS } from "../../../constants";
-import { dummyChat, dummyChatData } from "../../../mocks/DummyChat";
+import { dummyChatData } from "../../../mocks/DummyChat";
 import { ChatBox } from "../../molecules";
 
 const ChatRoom = () => {
@@ -34,7 +34,7 @@ const ChatRoom = () => {
 
   const headerData = dummyChatData.users.filter(
     // eslint-disable-next-line prettier/prettier
-    (user) => user.type === "Stylist"
+    (user) => user.type === "Stylist",
   );
   const headerDataObj = headerData[0];
 

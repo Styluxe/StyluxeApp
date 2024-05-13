@@ -7,7 +7,7 @@ import CalendarPicker from "react-native-calendar-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS, SHADOWS } from "../../../constants";
-import { dummyDateList } from "../../../mocks/DummyStylist";
+import { dummyStylistDetail, dummyOrder } from "../../../mocks/DummyStylist";
 import { TimeSelect } from "../../molecules";
 
 const StylistDate = () => {
@@ -16,7 +16,7 @@ const StylistDate = () => {
 
   const day = moment(date).format("dddd");
 
-  const schedule = dummyDateList;
+  const schedule = dummyStylistDetail.schedule;
   const times = schedule.filter((s) => s.day === day)[0].times;
 
   const fullDate = moment(date).format("dddd, DD MMMM YYYY");
@@ -26,6 +26,15 @@ const StylistDate = () => {
     setDate(date);
     setSelectedTime(null);
   };
+
+  //get all the order date and time from dummyOrder
+  const allBookingDate = dummyOrder.map((o) => {
+    return {
+      booking_id: o.booking_id,
+      date: o.booking_details.booking_date,
+      time: o.booking_details.booking_time,
+    };
+  });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -74,6 +83,7 @@ const StylistDate = () => {
               <View style={{ marginBottom: 24 }}>
                 <CalendarPicker
                   onDateChange={handleDateChange}
+                  restrictMonthNavigation
                   previousComponent={
                     <Ionicons
                       name="chevron-back"
@@ -93,6 +103,7 @@ const StylistDate = () => {
                     backgroundColor: COLORS.secondary,
                   }}
                   minDate={new Date()}
+                  maxDate={moment(new Date()).add(7, "days").toDate()}
                 />
               </View>
 
@@ -114,13 +125,23 @@ const StylistDate = () => {
                   data={times}
                   numColumns={3}
                   columnWrapperStyle={{ gap: 10, marginTop: 10 }}
-                  renderItem={({ item }) => (
-                    <TimeSelect
-                      setSelectedTime={setSelectedTime}
-                      data={item}
-                      selectedTime={selectedTime}
-                    />
-                  )}
+                  renderItem={({ item }) => {
+                    const isUnavailable = item?.status === "unavailable";
+                    const isBooked = allBookingDate.some(
+                      (booking) =>
+                        moment(booking.date).isSame(date, "day") &&
+                        booking.time === item.time,
+                    );
+
+                    return (
+                      <TimeSelect
+                        setSelectedTime={setSelectedTime}
+                        data={item}
+                        selectedTime={selectedTime}
+                        disabled={isUnavailable || isBooked}
+                      />
+                    );
+                  }}
                 />
               </View>
             </>

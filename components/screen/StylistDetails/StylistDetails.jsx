@@ -12,9 +12,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { styles } from "./StylistDetail.style";
-import { COLORS } from "../../../constants";
+import { COLORS, SHADOWS } from "../../../constants";
 import { dummyStylistDetail } from "../../../mocks/DummyStylist";
 import { ReviewBox, StarRating } from "../../molecules";
+import Swiper from "react-native-swiper";
 
 const StylistDetails = () => {
   const navigation = useNavigation();
@@ -40,12 +41,55 @@ const StylistDetails = () => {
           <View style={styles.detail_body_container}>
             <View style={styles.card_container}>
               <View style={styles.image_container}>
-                <Image
-                  style={styles.image}
-                  source={{
-                    uri: "https://media.voguebusiness.com/photos/5d9746ff4f244c00081cd1df/2:3/w_2560%2Cc_limit/stylists-oct-credit-nat-michelle-month-19-article.jpg",
-                  }}
-                />
+                <Swiper
+                  showsButtons={dummyStylistDetail.images.length > 1}
+                  activeDotColor={COLORS.primary}
+                  nextButton={
+                    <View
+                      style={{
+                        padding: 5,
+                        backgroundColor: COLORS.white,
+                        borderRadius: 100,
+                        ...SHADOWS.medium,
+                      }}
+                    >
+                      <AntDesign
+                        name="arrowright"
+                        size={24}
+                        color={COLORS.primary}
+                      />
+                    </View>
+                  }
+                  prevButton={
+                    <View
+                      style={{
+                        padding: 5,
+                        backgroundColor: COLORS.white,
+                        borderRadius: 100,
+                        ...SHADOWS.medium,
+                      }}
+                    >
+                      <AntDesign
+                        name="arrowleft"
+                        size={24}
+                        color={COLORS.primary}
+                      />
+                    </View>
+                  }
+                >
+                  {dummyStylistDetail.images.map((item, index) => (
+                    <View key={index} style={{ flex: 1 }}>
+                      <Image
+                        source={{ uri: item.image_url }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          resizeMode: "cover",
+                        }}
+                      />
+                    </View>
+                  ))}
+                </Swiper>
               </View>
 
               <View style={styles.info_container}>
