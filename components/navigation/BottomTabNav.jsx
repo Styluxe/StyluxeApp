@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import DrawerNavigationDiscussion from "./DrawerNavigationDiscussion";
 import { COLORS } from "../../constants";
 import { userDataState } from "../../redux/slice/app.slice";
-import { Category, Home, Stylist } from "../screen";
+import { Category, Home, Stylist, StylistBookings } from "../screen";
 
 const Tab = createBottomTabNavigator();
 
@@ -111,34 +111,66 @@ const BottomTabNav = () => {
           }}
         />
       )}
-      <Tab.Screen
-        name="Stylist"
-        component={Stylist}
-        options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Ionicons
-                name={focused ? "shirt" : "shirt-outline"}
-                size={20}
-                color={focused ? COLORS.primary : COLORS.gray2}
-              />
-            );
-          },
-          tabBarLabel: ({ focused }) => {
-            return (
-              <Text
-                style={{
-                  fontFamily: "bold",
-                  color: focused ? COLORS.primary : COLORS.gray2,
-                  fontSize: 12,
-                }}
-              >
-                Stylist
-              </Text>
-            );
-          },
-        }}
-      />
+
+      {isStylist ? (
+        <Tab.Screen
+          name="Bookings"
+          component={StylistBookings}
+          options={{
+            tabBarIcon: ({ focused }) => {
+              return (
+                <Ionicons
+                  name={focused ? "calendar" : "calendar-outline"}
+                  size={20}
+                  color={focused ? COLORS.primary : COLORS.gray2}
+                />
+              );
+            },
+            tabBarLabel: ({ focused }) => {
+              return (
+                <Text
+                  style={{
+                    fontFamily: "bold",
+                    color: focused ? COLORS.primary : COLORS.gray2,
+                    fontSize: 12,
+                  }}
+                >
+                  Bookings
+                </Text>
+              );
+            },
+          }}
+        />
+      ) : (
+        <Tab.Screen
+          name="Stylist"
+          component={Stylist}
+          options={{
+            tabBarIcon: ({ focused }) => {
+              return (
+                <Ionicons
+                  name={focused ? "shirt" : "shirt-outline"}
+                  size={20}
+                  color={focused ? COLORS.primary : COLORS.gray2}
+                />
+              );
+            },
+            tabBarLabel: ({ focused }) => {
+              return (
+                <Text
+                  style={{
+                    fontFamily: "bold",
+                    color: focused ? COLORS.primary : COLORS.gray2,
+                    fontSize: 12,
+                  }}
+                >
+                  Stylist
+                </Text>
+              );
+            },
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 };

@@ -1,0 +1,96 @@
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import moment from "moment";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+
+import { COLORS } from "../../../constants";
+
+const EditableTimeSelect = ({ time, isAvailable }) => {
+  const [editTime, setEditTime] = useState(
+    new Date(`2024-05-14T${time}:00+07:00`),
+  );
+
+  const formatTime = () => {
+    return moment(editTime).format("HH:mm");
+  };
+
+  const formatTimeWithAMPM = (time) => {
+    // Convert time to 12-hour format with AM/PM
+    const [hours, minutes] = time.split(":");
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
+  const onChange = (event, selectedTime) => {
+    setEditTime(selectedTime);
+  };
+
+  //pass this to db
+  // console.log("format", formatTime());
+
+  const showTimePicker = () => {
+    DateTimePickerAndroid.open({
+      value: editTime,
+      mode: "time",
+      is24Hour: true,
+      display: "spinner",
+      onChange,
+    });
+  };
+  return (
+    <TouchableOpacity
+      style={{
+        width: "30%",
+      }}
+      onPress={() => {}}
+    >
+      <View
+        style={{
+          paddingHorizontal: 5,
+          paddingVertical: 10,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: COLORS.secondary,
+          alignItems: "center",
+          backgroundColor: COLORS.white,
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        <TouchableOpacity
+          onPress={showTimePicker}
+          style={{
+            padding: 5,
+            borderRadius: 100,
+            backgroundColor: COLORS.primary,
+            position: "absolute",
+            right: 0,
+            bottom: 28,
+          }}
+        >
+          <Feather name="edit" size={14} color={COLORS.white} />
+        </TouchableOpacity>
+        <Ionicons
+          name={isAvailable ? "radio-button-on" : "radio-button-off"}
+          size={14}
+          color={COLORS.darkGray}
+        />
+
+        <Text
+          style={{
+            fontFamily: "semibold",
+            color: COLORS.primary,
+            fontSize: 12,
+          }}
+        >
+          {formatTimeWithAMPM(formatTime()) + " WIB"}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+export default EditableTimeSelect;

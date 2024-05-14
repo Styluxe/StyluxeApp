@@ -27,6 +27,8 @@ import {
   MyActivity,
   OrderDetails,
   PaymentDetails,
+  StylistAboutMe,
+  StylistManageSchedule,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -161,8 +163,19 @@ export default function App() {
               component={PaymentDetails}
               options={{ headerShown: false }}
             />
-          </Stack.Navigator>
 
+            <Stack.Screen
+              name="AboutMe"
+              component={StylistAboutMe}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="ManageSchedule"
+              component={StylistManageSchedule}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
           {/* Login Modal */}
           <LoginModal />
         </NavigationContainer>

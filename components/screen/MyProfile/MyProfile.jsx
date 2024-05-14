@@ -69,8 +69,6 @@ const MyProfile = () => {
         quality: 1,
       });
 
-      console.log("result", result);
-
       if (!result.canceled) {
         const newFile = {
           uri: result.assets[0].uri,

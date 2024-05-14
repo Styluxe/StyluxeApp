@@ -46,7 +46,7 @@ const LoginModal = () => {
     }
   }, [showModal]);
 
-  const { loading, login, code, error } = useAuth();
+  const { loading, login, code, error, setCode } = useAuth();
   const toast = useToast();
 
   const dispatch = useDispatch();
@@ -71,6 +71,7 @@ const LoginModal = () => {
           );
         },
       });
+      setCode(null);
     } else if (code === 401) {
       console.log(error);
       toast.show({
@@ -87,6 +88,7 @@ const LoginModal = () => {
           );
         },
       });
+      setCode(null);
     }
   }, [code]);
 

@@ -88,6 +88,7 @@ const useAuth = () => {
     checkExpiryDate,
     code,
     message,
+    setCode,
   };
 };
 

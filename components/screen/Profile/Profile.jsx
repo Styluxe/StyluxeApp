@@ -32,6 +32,8 @@ const Profile = () => {
   const navigation = useNavigation();
   const toast = useToast();
 
+  const isStylist = userData?.user_role === "stylist" || false;
+
   const handleLogout = () => {
     logout();
     setShowBottomSheet(false);
@@ -74,7 +76,7 @@ const Profile = () => {
           />
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 18,
               fontFamily: "bold",
               textAlign: "center",
               flex: 1,
@@ -115,18 +117,42 @@ const Profile = () => {
           text="My Profile"
           onPress={() => navigation.navigate("MyProfile")}
         />
-        <SelectionList
-          hasIcon
-          iconName="bookmarks-outline"
-          text="My Address"
-          onPress={() => navigation.navigate("MyAddress")}
-        />
-        <SelectionList
-          hasIcon
-          iconName="clipboard-outline"
-          text="My Activity"
-          onPress={() => navigation.navigate("MyActivity")}
-        />
+        {isStylist ? (
+          <>
+            <SelectionList
+              hasIcon
+              iconName="information-circle-outline"
+              text="About Me"
+              onPress={() => navigation.navigate("AboutMe")}
+            />
+            <SelectionList
+              hasIcon
+              iconName="calendar-outline"
+              text="Manage Schedule"
+              onPress={() => navigation.navigate("ManageSchedule")}
+            />
+            <SelectionList
+              hasIcon
+              iconName="chatbox-outline"
+              text="Customer Review"
+            />
+          </>
+        ) : (
+          <>
+            <SelectionList
+              hasIcon
+              iconName="bookmarks-outline"
+              text="My Address"
+              onPress={() => navigation.navigate("MyAddress")}
+            />
+            <SelectionList
+              hasIcon
+              iconName="clipboard-outline"
+              text="My Activity"
+              onPress={() => navigation.navigate("MyActivity")}
+            />
+          </>
+        )}
         <SelectionList
           hasIcon
           iconName="exit-outline"

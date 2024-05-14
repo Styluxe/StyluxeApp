@@ -18,3 +18,6 @@ export * from "./MyAddress";
 export * from "./MyActivity";
 export * from "./OrderDetails";
 export * from "./PaymentDetails";
+export * from "./StylistBookings";
+export * from "./StylistAboutMe";
+export * from "./StylistManageSchedule";
