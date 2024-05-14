@@ -156,9 +156,91 @@ const useAddTimeApi = () => {
   return { addTime, loading, error, code, setCode };
 };
 
+const useUpdateTimeApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+  const { getSchedule } = useGetScheduleApi();
+
+  const updateTime = async (stylist_schedule_time_id, time) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/stylist/time/${stylist_schedule_time_id}`,
+        {
+          time,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      console.log("time updated");
+
+      getSchedule();
+
+      setCode(code);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  const updateStatus = async (stylist_schedule_time_id, status) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/stylist/time/${stylist_schedule_time_id}`,
+        {
+          status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      console.log("status updated");
+
+      getSchedule();
+
+      setCode(code);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { updateTime, updateStatus, loading, error, code, setCode };
+};
+
 export {
   useGetStylistByIdApi,
   useUpdateStylistByIdApi,
   useGetScheduleApi,
   useAddTimeApi,
+  useUpdateTimeApi,
 };

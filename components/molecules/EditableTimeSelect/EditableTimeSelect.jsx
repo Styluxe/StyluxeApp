@@ -4,16 +4,13 @@ import moment from "moment";
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
+import { useUpdateTimeApi } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
 
-const EditableTimeSelect = ({ time, isAvailable }) => {
-  const [editTime, setEditTime] = useState(
-    new Date(`2024-05-14T${time}:00+07:00`),
-  );
+const EditableTimeSelect = ({ id, time, isAvailable }) => {
+  const editTime = new Date(`2024-05-14T${time}:00+07:00`);
 
-  const formatTime = () => {
-    return moment(editTime).format("HH:mm");
-  };
+  const { updateStatus, updateTime } = useUpdateTimeApi();
 
   const formatTimeWithAMPM = (time) => {
     // Convert time to 12-hour format with AM/PM
@@ -25,11 +22,20 @@ const EditableTimeSelect = ({ time, isAvailable }) => {
   };
 
   const onChange = (event, selectedTime) => {
-    setEditTime(selectedTime);
+    if (event.type === "set") {
+      const formatTime = moment(selectedTime).format("HH:mm");
+
+      updateTime(id, formatTime);
+    }
   };
 
-  //pass this to db
-  // console.log("format", formatTime());
+  const onCardPress = () => {
+    if (isAvailable) {
+      updateStatus(id, "Unavailable");
+    } else {
+      updateStatus(id, "Available");
+    }
+  };
 
   const showTimePicker = () => {
     DateTimePickerAndroid.open({
@@ -45,7 +51,7 @@ const EditableTimeSelect = ({ time, isAvailable }) => {
       style={{
         width: "30%",
       }}
-      onPress={() => {}}
+      onPress={onCardPress}
     >
       <View
         style={{
@@ -86,7 +92,7 @@ const EditableTimeSelect = ({ time, isAvailable }) => {
             fontSize: 12,
           }}
         >
-          {formatTimeWithAMPM(formatTime()) + " WIB"}
+          {formatTimeWithAMPM(time) + " WIB"}
         </Text>
       </View>
     </TouchableOpacity>

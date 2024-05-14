@@ -154,6 +154,7 @@ const StylistManageSchedule = () => {
                 renderItem={({ item }) => (
                   <EditableTimeSelect
                     time={item.time}
+                    id={item.stylist_schedule_time_id}
                     isAvailable={item.status === "Available"}
                   />
                 )}
