@@ -45,7 +45,6 @@ export const styles = StyleSheet.create({
   },
   status: {
     fontFamily: "medium",
-    color: "#3A70E2",
   },
   category: {
     fontFamily: "regular",

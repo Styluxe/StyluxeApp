@@ -1,6 +1,11 @@
 import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import { Spinner } from "@gluestack-ui/themed";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,29 +15,56 @@ import {
   Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Swiper from "react-native-swiper";
 
 import { styles } from "./StylistDetail.style";
+import { useGetStylistByIdApi } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
 import { dummyStylistDetail } from "../../../mocks/DummyStylist";
 import { ReviewBox, StarRating } from "../../molecules";
-import Swiper from "react-native-swiper";
 
 const StylistDetails = () => {
   const navigation = useNavigation();
   const [numToShow, setNumToShow] = useState(3);
   const [dayToShow, setDayToShow] = useState(3);
+  const { getStylistById, code, setCode, data, loading } =
+    useGetStylistByIdApi();
+  const [stylistData, setStylistData] = useState(null);
+
+  const route = useRoute();
+  const { stylist_id } = route.params;
+
+  useFocusEffect(
+    useCallback(() => {
+      getStylistById(stylist_id);
+    }, [stylist_id]),
+  );
+
+  useEffect(() => {
+    if (code === 200) {
+      setStylistData(data);
+      setCode(null);
+    }
+  }, [code, data]);
 
   const loadMoreItems = () => {
     setNumToShow(numToShow + 3);
   };
 
   const handleShowSchedule = () => {
-    if (dayToShow === 3) {
-      setDayToShow(7);
-    } else {
-      setDayToShow(3);
-    }
+    setDayToShow(dayToShow === 3 ? 7 : 3);
   };
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <Spinner color={COLORS.primary} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -95,13 +127,29 @@ const StylistDetails = () => {
               <View style={styles.info_container}>
                 <View style={styles.info_wrapper}>
                   <Text style={styles.stylist_header}>
-                    {dummyStylistDetail.name}
+                    {stylistData?.brand_name ||
+                      `${stylistData?.user?.first_name} ${stylistData?.user?.last_name}`}
                   </Text>
 
                   <View style={styles.stylist_status_container}>
-                    <FontAwesome name="circle" size={10} color="#3A70E2" />
-                    <Text style={styles.status_text}>
-                      {dummyStylistDetail.online_status}
+                    <FontAwesome
+                      name="circle"
+                      size={10}
+                      color={
+                        stylistData?.online_status === "online"
+                          ? "#3A70E2"
+                          : "red"
+                      }
+                    />
+                    <Text
+                      style={{
+                        color:
+                          stylistData?.online_status === "online"
+                            ? "#3A70E2"
+                            : "red",
+                      }}
+                    >
+                      {stylistData?.online_status}
                     </Text>
                   </View>
                 </View>
@@ -111,11 +159,11 @@ const StylistDetails = () => {
                 </Text>
               </View>
 
-              <StarRating total_likes={dummyStylistDetail.rating} />
+              <StarRating total_likes={stylistData?.rating} />
 
               <View style={styles.price_container}>
                 <Text style={styles.price_text}>
-                  Rp {dummyStylistDetail.price}{" "}
+                  Rp {parseFloat(stylistData?.price).toLocaleString("id-ID")}{" "}
                   <Text style={styles.price_info_text}>- per Session</Text>
                 </Text>
               </View>
@@ -131,34 +179,41 @@ const StylistDetails = () => {
             <View style={styles.card_container}>
               <Text style={styles.stylist_header}>About Stylist</Text>
               <Text style={styles.stylist_content_text}>
-                {dummyStylistDetail.about}
+                {stylistData?.about}
               </Text>
             </View>
 
             <View style={styles.card_container}>
               <Text style={styles.stylist_header}>Stylist Schedule</Text>
               <View style={{ gap: 10 }}>
-                {dummyStylistDetail.schedule
-                  .slice(0, dayToShow)
-                  .map((day, index) => (
-                    <View key={index} style={styles.schedule_container}>
-                      <Text style={styles.schedule_label}>{day.day}</Text>
-                      <Text
-                        style={[
-                          styles.schedule_text,
-                          {
-                            color:
-                              day?.times.length === 0 ? "red" : COLORS.darkGray,
-                          },
-                        ]}
-                      >
-                        {day?.times.length === 0
-                          ? "Unavailable"
-                          : day?.times[0]?.time}{" "}
-                        - {day?.times[day?.times.length - 1]?.time}
-                      </Text>
-                    </View>
-                  ))}
+                {loading ? (
+                  <Text>Loading...</Text>
+                ) : (
+                  stylistData?.schedules
+                    .slice(0, dayToShow)
+                    .map((day, index) => (
+                      <View key={index} style={styles.schedule_container}>
+                        <Text style={styles.schedule_label}>{day.day}</Text>
+                        <Text
+                          style={[
+                            styles.schedule_text,
+                            {
+                              color:
+                                day?.times.length === 0
+                                  ? "red"
+                                  : COLORS.darkGray,
+                            },
+                          ]}
+                        >
+                          {day?.times.length === 0
+                            ? "Unavailable"
+                            : `${day?.times[0]?.time} - ${
+                                day?.times[day?.times.length - 1]?.time
+                              }`}
+                        </Text>
+                      </View>
+                    ))
+                )}
 
                 <TouchableOpacity
                   style={styles.load_container}
@@ -175,7 +230,7 @@ const StylistDetails = () => {
               <Text style={styles.stylist_header}>Customer's Review</Text>
 
               <FlatList
-                data={dummyStylistDetail.customer_review.slice(0, numToShow)}
+                data={stylistData?.reviews.slice(0, numToShow)}
                 renderItem={(data) => (
                   <ReviewBox
                     name={data.item.name}
@@ -186,10 +241,21 @@ const StylistDetails = () => {
                   />
                 )}
                 showsVerticalScrollIndicator={false}
+                ListEmptyComponent={
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontFamily: "regular",
+                      color: COLORS.darkGray,
+                    }}
+                  >
+                    No Review yet
+                  </Text>
+                }
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                 ListFooterComponentStyle={{ paddingVertical: 10 }}
                 ListFooterComponent={
-                  numToShow < 5 ? (
+                  numToShow < 5 && stylistData?.reviews.length !== 0 ? (
                     <Button
                       color={COLORS.primary}
                       title="Show All"
@@ -211,7 +277,11 @@ const StylistDetails = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate("StylistDate")}
+          onPress={() =>
+            navigation.navigate("StylistDate", {
+              stylist_id: stylistData.stylist_id,
+            })
+          }
           style={{ flex: 1 }}
         >
           <View style={styles.consult_btn}>

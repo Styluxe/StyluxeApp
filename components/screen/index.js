@@ -21,3 +21,4 @@ export * from "./PaymentDetails";
 export * from "./StylistBookings";
 export * from "./StylistAboutMe";
 export * from "./StylistManageSchedule";
+export * from "./StylistPayment";

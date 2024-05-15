@@ -10,27 +10,36 @@ import React, { useCallback, useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useGetOrderById } from "../../../API/OrderAPI";
+import { useGetBookingById, useGetOrderById } from "../../../API/OrderAPI";
 import { COLORS, SHADOWS } from "../../../constants";
 import { CheckoutItemCard } from "../../organism";
+import { formatTimeWithAMPM } from "../../../hook/hook";
 
 const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { getOrderById, orderData } = useGetOrderById();
+  const { getBookingById, bookingData } = useGetBookingById();
 
-  const { order_id, routeFrom } = route.params;
+  const { order_id, booking_id, routeFrom } = route.params;
+
+  const isProduct = !!order_id;
+  const isBooking = !!booking_id;
 
   useFocusEffect(
     useCallback(() => {
-      getOrderById(order_id);
-    }, [order_id]),
+      if (isProduct) {
+        getOrderById(order_id);
+      } else if (isBooking) {
+        getBookingById(booking_id);
+      }
+    }, [order_id, isProduct]),
   );
 
-  const isPaid = orderData?.payment_details?.payment_status === "paid";
+  const isPaid =
+    orderData?.payment_details?.payment_status === "paid" ||
+    bookingData?.booking_details.payment_details?.payment_status === "paid";
   const isRouteFromCheckout = routeFrom === "Checkout";
-
-  console.log("route", isRouteFromCheckout);
 
   const statusSwitch = (status) => {
     switch (status) {
@@ -67,7 +76,8 @@ const OrderDetails = () => {
     }
   };
 
-  const isCancelBtnVisible = orderData?.order_status === "pending";
+  const isCancelBtnVisible =
+    orderData?.order_status === "pending" || bookingData?.status === "pending";
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -94,7 +104,10 @@ const OrderDetails = () => {
               }
             />
             <Text style={{ fontFamily: "bold", fontSize: 16 }}>
-              Orders # {orderData.order_number}
+              Orders #{" "}
+              {isProduct
+                ? orderData?.order_number
+                : bookingData?.booking_number}
             </Text>
           </View>
         </View>
@@ -114,10 +127,16 @@ const OrderDetails = () => {
                 fontFamily: "semibold",
                 fontSize: 14,
                 color:
-                  statusSwitch(orderData.order_status)?.color || COLORS.primary,
+                  statusSwitch(
+                    isProduct ? orderData?.order_status : bookingData?.status,
+                  )?.color || COLORS.primary,
               }}
             >
-              {statusSwitch(orderData.order_status)?.message}
+              {
+                statusSwitch(
+                  isProduct ? orderData?.order_status : bookingData?.status,
+                )?.message
+              }
             </Text>
             <Divider bg={COLORS.gray2} />
             <View
@@ -133,7 +152,9 @@ const OrderDetails = () => {
                 Order No
               </Text>
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                {orderData.order_number}
+                {isProduct
+                  ? orderData?.order_number
+                  : bookingData?.booking_number}
               </Text>
             </View>
             <View
@@ -149,8 +170,9 @@ const OrderDetails = () => {
                 Purchase Date
               </Text>
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                {/* 20 April 2022, 10:00 WIB */}
-                {moment(orderData.createdAt).format("DD MMM YYYY, HH:mm")}
+                {moment(
+                  isProduct ? orderData?.createdAt : bookingData?.createdAt,
+                ).format("DD MMM YYYY, HH:mm")}
               </Text>
             </View>
             <View
@@ -166,7 +188,9 @@ const OrderDetails = () => {
                 Payment Method
               </Text>
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                {orderData?.payment_details?.provider}
+                {isProduct
+                  ? orderData?.payment_details?.provider
+                  : bookingData?.booking_details.payment_details?.provider}
               </Text>
             </View>
             <Button
@@ -177,6 +201,7 @@ const OrderDetails = () => {
                 navigation.navigate("PaymentDetails", {
                   routeFrom: "OrderDetails",
                   order_id,
+                  booking_id,
                 });
               }}
             >
@@ -187,32 +212,34 @@ const OrderDetails = () => {
               </Text>
             </Button>
           </View>
-          <View
-            style={{
-              padding: 10,
-              backgroundColor: COLORS.white,
-              borderRadius: 10,
-              gap: 10,
-              ...SHADOWS.medium,
-            }}
-          >
-            <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-              Shipping Details
-            </Text>
-            <Divider bg={COLORS.gray2} />
-            <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-              {orderData?.user_address?.receiver_name}
-            </Text>
-            <Text
-              numberOfLines={2}
-              style={{ fontFamily: "medium", fontSize: 14 }}
+          {isProduct && (
+            <View
+              style={{
+                padding: 10,
+                backgroundColor: COLORS.white,
+                borderRadius: 10,
+                gap: 10,
+                ...SHADOWS.medium,
+              }}
             >
-              {orderData?.user_address?.address},
-            </Text>
-            <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-              {orderData?.user_address?.mobile}
-            </Text>
-          </View>
+              <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
+                Shipping Details
+              </Text>
+              <Divider bg={COLORS.gray2} />
+              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                {orderData?.user_address?.receiver_name}
+              </Text>
+              <Text
+                numberOfLines={2}
+                style={{ fontFamily: "medium", fontSize: 14 }}
+              >
+                {orderData?.user_address?.address},
+              </Text>
+              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                {orderData?.user_address?.mobile}
+              </Text>
+            </View>
+          )}
           <View
             style={{
               padding: 10,
@@ -223,21 +250,90 @@ const OrderDetails = () => {
             }}
           >
             <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-              Order Details
+              {isProduct ? "Order Details" : "Booking Details"}
             </Text>
             <Divider bg={COLORS.gray2} />
-            <VStack>
-              {orderData?.order_items?.map((item, index) => (
-                <CheckoutItemCard
-                  key={index}
-                  image={item?.product?.images[0]?.image_url}
-                  name={item?.product?.product_name}
-                  price={item?.product?.product_price}
-                  quantity={item?.quantity}
-                  size={item?.size}
-                />
-              ))}
-            </VStack>
+            {isProduct ? (
+              <VStack>
+                {orderData?.order_items?.map((item, index) => (
+                  <CheckoutItemCard
+                    key={index}
+                    image={item?.product?.images[0]?.image_url}
+                    name={item?.product?.product_name}
+                    price={item?.product?.product_price}
+                    quantity={item?.quantity}
+                    size={item?.size}
+                  />
+                ))}
+              </VStack>
+            ) : (
+              <VStack>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "medium",
+                      fontSize: 14,
+                      color: COLORS.darkGray,
+                    }}
+                  >
+                    Stylist Name:
+                  </Text>
+                  <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                    {bookingData?.stylist?.brand_name ||
+                      bookingData?.stylist?.user?.first_name +
+                        " " +
+                        bookingData?.stylist?.user?.last_name}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "medium",
+                      fontSize: 14,
+                      color: COLORS.darkGray,
+                    }}
+                  >
+                    Booking Date:
+                  </Text>
+                  <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                    {moment(bookingData?.booking_details?.booking_date).format(
+                      "DD MMM YYYY",
+                    )}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "medium",
+                      fontSize: 14,
+                      color: COLORS.darkGray,
+                    }}
+                  >
+                    Booking Time :
+                  </Text>
+                  <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                    {formatTimeWithAMPM(
+                      bookingData?.booking_details?.booking_time,
+                    )}
+                  </Text>
+                </View>
+              </VStack>
+            )}
           </View>
           <View
             style={{
@@ -257,21 +353,33 @@ const OrderDetails = () => {
                 Sub-Total:
               </Text>
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                Rp. {parseFloat(orderData?.total).toLocaleString("id-ID")}
+                Rp.{" "}
+                {parseFloat(
+                  isProduct
+                    ? orderData?.total
+                    : bookingData?.booking_details?.payment_details?.amount,
+                ).toLocaleString("id-ID")}
               </Text>
             </HStack>
-            <HStack justifyContent="space-between">
-              <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                Shipping:{" "}
-              </Text>
-              <Text style={{ fontFamily: "medium", fontSize: 14 }}>Free</Text>
-            </HStack>
+            {isProduct && (
+              <HStack justifyContent="space-between">
+                <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                  Shipping:{" "}
+                </Text>
+                <Text style={{ fontFamily: "medium", fontSize: 14 }}>Free</Text>
+              </HStack>
+            )}
             <HStack justifyContent="space-between">
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
                 Total:{" "}
               </Text>
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                Rp. {parseFloat(orderData?.total).toLocaleString("id-ID")}
+                Rp.{" "}
+                {parseFloat(
+                  isProduct
+                    ? orderData?.total
+                    : bookingData?.booking_details?.payment_details?.amount,
+                ).toLocaleString("id-ID")}
               </Text>
             </HStack>
           </View>

@@ -1,7 +1,9 @@
+import moment from "moment";
 import React from "react";
 import { View, Text, Image } from "react-native";
 
 import { COLORS } from "../../../../constants";
+import { formatTimeWithAMPM } from "../../../../hook/hook";
 
 const CheckoutItemCard = ({
   image,
@@ -9,7 +11,14 @@ const CheckoutItemCard = ({
   size = "XL",
   quantity = 2,
   price = 40000,
+  isStylist,
+  orderDate,
+  orderTime,
 }) => {
+  const fullOrderDateTime = `2024-05-14T${orderTime}:00+07:00`;
+
+  const endTime = moment(fullOrderDateTime).add(30, "m").format("HH:mm");
+
   return (
     <View
       style={{
@@ -32,24 +41,40 @@ const CheckoutItemCard = ({
 
       <View>
         <Text style={{ fontFamily: "bold", fontSize: 16 }}>{name}</Text>
-        <Text
-          style={{
-            fontFamily: "medium",
-            fontSize: 12,
-            color: COLORS.gray,
-          }}
-        >
-          Size: {size}
-        </Text>
-        <Text
-          style={{
-            fontFamily: "medium",
-            fontSize: 12,
-            color: COLORS.gray,
-          }}
-        >
-          x{quantity}
-        </Text>
+        {isStylist ? (
+          <>
+            <Text style={{ fontFamily: "medium", fontSize: 12 }}>
+              Order Date: {moment(orderDate).format("DD MMM YYYY")}
+            </Text>
+            <Text style={{ fontFamily: "medium", fontSize: 12 }}>
+              Order Time: {formatTimeWithAMPM(orderTime)} -{" "}
+              {formatTimeWithAMPM(endTime)}
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text
+              style={{
+                fontFamily: "medium",
+                fontSize: 12,
+                color: COLORS.gray,
+              }}
+            >
+              Size: {size}
+            </Text>
+
+            <Text
+              style={{
+                fontFamily: "medium",
+                fontSize: 12,
+                color: COLORS.gray,
+              }}
+            >
+              x{quantity}
+            </Text>
+          </>
+        )}
+
         <Text
           style={{
             fontFamily: "medium",

@@ -6,11 +6,11 @@ export const useKeyboardVisibility = (setIsContentVisible) => {
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
-      () => setIsContentVisible(false)
+      () => setIsContentVisible(false),
     );
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
-      () => setIsContentVisible(true)
+      () => setIsContentVisible(true),
     );
 
     return () => {
@@ -18,4 +18,16 @@ export const useKeyboardVisibility = (setIsContentVisible) => {
       keyboardDidHideListener.remove();
     };
   }, [setIsContentVisible]);
+};
+
+export const formatTimeWithAMPM = (time) => {
+  if (!time || typeof time !== "string" || !time.includes(":")) {
+    return "Invalid time format";
+  }
+  // Convert time to 12-hour format with AM/PM
+  const [hours, minutes] = time.split(":");
+  const hour = parseInt(hours, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${displayHour}:${minutes} ${ampm}`;
 };

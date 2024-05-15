@@ -2,17 +2,9 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import { COLORS } from "../../../constants";
+import { formatTimeWithAMPM } from "../../../hook/hook";
 
 const TimeSelect = ({ data, setSelectedTime, selectedTime, disabled }) => {
-  const formatTimeWithAMPM = (time) => {
-    // Convert time to 12-hour format with AM/PM
-    const [hours, minutes] = time.split(":");
-    const hour = parseInt(hours, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-    return `${displayHour}:${minutes} ${ampm}`;
-  };
-
   return (
     <TouchableOpacity
       disabled={disabled}

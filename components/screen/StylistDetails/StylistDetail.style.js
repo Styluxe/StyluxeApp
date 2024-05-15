@@ -58,7 +58,6 @@ export const styles = StyleSheet.create({
   status_text: {
     fontFamily: "semibold",
     fontSize: 12,
-    color: "#3A70E2",
   },
   category_text: {
     fontFamily: "regular",

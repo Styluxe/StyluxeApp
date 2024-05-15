@@ -10,42 +10,101 @@ import React, { useCallback, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useGetOrderById, useUpdateStatus } from "../../../API/OrderAPI";
+import {
+  useGetBookingById,
+  useGetOrderById,
+  useUpdateBookingStatus,
+  useUpdateStatus,
+} from "../../../API/OrderAPI";
 import { COLORS, SHADOWS } from "../../../constants";
 
 const PaymentDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { routeFrom, order_id } = route.params || {};
+  const { routeFrom, order_id, booking_id } = route.params || {};
+  const { getBookingById, bookingData } = useGetBookingById();
 
   const { getOrderById, orderData } = useGetOrderById();
-  const { updateStatus, code, loading } = useUpdateStatus();
+  const { updateStatus, code, loading, setCode } = useUpdateStatus();
+  const {
+    updateBookingStatus,
+    code: bookingCode,
+    setCode: setBookingCode,
+  } = useUpdateBookingStatus();
+
+  const isProduct = !!order_id;
+  const isBooking = !!booking_id;
 
   useFocusEffect(
     useCallback(() => {
-      getOrderById(order_id);
+      if (isProduct) {
+        getOrderById(order_id);
+      } else if (isBooking) {
+        getBookingById(booking_id);
+      }
     }, [order_id]),
   );
 
   useEffect(() => {
     if (code === 200) {
       navigation.navigate("MyActivity");
+      setCode(null);
     }
-  }, [code]);
+    if (bookingCode === 200) {
+      navigation.navigate("MyActivity");
+      setBookingCode(null);
+    }
+  }, [code, bookingCode]);
+
+  //provider account number switch
+  const providerAccountNumberSwitch = (provider) => {
+    switch (provider) {
+      case "OVO":
+        return "30018123456789";
+      case "DANA":
+        return "6281234567890";
+      case "GOPAY":
+        return "085123456789";
+      case "BCA Virtual Account":
+        return "1122000078946";
+      case "Mandiri Virtual Account":
+        return "1122000078946";
+      case "BNI Virtual Account":
+        return "1122000078946";
+      case "BCA Transfer":
+        return "89901123 ";
+      case "Mandiri Transfer":
+        return "89901123 ";
+      case "BNI Transfer":
+        return "89901123 ";
+      default:
+        return "1122000078946";
+    }
+  };
 
   const handlePayment = () => {
-    updateStatus(order_id, "paid", "waiting for confirmation");
+    if (isProduct) {
+      updateStatus(order_id, "paid", "waiting for confirmation");
+    }
+    if (isBooking) {
+      updateBookingStatus(booking_id, "paid", "waiting for confirmation");
+    }
   };
 
   const isFromCheckout = routeFrom === "Checkout";
+  const isFromStylistPayment = routeFrom === "StylistPayment";
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ alignItems: "flex-start", padding: 10 }}>
         <TouchableOpacity
           onPress={() =>
-            isFromCheckout ? navigation.navigate("Home") : navigation.goBack()
+            isFromCheckout
+              ? navigation.navigate("Home")
+              : isFromStylistPayment
+                ? navigation.navigate("MyActivity")
+                : navigation.goBack()
           }
           style={{
             alignItems: "flex-start",
@@ -67,7 +126,10 @@ const PaymentDetails = () => {
         }}
       >
         <Text style={{ fontFamily: "medium", fontSize: 20 }}>
-          {orderData?.payment_details?.provider} Payment
+          {isProduct
+            ? orderData?.payment_details?.provider
+            : bookingData?.booking_details?.payment_details?.provider}{" "}
+          Payment
         </Text>
         <Text
           style={{ fontFamily: "regular", fontSize: 14, textAlign: "center" }}
@@ -76,11 +138,21 @@ const PaymentDetails = () => {
           {"\n"}
           IMPORTANT! Make payment before{" "}
           <Text style={{ color: COLORS.primary, fontFamily: "semibold" }}>
-            {moment(orderData?.payment_details?.payment_deadline).format("ll")}
+            {moment(
+              isProduct
+                ? orderData?.payment_details?.payment_deadline
+                : bookingData?.booking_details?.payment_details
+                    ?.payment_deadline,
+            ).format("ll")}
           </Text>{" "}
           at{" "}
           <Text style={{ color: COLORS.primary, fontFamily: "semibold" }}>
-            {moment(orderData?.payment_details?.payment_deadline).format("LT")}
+            {moment(
+              isProduct
+                ? orderData?.payment_details?.payment_deadline
+                : bookingData?.booking_details?.payment_details
+                    ?.payment_deadline,
+            ).format("LT")}
           </Text>{" "}
           or your order will be automatically canceled by the system
         </Text>
@@ -110,7 +182,7 @@ const PaymentDetails = () => {
               fontSize: 14,
             }}
           >
-            {orderData?.order_number}
+            {isProduct ? orderData?.order_number : bookingData?.booking_number}
           </Text>
         </View>
         <View
@@ -137,7 +209,9 @@ const PaymentDetails = () => {
               fontSize: 14,
             }}
           >
-            {orderData.payment_details?.provider}
+            {isProduct
+              ? orderData?.payment_details?.provider
+              : bookingData?.booking_details?.payment_details?.provider}
           </Text>
         </View>
         <View
@@ -164,7 +238,11 @@ const PaymentDetails = () => {
                 fontSize: 14,
               }}
             >
-              8990321133
+              {providerAccountNumberSwitch(
+                isProduct
+                  ? orderData?.payment_details?.provider
+                  : bookingData?.booking_details?.payment_details?.provider,
+              )}
             </Text>
             <Text
               style={{
@@ -205,7 +283,10 @@ const PaymentDetails = () => {
             >
               Rp{" "}
               {parseInt(
-                orderData.payment_details?.transfer_amount,
+                isProduct
+                  ? orderData?.payment_details?.transfer_amount
+                  : bookingData?.booking_details?.payment_details
+                      ?.transfer_amount,
                 10,
               ).toLocaleString("id-ID")}
             </Text>

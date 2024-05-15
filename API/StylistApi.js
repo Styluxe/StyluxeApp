@@ -9,12 +9,12 @@ import {
   stylistScheduleState,
 } from "../redux/slice/stylist.slice";
 
-const useGetStylistByIdApi = () => {
+const useGetStylistByAuthApi = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [stylistData, setStylistData] = useState(null);
 
-  const getStylistById = async () => {
+  const getStylistByAuth = async () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem("token");
@@ -43,7 +43,7 @@ const useGetStylistByIdApi = () => {
     }
   };
 
-  return { getStylistById, loading, error, stylistData };
+  return { getStylistByAuth, loading, error, stylistData };
 };
 
 const useUpdateStylistByIdApi = () => {
@@ -132,8 +132,6 @@ const useAddTimeApi = () => {
         setLoading(false);
         return;
       }
-
-      console.log("dataTime", data);
 
       const response = await axios.post(`${API_URL}/stylist/time`, data, {
         headers: {
@@ -237,10 +235,115 @@ const useUpdateTimeApi = () => {
   return { updateTime, updateStatus, loading, error, code, setCode };
 };
 
+const useGetAllStylistApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [code, setCode] = useState(null);
+
+  const getAllStylist = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}/stylist/all`);
+
+      const { data, code } = response?.data;
+
+      setData(data);
+      console.log("fetch all stylist");
+      setCode(code);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { getAllStylist, loading, error, data, code, setCode };
+};
+
+const useGetStylistByIdApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [code, setCode] = useState(null);
+
+  const getStylistById = async (stylist_id) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        `${API_URL}/stylist/profile/${stylist_id}`,
+      );
+
+      const { data, code } = response?.data;
+
+      setData(data);
+      setCode(code);
+      setLoading(false);
+
+      console.log("fetch stylist by id");
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+  return { getStylistById, loading, error, data, code, setCode };
+};
+
+const useGetScheduleByIdApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  const getScheduleById = async (stylist_id) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        `${API_URL}/stylist/schedule/${stylist_id}`,
+      );
+
+      const { data } = response?.data;
+
+      setData(data);
+      console.log("fetch schedule by id");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+  return { getScheduleById, loading, error, data };
+};
+
 export {
-  useGetStylistByIdApi,
+  useGetStylistByAuthApi,
   useUpdateStylistByIdApi,
   useGetScheduleApi,
   useAddTimeApi,
   useUpdateTimeApi,
+  useGetAllStylistApi,
+  useGetStylistByIdApi,
+  useGetScheduleByIdApi,
 };

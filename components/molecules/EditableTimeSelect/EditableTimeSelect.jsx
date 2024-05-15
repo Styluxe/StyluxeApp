@@ -6,20 +6,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 import { useUpdateTimeApi } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
+import { formatTimeWithAMPM } from "../../../hook/hook";
 
 const EditableTimeSelect = ({ id, time, isAvailable }) => {
   const editTime = new Date(`2024-05-14T${time}:00+07:00`);
 
   const { updateStatus, updateTime } = useUpdateTimeApi();
-
-  const formatTimeWithAMPM = (time) => {
-    // Convert time to 12-hour format with AM/PM
-    const [hours, minutes] = time.split(":");
-    const hour = parseInt(hours, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-    return `${displayHour}:${minutes} ${ampm}`;
-  };
 
   const onChange = (event, selectedTime) => {
     if (event.type === "set") {

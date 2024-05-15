@@ -17,7 +17,9 @@ const StarRating = ({ total_likes = 5, iconSize = 24, fontSize = 18 }) => {
         />
       ))}
 
-      <Text style={[styles.total_rating, { fontSize }]}>{total_likes}</Text>
+      <Text style={[styles.total_rating, { fontSize }]}>
+        {total_likes || 0}
+      </Text>
     </View>
   );
 };

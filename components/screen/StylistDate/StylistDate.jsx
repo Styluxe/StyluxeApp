@@ -1,23 +1,39 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import CalendarPicker from "react-native-calendar-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useGetScheduleByIdApi } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
-import { dummyStylistDetail, dummyOrder } from "../../../mocks/DummyStylist";
+import { dummyOrder } from "../../../mocks/DummyStylist";
 import { TimeSelect } from "../../molecules";
+import CalendarPicker from "../../molecules/CalendarPicker";
 
 const StylistDate = () => {
   const navigation = useNavigation();
   const [date, setDate] = useState(new Date());
+  const route = useRoute();
+
+  const { stylist_id } = route.params;
+
+  const { getScheduleById, data } = useGetScheduleByIdApi();
+
+  useFocusEffect(
+    useCallback(() => {
+      getScheduleById(stylist_id);
+    }, []),
+  );
 
   const day = moment(date).format("dddd");
 
-  const schedule = dummyStylistDetail.schedule;
-  const times = schedule.filter((s) => s.day === day)[0].times;
+  const schedule = data;
+  const times = schedule.filter((s) => s.day === day)[0]?.times;
 
   const fullDate = moment(date).format("dddd, DD MMMM YYYY");
   const [selectedTime, setSelectedTime] = useState(null);
@@ -125,6 +141,13 @@ const StylistDate = () => {
                   data={times}
                   numColumns={3}
                   columnWrapperStyle={{ gap: 10, marginTop: 10 }}
+                  ListEmptyComponent={
+                    <Text
+                      style={{ textAlign: "center", fontFamily: "semibold" }}
+                    >
+                      No time available
+                    </Text>
+                  }
                   renderItem={({ item }) => {
                     const isUnavailable = item?.status === "unavailable";
                     const isBooked = allBookingDate.some(
@@ -133,12 +156,16 @@ const StylistDate = () => {
                         booking.time === item.time,
                     );
 
+                    const timeIsPast =
+                      moment(date).isSame(new Date(), "day") &&
+                      moment(new Date()).format("HH:mm") > item.time;
+
                     return (
                       <TimeSelect
                         setSelectedTime={setSelectedTime}
                         data={item}
                         selectedTime={selectedTime}
-                        disabled={isUnavailable || isBooked}
+                        disabled={isUnavailable || isBooked || timeIsPast}
                       />
                     );
                   }}
@@ -175,10 +202,19 @@ const StylistDate = () => {
           </View>
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Checkout")}>
+        <TouchableOpacity
+          disabled={!selectedTime}
+          onPress={() =>
+            navigation.navigate("StylistPayment", {
+              stylist_id,
+              date: moment(date).toISOString(),
+              time: selectedTime,
+            })
+          }
+        >
           <View
             style={{
-              backgroundColor: COLORS.primary,
+              backgroundColor: !selectedTime ? COLORS.gray : COLORS.primary,
               alignItems: "center",
               paddingVertical: 14,
               borderRadius: 40,

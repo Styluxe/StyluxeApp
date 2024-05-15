@@ -6,11 +6,28 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { styles } from "./StylistDetailCard.style";
 import { COLORS } from "../../../../constants";
 
-const StylistDetailCard = () => {
+const StylistDetailCard = ({ stylist }) => {
   const navigation = useNavigation();
-  const date = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const isOnline = stylist?.online_status === "online";
+
+  const dayFromSchedule = () => {
+    if (stylist?.schedules) {
+      return stylist?.schedules
+        .map((item) => {
+          return item.day.substring(0, 2);
+        })
+        .join(", ");
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("StylistDetails")}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("StylistDetails", {
+          stylist_id: stylist.stylist_id,
+        })
+      }
+    >
       <View style={styles.container}>
         <View style={styles.image_container}>
           <Image
@@ -24,40 +41,55 @@ const StylistDetailCard = () => {
           <View style={{ gap: 2 }}>
             <View style={styles.name_container}>
               <Text numberOfLines={1} style={styles.name}>
-                Dan Stylist
+                {stylist.brand_name ||
+                  stylist?.user.first_name + " " + stylist?.user.last_name}
               </Text>
               <View style={styles.status_container}>
-                <FontAwesome name="circle" size={10} color="#3A70E2" />
-                <Text style={styles.status}>Available</Text>
+                <FontAwesome
+                  name="circle"
+                  size={10}
+                  color={isOnline ? "#3A70E2" : COLORS.darkGray}
+                />
+                <Text
+                  style={
+                    (styles.status,
+                    { color: isOnline ? "#3A70E2" : COLORS.darkGray })
+                  }
+                >
+                  {stylist?.online_status}
+                </Text>
               </View>
             </View>
-            <Text style={styles.category}>Wedding Stylist</Text>
+            <Text style={styles.category}>{stylist?.type}</Text>
           </View>
 
           <View style={styles.rating_container}>
             {[1, 2, 3, 4, 5].map((item, index) => (
-              <FontAwesome key={index} name="star" size={18} color="orange" />
+              <FontAwesome
+                key={index}
+                name="star"
+                size={18}
+                color={stylist.rating >= item ? "yellow" : "gray"}
+              />
             ))}
-            <Text style={styles.rating}>5</Text>
+            <Text style={styles.rating}>{stylist?.rating || 0}</Text>
           </View>
 
           <View style={{ flexDirection: "row" }}>
-            {date.map((item, index) => (
-              <Text
-                key={index}
-                style={{
-                  fontFamily: "regular",
-                  color: COLORS.black,
-                }}
-              >
-                {item}
-                {index < date.length - 1 && ", "}
-              </Text>
-            ))}
+            <Text
+              style={{
+                fontFamily: "regular",
+                color: COLORS.black,
+              }}
+            >
+              {dayFromSchedule()}
+            </Text>
           </View>
 
           <View style={styles.price_container}>
-            <Text style={styles.price}>Rp 132.000</Text>
+            <Text style={styles.price}>
+              Rp {parseFloat(stylist.price).toLocaleString("id-ID")}
+            </Text>
             <Text style={styles.price_info}>- Per Session</Text>
           </View>
         </View>

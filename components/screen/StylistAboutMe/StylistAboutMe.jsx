@@ -8,7 +8,7 @@ import Swiper from "react-native-swiper";
 
 import { styles } from "./StylistAboutMe.style";
 import {
-  useGetStylistByIdApi,
+  useGetStylistByAuthApi,
   useUpdateStylistByIdApi,
 } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
@@ -17,7 +17,7 @@ import { dummyStylistDetail } from "../../../mocks/DummyStylist";
 
 const StylistAboutMe = () => {
   const navigation = useNavigation();
-  const { getStylistById, stylistData } = useGetStylistByIdApi();
+  const { getStylistByAuth, stylistData } = useGetStylistByAuthApi();
   const { updateStylistById, code, setCode } = useUpdateStylistByIdApi();
   const [isEditing, setIsEditing] = useState(false);
   const [actualData, setActualData] = useState(null);
@@ -36,7 +36,7 @@ const StylistAboutMe = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getStylistById();
+      getStylistByAuth();
     }, []),
   );
 
@@ -50,7 +50,7 @@ const StylistAboutMe = () => {
     if (code === 200) {
       alert("Stylist updated successfully");
       setIsEditing(false);
-      getStylistById();
+      getStylistByAuth();
       setCode(null);
     } else if (code === 400) {
       alert("Stylist update failed");

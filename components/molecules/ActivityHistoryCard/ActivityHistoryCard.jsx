@@ -8,7 +8,9 @@ import { COLORS, SHADOWS } from "../../../constants";
 const ActivityHistoryCard = ({ item }) => {
   const navigation = useNavigation();
 
-  const product_image = item.order_items[0].product.images[0];
+  const product_image = item?.order_items?.[0]?.product?.images?.[0]
+    ? item?.order_items[0].product.images[0]
+    : item?.stylist?.images?.[0];
 
   const statusSwitch = (status) => {
     switch (status) {
@@ -38,14 +40,17 @@ const ActivityHistoryCard = ({ item }) => {
           message: "Delivered",
         };
       default:
-        return status;
+        return { color: COLORS.primary, message: status };
     }
   };
 
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("OrderDetails", { order_id: item.order_id })
+        navigation.navigate("OrderDetails", {
+          order_id: item?.order_id,
+          booking_id: item?.booking_id,
+        })
       }
       activeOpacity={0.8}
       style={{
@@ -77,10 +82,12 @@ const ActivityHistoryCard = ({ item }) => {
               style={{
                 fontFamily: "semibold",
                 fontSize: 14,
-                color: statusSwitch(item.order_status).color || COLORS.primary,
+                color:
+                  statusSwitch(item?.order_status || item?.status).color ||
+                  COLORS.primary,
               }}
             >
-              {statusSwitch(item.order_status).message}
+              {statusSwitch(item?.order_status || item?.status).message}
             </Text>
             <Text
               style={{
@@ -91,19 +98,24 @@ const ActivityHistoryCard = ({ item }) => {
                 color: COLORS.primary,
               }}
             >
-              {moment(item.created_at).format("DD MMM YYYY")}
+              {moment(item?.createdAt).format("DD MMM YYYY")}
             </Text>
           </View>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-              {item.order_items[0].product.product_name}
+              {item?.order_items?.[0]?.product?.product_name
+                ? item.order_items[0].product.product_name
+                : item?.stylist?.brand_name ||
+                  `${item?.stylist?.user?.first_name} ${item?.stylist?.user?.last_name}`}
             </Text>
             <Text
               style={{ fontFamily: "medium", fontSize: 14, color: COLORS.gray }}
             >
-              x{item.order_items[0].quantity}
+              {item?.order_items?.[0]?.quantity
+                ? `x${item.order_items[0].quantity}`
+                : "1 Session"}
             </Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
@@ -115,10 +127,11 @@ const ActivityHistoryCard = ({ item }) => {
               }}
             >
               Rp.{" "}
-              {parseFloat(
-                // eslint-disable-next-line prettier/prettier
-                item.order_items[0].product.product_price,
-              ).toLocaleString("id-ID")}
+              {item?.order_items?.[0]?.product?.product_price
+                ? parseFloat(
+                    item.order_items[0].product.product_price,
+                  ).toLocaleString("id-ID")
+                : parseFloat(item?.stylist?.price).toLocaleString("id-ID")}
             </Text>
           </View>
           <View style={{ alignSelf: "flex-end", flexDirection: "row", gap: 5 }}>
@@ -127,7 +140,12 @@ const ActivityHistoryCard = ({ item }) => {
             >
               Order's Total:
             </Text>
-            <Text>Rp. {parseFloat(item.total).toLocaleString("id-ID")}</Text>
+            <Text>
+              Rp.{" "}
+              {parseFloat(item?.total || item?.stylist?.price).toLocaleString(
+                "id-ID",
+              )}
+            </Text>
           </View>
         </View>
       </View>
@@ -139,7 +157,9 @@ const ActivityHistoryCard = ({ item }) => {
             color: COLORS.darkGray,
           }}
         >
-          Show Detail Products ({item?.order_items.length || 0} items)
+          {item?.order_items
+            ? `Show Detail Products (${item?.order_items?.length || 0} items)`
+            : "Show Detail Bookings"}
         </Text>
       </View>
     </TouchableOpacity>

@@ -1,4 +1,5 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { Spinner } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
@@ -10,7 +11,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useGetOrderApi } from "../../../API/OrderAPI";
+import { useGetBookingsApi, useGetOrderApi } from "../../../API/OrderAPI";
+import { useGetAllActivityApi } from "../../../API/ProfileApi";
 import { COLORS } from "../../../constants";
 import { ActivityFilterMenu, ActivityHistoryCard } from "../../molecules";
 
@@ -25,17 +27,44 @@ const MyActivity = () => {
   const [selectedFilter, setSelectedFilter] = useState(filterItems[0]);
   const filterRef = useRef(null);
 
-  const { getAllOrder, orderData } = useGetOrderApi();
+  const { getBookings, bookingsData, bookingsLoading } = useGetBookingsApi();
+  const { getAllOrder, orderData, orderLoading } = useGetOrderApi();
+  const {
+    getAllActivity,
+    allActivityData,
+    loading: allActivityLoading,
+  } = useGetAllActivityApi();
+
+  const loading = allActivityLoading || orderLoading || bookingsLoading;
 
   useFocusEffect(
     useCallback(() => {
-      getAllOrder();
-    }, []),
+      switch (selectedFilter) {
+        case "All Activity":
+          getAllActivity();
+          break;
+        case "Fashion Purchase":
+          getAllOrder();
+          break;
+        case "Stylist Consultation":
+          getBookings();
+          break;
+        default:
+          break;
+      }
+    }, [selectedFilter]),
   );
 
   const handlePressOutsideFilter = () => {
     setShowFilter(false);
   };
+
+  const data =
+    selectedFilter === "All Activity"
+      ? allActivityData
+      : selectedFilter === "Fashion Purchase"
+        ? orderData
+        : bookingsData;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -84,15 +113,26 @@ const MyActivity = () => {
               />
             </TouchableOpacity>
           </View>
-          <FlatList
-            data={orderData}
-            contentContainerStyle={{
-              paddingVertical: 7,
-              paddingHorizontal: 10,
-              gap: 10,
-            }}
-            renderItem={({ item }) => <ActivityHistoryCard item={item} />}
-          />
+          {loading ? (
+            <Spinner />
+          ) : (
+            <FlatList
+              data={data}
+              contentContainerStyle={{
+                paddingVertical: 7,
+                paddingHorizontal: 10,
+                gap: 10,
+              }}
+              renderItem={({ item }) => <ActivityHistoryCard item={item} />}
+              ListEmptyComponent={
+                <View style={{ alignItems: "center", padding: 20 }}>
+                  <Text style={{ fontFamily: "medium", fontSize: 16 }}>
+                    There are no activities currently
+                  </Text>
+                </View>
+              }
+            />
+          )}
 
           {showFilter && (
             <ActivityFilterMenu

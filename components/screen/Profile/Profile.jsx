@@ -69,7 +69,7 @@ const Profile = () => {
           }}
         >
           <Ionicons
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("Home")}
             name="arrow-back"
             size={24}
             color={COLORS.primary}

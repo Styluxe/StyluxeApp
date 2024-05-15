@@ -194,9 +194,48 @@ const useRegisterApi = () => {
   return { register, loading, error, code };
 };
 
+const useGetAllActivityApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+  const [allActivityData, setAllActivityData] = useState([]);
+
+  const getAllActivity = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.error("Token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}/user/all-activity`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { code, data } = response.data;
+
+      console.log("fetch all activity");
+      setAllActivityData(data);
+      setCode(code);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.error("Error fetching all activity", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, getAllActivity, code, allActivityData };
+};
+
 export {
   useProfilePictureApi,
   useProfileApi,
   useGetProfileApi,
   useRegisterApi,
+  useGetAllActivityApi,
 };

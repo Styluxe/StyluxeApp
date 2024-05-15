@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   TouchableOpacity,
   View,
@@ -11,11 +11,35 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { styles } from "./Stylist.style";
+import { useGetAllStylistApi } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
 import { StylistDetailCard } from "../../organism";
 
 const Stylist = () => {
   const navigation = useNavigation();
+  const [stylistList, setStylistList] = useState([]);
+  const { getAllStylist, code, data, setCode } = useGetAllStylistApi();
+
+  const categoryData = [
+    "Party Stylist",
+    "Wedding Stylist",
+    "Event Stylist",
+    "Other",
+  ];
+
+  useFocusEffect(
+    useCallback(() => {
+      getAllStylist();
+    }, []),
+  );
+
+  useEffect(() => {
+    if (code === 200) {
+      setStylistList(data);
+      setCode(null);
+    }
+  }, [code, data]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header_container}>
@@ -48,13 +72,13 @@ const Stylist = () => {
 
       <View style={styles.category_container}>
         <FlatList
-          data={[1, 2, 3, 4, 5]}
+          data={categoryData}
           horizontal
           showsHorizontalScrollIndicator={false}
-          renderItem={() => (
+          renderItem={({ item }) => (
             <TouchableOpacity>
               <View style={styles.category_box}>
-                <Text style={styles.category_text}>Category 1</Text>
+                <Text style={styles.category_text}>{item}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -74,8 +98,8 @@ const Stylist = () => {
               </Text>
             </View>
           )}
-          data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-          renderItem={({ item }) => <StylistDetailCard />}
+          data={stylistList}
+          renderItem={({ item }) => <StylistDetailCard stylist={item} />}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ gap: 10 }}
           showsVerticalScrollIndicator={false}
