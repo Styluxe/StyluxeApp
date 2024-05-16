@@ -177,13 +177,9 @@ const useRegisterApi = () => {
     try {
       const response = await axios.post(`${API_URL}/auth/register`, loginData);
       const { code } = response.data;
-      console.log("Register successful");
 
-      if (code === 200) {
-        console.log("Register successful");
-        setCode(code);
-        setLoading(false);
-      }
+      console.log("Register successful");
+      setCode(code);
       setLoading(false);
     } catch (error) {
       setError(error);
@@ -191,7 +187,7 @@ const useRegisterApi = () => {
     }
   };
 
-  return { register, loading, error, code };
+  return { register, loading, error, code, setCode };
 };
 
 const useGetAllActivityApi = () => {
@@ -232,10 +228,49 @@ const useGetAllActivityApi = () => {
   return { error, loading, getAllActivity, code, allActivityData };
 };
 
+const useGetMyBookings = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+
+  const getMyBookings = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        `${API_URL}/booking/user-active-bookings`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { data } = response?.data;
+
+      setData(data);
+      console.log("fetch active bookings");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+  return { getMyBookings, loading, error, data };
+};
+
 export {
   useProfilePictureApi,
   useProfileApi,
   useGetProfileApi,
   useRegisterApi,
   useGetAllActivityApi,
+  useGetMyBookings,
 };

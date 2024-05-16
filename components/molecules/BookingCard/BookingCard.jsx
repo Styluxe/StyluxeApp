@@ -1,4 +1,5 @@
 import { Button } from "@gluestack-ui/themed";
+import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import React from "react";
 import { View, Text } from "react-native";
@@ -9,9 +10,10 @@ import { StarRating } from "../StarRating";
 
 const BookingCard = ({ data, handleAccept, handleReject }) => {
   const fullBookingDate = `${data?.booking_details?.booking_date}T00:00:00+07:00`;
+  const navigation = useNavigation();
 
   const bookingTime = data?.booking_details?.booking_time;
-  const fullOrderDateTime = `2024-05-14T${bookingTime}+07:00`;
+  const fullOrderDateTime = `2024-05-14T${bookingTime}:00+07:00`;
 
   const endTime = moment(fullOrderDateTime).add(30, "m").format("HH:mm");
 
@@ -68,11 +70,16 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
       ) : isAccepted ? (
         <Button disabled>
           <Text style={{ fontFamily: "semibold", color: COLORS.white }}>
-            Chat will be open in 1 day 3 hours
+            Chat will be open in {moment(fullOrderDateTime).fromNow("day")}
           </Text>
         </Button>
       ) : isScheduled ? (
-        <Button bgColor={COLORS.primary}>
+        <Button
+          bgColor={COLORS.primary}
+          onPress={() => {
+            navigation.navigate("ChatRoom", { booking_id: data?.booking_id });
+          }}
+        >
           <Text style={{ fontFamily: "semibold", color: COLORS.white }}>
             Open Chat with customer
           </Text>

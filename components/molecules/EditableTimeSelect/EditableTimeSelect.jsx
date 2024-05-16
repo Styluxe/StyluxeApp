@@ -74,7 +74,7 @@ const EditableTimeSelect = ({ id, time, isAvailable }) => {
         <Ionicons
           name={isAvailable ? "radio-button-on" : "radio-button-off"}
           size={14}
-          color={COLORS.darkGray}
+          color={isAvailable ? "green" : "gray"}
         />
 
         <Text

@@ -24,7 +24,11 @@ import {
   userDataState,
 } from "../../../redux/slice/app.slice";
 import { CartIcon } from "../../molecules";
-import { NewestCollection, PopularStylist } from "../../organism/HomeComponent";
+import {
+  ActiveBooking,
+  NewestCollection,
+  PopularStylist,
+} from "../../organism/HomeComponent";
 
 const Home = () => {
   const navigation = useNavigation();
@@ -39,6 +43,8 @@ const Home = () => {
 
   const { checkExpiryDate } = useAuth();
   const { getProfile } = useGetProfileApi();
+
+  const isCustomer = profile?.user_role !== "stylist";
 
   const serviceMenu = [
     {
@@ -73,8 +79,7 @@ const Home = () => {
       if (auth) {
         getProfile();
       }
-      // eslint-disable-next-line prettier/prettier
-    }, [auth])
+    }, [auth]),
   );
 
   return (
@@ -153,61 +158,78 @@ const Home = () => {
           </View>
         </TouchableOpacity>
 
-        <View style={{ gap: 16, paddingHorizontal: 14, paddingVertical: 24 }}>
-          <Text
-            style={{ fontSize: 18, fontFamily: "bold", color: COLORS.primary }}
-          >
-            Features
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            {serviceMenu.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={{
-                  flex: 1,
-                  borderRadius: 24,
-                  overflow: "hidden",
-                  borderWidth: 2,
-                  borderColor: COLORS.primary,
-                }}
-                onPress={item.onPress}
-              >
-                <View
-                  style={{
-                    height: 172,
-                    paddingHorizontal: 12,
-                    paddingTop: 16,
-                    justifyContent: "space-between",
-                    backgroundColor: COLORS.lightBrown,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: COLORS.primary,
-                      fontFamily: "bold",
-                      fontSize: 14,
-                    }}
-                  >
-                    {item.title}
-                  </Text>
+        {profile?.user_role && <ActiveBooking role={profile?.user_role} />}
 
-                  <Image
-                    style={{ height: 72, width: "100%", resizeMode: "contain" }}
-                    source={item.image}
-                  />
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-        <PopularStylist />
+        {isCustomer ? (
+          <>
+            <View
+              style={{ gap: 16, paddingHorizontal: 14, paddingVertical: 24 }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: "bold",
+                  color: COLORS.primary,
+                }}
+              >
+                Features
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                {serviceMenu.map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={{
+                      flex: 1,
+                      borderRadius: 24,
+                      overflow: "hidden",
+                      borderWidth: 2,
+                      borderColor: COLORS.primary,
+                    }}
+                    onPress={item.onPress}
+                  >
+                    <View
+                      style={{
+                        height: 172,
+                        paddingHorizontal: 12,
+                        paddingTop: 16,
+                        justifyContent: "space-between",
+                        backgroundColor: COLORS.lightBrown,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: COLORS.primary,
+                          fontFamily: "bold",
+                          fontSize: 14,
+                        }}
+                      >
+                        {item.title}
+                      </Text>
+
+                      <Image
+                        style={{
+                          height: 72,
+                          width: "100%",
+                          resizeMode: "contain",
+                        }}
+                        source={item.image}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+            <PopularStylist />
+          </>
+        ) : null}
+
         <NewestCollection />
       </ScrollView>
     </SafeAreaView>

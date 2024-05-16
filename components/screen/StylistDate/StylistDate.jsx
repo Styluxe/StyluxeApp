@@ -9,9 +9,9 @@ import React, { useCallback, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { usePublicGetBookingsApi } from "../../../API/OrderAPI";
 import { useGetScheduleByIdApi } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
-import { dummyOrder } from "../../../mocks/DummyStylist";
 import { TimeSelect } from "../../molecules";
 import CalendarPicker from "../../molecules/CalendarPicker";
 
@@ -23,10 +23,12 @@ const StylistDate = () => {
   const { stylist_id } = route.params;
 
   const { getScheduleById, data } = useGetScheduleByIdApi();
+  const { bookingsData, getBookings } = usePublicGetBookingsApi();
 
   useFocusEffect(
     useCallback(() => {
       getScheduleById(stylist_id);
+      getBookings(stylist_id);
     }, []),
   );
 
@@ -44,7 +46,7 @@ const StylistDate = () => {
   };
 
   //get all the order date and time from dummyOrder
-  const allBookingDate = dummyOrder.map((o) => {
+  const allBookingDate = bookingsData?.map((o) => {
     return {
       booking_id: o.booking_id,
       date: o.booking_details.booking_date,

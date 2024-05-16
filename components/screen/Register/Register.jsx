@@ -22,7 +22,7 @@ import { useRegisterApi } from "../../../API/ProfileApi";
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const { register, loading, code } = useRegisterApi();
+  const { register, loading, code, setCode } = useRegisterApi();
   const [registerData, setRegisterData] = useState({
     first_name: "",
     last_name: "",
@@ -39,11 +39,14 @@ const Register = () => {
 
   useEffect(() => {
     if (code === 201) {
-      dispatch(setLoginModalOpen(true));
+      alert("Register Successful");
       navigation.navigate("Home");
+      dispatch(setLoginModalOpen(true));
+      setCode(null);
     } else if (code === 400) {
       console.log("error");
       alert("Error registering, please try again");
+      setCode(null);
     }
   }, [code]);
 

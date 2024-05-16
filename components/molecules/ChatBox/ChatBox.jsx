@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { View, Text, Image } from "react-native";
 
@@ -57,7 +58,7 @@ const ChatBox = ({ isSender, content, time }) => {
             color: isSender ? COLORS.lightGray : COLORS.darkGray,
           }}
         >
-          {time}
+          {moment(time).format("LT")}
         </Text>
       </View>
     </View>

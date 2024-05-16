@@ -244,13 +244,6 @@ const useGetAllStylistApi = () => {
   const getAllStylist = async () => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        console.log("token not found");
-        setLoading(false);
-        return;
-      }
-
       const response = await axios.get(`${API_URL}/stylist/all`);
 
       const { data, code } = response?.data;
@@ -277,13 +270,6 @@ const useGetStylistByIdApi = () => {
   const getStylistById = async (stylist_id) => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        console.log("token not found");
-        setLoading(false);
-        return;
-      }
-
       const response = await axios.get(
         `${API_URL}/stylist/profile/${stylist_id}`,
       );

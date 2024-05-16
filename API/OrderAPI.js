@@ -358,6 +358,79 @@ const useUpdateBookingStatus = () => {
   return { error, loading, updateBookingStatus, responseData, code, setCode };
 };
 
+const useAcceptBookingApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const acceptBooking = async (bookingId) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/booking/accept-booking/${bookingId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      console.log("accept booking");
+      setCode(code);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+  return { error, loading, acceptBooking, code, setCode };
+};
+
+const usePublicGetBookingsApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [bookingsData, setBookingsData] = useState(null);
+
+  const getBookings = async (stylist_id) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        `${API_URL}/booking/stylist/${stylist_id}`,
+      );
+
+      const { data } = response?.data;
+
+      console.log("get bookings");
+      setBookingsData(data);
+
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+  return { error, loading, getBookings, bookingsData };
+};
+
 export {
   useGetOrderApi,
   useGetOrderById,
@@ -368,4 +441,6 @@ export {
   useGetBookingById,
   useGetBookingsApi,
   useUpdateBookingStatus,
+  useAcceptBookingApi,
+  usePublicGetBookingsApi,
 };
