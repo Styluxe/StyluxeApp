@@ -337,6 +337,42 @@ const useGetScheduleByIdApi = () => {
   return { getScheduleById, loading, error, data };
 };
 
+// booking/active-bookings
+const useGetActiveBookings = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  const getActiveBookings = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}/booking/active-bookings`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { data } = response?.data;
+
+      setData(data);
+      console.log("fetch active bookings");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+  return { getActiveBookings, loading, error, data };
+};
+
 export {
   useGetStylistByAuthApi,
   useUpdateStylistByIdApi,
@@ -346,4 +382,5 @@ export {
   useGetAllStylistApi,
   useGetStylistByIdApi,
   useGetScheduleByIdApi,
+  useGetActiveBookings,
 };

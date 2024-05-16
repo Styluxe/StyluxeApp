@@ -1,12 +1,31 @@
-import React, { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useUpdateBookingStatus } from "../../../API/OrderAPI";
+import { useGetActiveBookings } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
 import { BookingCard } from "../../molecules";
 
 const StylistBookings = () => {
   const [selectedMenu, setSelectedMenu] = useState("active");
+
+  const { getActiveBookings, data } = useGetActiveBookings();
+  const { updateBookingStatus, code, setCode } = useUpdateBookingStatus();
+
+  useFocusEffect(
+    useCallback(() => {
+      getActiveBookings();
+    }, []),
+  );
+
+  useEffect(() => {
+    if (code === 200) {
+      getActiveBookings();
+      setCode(null);
+    }
+  });
 
   const menu = ["active", "upcoming", "past"];
   return (
@@ -52,12 +71,19 @@ const StylistBookings = () => {
         </View>
 
         <FlatList
-          data={[1]}
+          data={data}
           contentContainerStyle={{
             gap: 20,
             paddingVertical: 20,
           }}
-          renderItem={() => <BookingCard />}
+          renderItem={({ item }) => (
+            <BookingCard
+              data={item}
+              handleAccept={() => {
+                updateBookingStatus(item?.booking_id, undefined, "accepted");
+              }}
+            />
+          )}
         />
       </View>
     </SafeAreaView>

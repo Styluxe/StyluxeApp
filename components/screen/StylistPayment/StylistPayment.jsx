@@ -22,6 +22,8 @@ const StylistPayment = () => {
 
   const { stylist_id, date, time } = route.params;
 
+  console.log("time", time);
+
   const { getStylistById, data } = useGetStylistByIdApi();
   const [selectedPayment, setSelectedPayment] = useState(null);
   const { createBooking, code, responseData, setCode } = useCreateBookingApi();

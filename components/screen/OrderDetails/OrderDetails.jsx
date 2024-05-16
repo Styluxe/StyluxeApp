@@ -12,8 +12,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGetBookingById, useGetOrderById } from "../../../API/OrderAPI";
 import { COLORS, SHADOWS } from "../../../constants";
-import { CheckoutItemCard } from "../../organism";
 import { formatTimeWithAMPM } from "../../../hook/hook";
+import { CheckoutItemCard } from "../../organism";
 
 const OrderDetails = () => {
   const navigation = useNavigation();
@@ -67,6 +67,16 @@ const OrderDetails = () => {
         return {
           color: COLORS.green,
           message: "Delivered",
+        };
+      case "cancelled":
+        return {
+          color: COLORS.red,
+          message: "Cancelled",
+        };
+      case "accepted":
+        return {
+          color: COLORS.primary,
+          message: "Accepted by Stylist",
         };
       default:
         return {
