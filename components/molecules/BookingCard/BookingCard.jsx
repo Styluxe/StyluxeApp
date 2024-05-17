@@ -68,9 +68,9 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
       {past ? (
         <StarRating />
       ) : isAccepted ? (
-        <Button disabled>
-          <Text style={{ fontFamily: "semibold", color: COLORS.white }}>
-            Chat will be open in {moment(fullOrderDateTime).fromNow("day")}
+        <Button disabled bgColor={COLORS.secondary}>
+          <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>
+            Chat will be open in {moment(fullBookingDate).fromNow("day")}
           </Text>
         </Button>
       ) : isScheduled ? (

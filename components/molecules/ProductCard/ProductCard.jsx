@@ -77,15 +77,15 @@ const ProductCard = ({
             {price}
           </Text>
 
-          <View style={{ flexDirection: "row", gap: 5 }}>
+          {/* <View style={{ flexDirection: "row", gap: 5 }}>
             <Octicons name="star-fill" size={18} color="orange" />
             <Text style={{ fontFamily: "medium", color: COLORS.gray }}>
               {rating}
             </Text>
-          </View>
+          </View> */}
         </View>
 
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <View
             style={{
               width: 28,
@@ -101,7 +101,7 @@ const ProductCard = ({
           >
             <Octicons name="plus" size={18} color="white" />
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </TouchableOpacity>
   );

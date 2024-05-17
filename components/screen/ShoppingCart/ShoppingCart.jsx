@@ -21,7 +21,6 @@ import CartItemCard from "../../organism/ShoppingCartComponent/CartItemCard/Cart
 const ShoppingCart = () => {
   const navigation = useNavigation();
   const [isFooterVisible, setIsFooterVisible] = useState(true);
-  // const [cartData, setCartData] = useState({});
   const cartData = useSelector(cartDataState);
 
   const { loading: loadingViewCart, getCart } = useViewCartApi();

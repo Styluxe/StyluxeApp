@@ -86,10 +86,14 @@ const Home = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.header_container}>
-          <Ionicons name="location-outline" size={24} color={COLORS.primary} />
+          <View style={{ width: 25, height: 25 }}>
+            <Image
+              source={require("../../../assets/icon.png")}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </View>
           <Text style={styles.location_txt}>
-            Shipped to
-            <Text style={styles.target_location_txt}>{" Rumah"}</Text>
+            Welcome to <Text style={{ color: COLORS.primary }}>Styluxe</Text>
           </Text>
         </View>
 
@@ -112,16 +116,36 @@ const Home = () => {
                 : dispatch(setLoginModalOpen(true));
             }}
           >
-            <View style={styles.avatar_container}>
-              <Image
-                style={styles.avatar}
-                source={
-                  profile?.profile_picture
-                    ? { uri: profile.profile_picture }
-                    : require("../../../assets/content/profpic.png")
-                }
-              />
-            </View>
+            {!auth ? (
+              <View
+                style={{
+                  padding: 5,
+                  backgroundColor: COLORS.primary,
+                  borderRadius: 5,
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "medium",
+                    fontSize: 12,
+                    color: COLORS.white,
+                  }}
+                >
+                  Login
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.avatar_container}>
+                <Image
+                  style={styles.avatar}
+                  source={
+                    profile?.profile_picture
+                      ? { uri: profile.profile_picture }
+                      : require("../../../assets/content/profpic.png")
+                  }
+                />
+              </View>
+            )}
           </TouchableOpacity>
         </View>
       </View>

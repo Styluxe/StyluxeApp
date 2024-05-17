@@ -115,6 +115,7 @@ const useCreateOrder = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
+  const [code, setCode] = useState(null);
 
   const createOrder = async (payment_provider, address_id) => {
     setLoading(true);
@@ -136,10 +137,11 @@ const useCreateOrder = () => {
         },
       );
 
-      const { data } = response?.data;
+      const { data, code } = response?.data;
 
       console.log("create order");
       setResponseData(data);
+      setCode(code);
       setLoading(false);
     } catch (error) {
       setError(error);
@@ -148,7 +150,7 @@ const useCreateOrder = () => {
     }
   };
 
-  return { error, loading, createOrder, responseData };
+  return { error, loading, createOrder, responseData, code, setCode };
 };
 
 const useUpdateStatus = () => {

@@ -72,8 +72,7 @@ const useAddToCartApi = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          // eslint-disable-next-line prettier/prettier
-        }
+        },
       );
 
       const { code } = response?.data;
@@ -91,7 +90,7 @@ const useAddToCartApi = () => {
     setLoading(false);
   };
 
-  return { code, loading, error, addToCart };
+  return { code, loading, error, addToCart, setCode };
 };
 
 const useRemoveFromCartApi = () => {
@@ -120,7 +119,7 @@ const useRemoveFromCartApi = () => {
             Authorization: `Bearer ${token}`,
           },
           // eslint-disable-next-line prettier/prettier
-        }
+        },
       );
 
       const { code } = response?.data;
@@ -167,7 +166,7 @@ const useUpdateQuantityApi = () => {
             Authorization: `Bearer ${token}`,
           },
           // eslint-disable-next-line prettier/prettier
-        }
+        },
       );
 
       const { code } = response?.data;

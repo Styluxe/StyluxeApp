@@ -62,19 +62,19 @@ const StylistAboutMe = () => {
   const handleCancel = () => {
     setIsEditing(false);
     setEditData({
-      brand_name: actualData.brand_name,
-      about: actualData.about,
-      price: actualData.price,
-      type: actualData.type,
+      brand_name: actualData?.brand_name,
+      about: actualData?.about,
+      price: actualData?.price,
+      type: actualData?.type,
     });
   };
 
   const handleEdit = () => {
     setEditData({
-      brand_name: actualData.brand_name,
-      about: actualData.about,
-      price: actualData.price,
-      type: actualData.type,
+      brand_name: actualData?.brand_name,
+      about: actualData?.about,
+      price: actualData?.price,
+      type: actualData?.type,
     });
     setIsEditing(true);
   };
@@ -241,11 +241,11 @@ const StylistAboutMe = () => {
                       borderBottomColor: COLORS.gray,
                       minWidth: "15%",
                     }}
-                    value={editData?.price}
+                    value={editData?.price.toString()}
                     placeholder="price"
                     keyboardType="numeric"
                     onChangeText={(text) =>
-                      setEditData({ ...editData, price: text })
+                      setEditData({ ...editData, price: parseInt(text, 10) })
                     }
                   />
                   <Text style={styles.price_info_text}>- per Session</Text>

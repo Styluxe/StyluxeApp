@@ -15,7 +15,7 @@ const Checkout = () => {
 
   const { getPaymentSummary, summaryData } = useGetPaymentSummary();
   const [selectedPayment, setSelectedPayment] = useState(null);
-  const { createOrder, loading, responseData } = useCreateOrder();
+  const { createOrder, responseData, code, setCode } = useCreateOrder();
 
   useFocusEffect(
     useCallback(() => {
@@ -28,14 +28,15 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    if (responseData) {
-      console.log("re", responseData.order_id);
+    if (code === 200) {
       navigation.navigate("PaymentDetails", {
         routeFrom: "Checkout",
         order_id: responseData.order_id,
       });
+
+      setCode(null);
     }
-  }, [responseData]);
+  }, [responseData, code]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -68,13 +69,41 @@ const Checkout = () => {
               backgroundColor: COLORS.white,
             }}
           >
-            <CheckoutAddressCard
-              address_name={summaryData.address?.name}
-              user_name={summaryData.address?.receiver_name}
-              address={summaryData.address?.address}
-              phone={summaryData.address?.mobile}
-              onPress={() => navigation.navigate("MyAddress")}
-            />
+            {summaryData?.address ? (
+              <CheckoutAddressCard
+                address_name={summaryData.address?.name}
+                user_name={summaryData.address?.receiver_name}
+                address={summaryData.address?.address}
+                phone={summaryData.address?.mobile}
+                onPress={() => navigation.navigate("MyAddress")}
+              />
+            ) : (
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderColor: COLORS.gray2,
+                  padding: 10,
+                  borderRadius: 5,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ fontFamily: "medium", fontSize: 14 }}>
+                  You don't have any address
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: "medium",
+                    fontSize: 14,
+                    color: COLORS.primary,
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  Create Now
+                </Text>
+              </View>
+            )}
           </View>
           <View
             style={{
@@ -222,8 +251,12 @@ const Checkout = () => {
         </View>
 
         <Button
-          disabled={!selectedPayment}
-          bgColor={!selectedPayment ? COLORS.gray2 : COLORS.primary}
+          disabled={!selectedPayment || !summaryData.address}
+          bgColor={
+            !selectedPayment || !summaryData.address
+              ? COLORS.gray2
+              : COLORS.primary
+          }
           onPress={handleCheckout}
         >
           <ButtonText

@@ -62,6 +62,7 @@ const MyBookingCard = ({ item, role }) => {
         gap: 10,
         backgroundColor: COLORS.white,
         borderRadius: 10,
+        flex: 1,
         ...SHADOWS.medium,
       }}
     >

@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   location_txt: {
-    fontFamily: "medium",
+    fontFamily: "semibold",
     color: COLORS.black,
   },
   target_location_txt: {

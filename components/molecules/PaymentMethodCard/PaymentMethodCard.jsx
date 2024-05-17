@@ -8,7 +8,7 @@ const PaymentMethodCard = ({ setSelectedPayment, selectedPayment }) => {
   const paymentMethod = [
     {
       id: 1,
-      group_name: "E-Money",
+      group_name: "E-Wallet",
       payment: [
         {
           id: 1,

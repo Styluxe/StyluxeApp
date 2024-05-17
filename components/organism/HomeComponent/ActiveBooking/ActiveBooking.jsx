@@ -1,11 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text } from "react-native";
 
 import { useGetMyBookings } from "../../../../API/ProfileApi";
 import { useGetActiveBookings } from "../../../../API/StylistApi";
-import { COLORS } from "../../../../constants";
+import { COLORS, SIZES } from "../../../../constants";
 import { MyBookingCard } from "../../../molecules";
+import Carousel from "react-native-reanimated-carousel";
 
 const ActiveBooking = ({ role }) => {
   const { data, getMyBookings } = useGetMyBookings();
@@ -43,28 +44,42 @@ const ActiveBooking = ({ role }) => {
         My Bookings
       </Text>
 
-      <View
-        style={{
-          paddingHorizontal: 10,
-        }}
-      >
+      <View>
         {data?.length > 0 ? (
-          <MyBookingCard item={data[0]} />
+          <View style={{ padding: 10 }}>
+            <MyBookingCard item={data[0]} />
+          </View>
         ) : bookingsStylist.length > 0 ? (
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 10 }}
+          // <FlatList
+          //   horizontal
+          //   showsHorizontalScrollIndicator={false}
+          //   contentContainerStyle={{ gap: 10 }}
+          //   data={filterBookingStylist}
+          //   renderItem={({ item }) => (
+          //     <View
+          //       style={{
+          //         width: 350,
+          //         paddingVertical: 10,
+          //         paddingHorizontal: 10,
+          //       }}
+          //     >
+          //       <MyBookingCard item={item} role={role} />
+          //     </View>
+          //   )}
+          // />
+          <Carousel
+            width={SIZES.width - 20}
+            height={200}
             data={filterBookingStylist}
-            renderItem={({ item }) => (
+            loop={false}
+            renderItem={({ index, item: booking }) => (
               <View
                 style={{
-                  width: 350,
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
+                  flex: 1,
+                  padding: 10,
                 }}
               >
-                <MyBookingCard item={item} role={role} />
+                <MyBookingCard item={booking} role={role} />
               </View>
             )}
           />

@@ -74,7 +74,7 @@ const useAuth = () => {
       console.log("token found");
     }
 
-    if (expiryDate && currentDate.isAfter(expiryToDate)) {
+    if ((expiryDate && currentDate.isAfter(expiryToDate)) || !token) {
       logout();
     }
   };

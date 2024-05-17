@@ -16,11 +16,16 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
+import { useDispatch, useSelector } from "react-redux";
 
 import { styles } from "./StylistDetail.style";
 import { useGetStylistByIdApi } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
 import { dummyStylistDetail } from "../../../mocks/DummyStylist";
+import {
+  setLoginModalOpen,
+  userDataState,
+} from "../../../redux/slice/app.slice";
 import { ReviewBox, StarRating } from "../../molecules";
 
 const StylistDetails = () => {
@@ -33,6 +38,9 @@ const StylistDetails = () => {
 
   const route = useRoute();
   const { stylist_id } = route.params;
+  const user = useSelector(userDataState);
+  const dispatch = useDispatch();
+  const no_auth = !user?.user_role;
 
   useFocusEffect(
     useCallback(() => {
@@ -277,11 +285,15 @@ const StylistDetails = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("StylistDate", {
-              stylist_id: stylistData.stylist_id,
-            })
-          }
+          onPress={() => {
+            if (no_auth) {
+              dispatch(setLoginModalOpen(true));
+            } else {
+              navigation.navigate("StylistDate", {
+                stylist_id: stylistData.stylist_id,
+              });
+            }
+          }}
           style={{ flex: 1 }}
         >
           <View style={styles.consult_btn}>

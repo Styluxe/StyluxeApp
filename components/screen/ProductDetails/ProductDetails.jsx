@@ -11,29 +11,36 @@ import {
   TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 
 import { styles } from "./ProductDetails.style";
+import { useAddToCartApi, useViewCartApi } from "../../../API/CheckoutAPI";
 import { useGetSingleProductApi } from "../../../API/ProductAPI";
-import { dummyProductDetails } from "../../../mocks/DummyProduct";
+import {
+  setLoginModalOpen,
+  userDataState,
+} from "../../../redux/slice/app.slice";
 import {
   ProductAccordion,
   ProductDetailFooter,
   ProductImageSlider,
   SizeSelection,
 } from "../../organism";
-import { useAddToCartApi, useViewCartApi } from "../../../API/CheckoutAPI";
 
 const ProductDetails = () => {
-  const star = [1, 2, 3, 4, 5];
-
   const route = useRoute();
   const { product_id } = route.params;
 
   const navigation = useNavigation();
+  const user = useSelector(userDataState);
+
+  const dispatch = useDispatch();
 
   const { getProduct, product } = useGetSingleProductApi();
   const { getCart } = useViewCartApi();
-  const { addToCart, code } = useAddToCartApi();
+  const { addToCart, code, setCode } = useAddToCartApi();
+
+  const no_auth = !user?.user_role;
 
   useEffect(() => {
     getProduct({ productId: product_id });
@@ -43,6 +50,7 @@ const ProductDetails = () => {
     if (code === 200) {
       alert("Added to cart");
       getCart();
+      setCode(null);
       // navigation.navigate("ShoppingCart");
     }
   }, [code]);
@@ -87,23 +95,6 @@ const ProductDetails = () => {
                   <Text style={{ fontFamily: "semibold" }}>Rp</Text>
                   {parseFloat(product?.product_price).toLocaleString("id-ID")}
                 </Text>
-
-                <View style={styles.rating_container}>
-                  {star.map((item, index) => (
-                    <FontAwesome
-                      key={index}
-                      name={
-                        item <= dummyProductDetails.rating ? "star" : "star-o"
-                      }
-                      size={18}
-                      color="orange"
-                    />
-                  ))}
-
-                  <Text style={styles.rating_total}>
-                    {dummyProductDetails.rating}
-                  </Text>
-                </View>
               </View>
             </View>
 
@@ -177,8 +168,11 @@ const ProductDetails = () => {
       </View>
       <ProductDetailFooter
         onPress={() => {
-          console.log(CartData);
-          addToCart(CartData.product_id, CartData.quantity, CartData.size);
+          if (no_auth) {
+            dispatch(setLoginModalOpen(true));
+          } else {
+            addToCart(CartData.product_id, CartData.quantity, CartData.size);
+          }
         }}
         isDisabled={!selectedSize?.size}
       />
