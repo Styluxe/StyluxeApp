@@ -45,6 +45,8 @@ const useAuth = () => {
       console.log("login");
     } catch (error) {
       setError(error);
+      setCode(error.response.status);
+      console.log("error", error);
       setLoading(false);
     }
     setLoading(false);

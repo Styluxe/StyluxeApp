@@ -183,6 +183,7 @@ const useRegisterApi = () => {
       setLoading(false);
     } catch (error) {
       setError(error);
+      setCode(error.response.status);
       console.error("Error registering", error);
     }
   };

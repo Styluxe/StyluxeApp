@@ -23,7 +23,7 @@ import {
   setLoginModalOpen,
   userDataState,
 } from "../../../redux/slice/app.slice";
-import { CartIcon } from "../../molecules";
+import { CartIcon, MyCoins } from "../../molecules";
 import {
   ActiveBooking,
   NewestCollection,
@@ -76,6 +76,10 @@ const Home = () => {
     useCallback(() => {
       checkExpiryDate();
 
+      // if (!auth) {
+      //   dispatch(setLoginModalOpen(true));
+      // }
+
       if (auth) {
         getProfile();
       }
@@ -98,7 +102,7 @@ const Home = () => {
         </View>
 
         <View style={styles.header_action_list}>
-          <TouchableOpacity onPress={() => navigation.navigate("ChatRoom")}>
+          <TouchableOpacity onPress={() => alert("Coming Soon")}>
             <Ionicons
               name="notifications-outline"
               size={24}
@@ -165,6 +169,13 @@ const Home = () => {
             </View>
           </ImageBackground> */}
         </View>
+
+        {isCustomer ||
+          (profile?.user_role && (
+            <View style={{ paddingHorizontal: 14, paddingVertical: 14 }}>
+              <MyCoins />
+            </View>
+          ))}
 
         <TouchableOpacity onPress={() => navigation.navigate("Search")}>
           <View style={styles.search_container}>

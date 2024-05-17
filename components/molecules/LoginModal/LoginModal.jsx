@@ -76,13 +76,30 @@ const LoginModal = () => {
       console.log(error);
       toast.show({
         description: "Login failed!",
-        placement: "bottom",
+        placement: "top",
         render: ({ id }) => {
           const toastId = "toast-" + id;
           return (
             <Toast nativeID={toastId} action="danger" variant="solid">
               <VStack>
-                <ToastTitle>Login Failed</ToastTitle>
+                <ToastTitle>Wrong Password</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+      setCode(null);
+    } else if (code === 404) {
+      console.log(error);
+      toast.show({
+        description: "Login failed!",
+        placement: "top",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="danger" variant="solid">
+              <VStack>
+                <ToastTitle>Email Not Found</ToastTitle>
               </VStack>
             </Toast>
           );

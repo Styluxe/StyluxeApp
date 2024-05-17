@@ -145,6 +145,7 @@ const ChatRoom = () => {
         <View style={{ flexDirection: "row", gap: 15 }}>
           <View style={{ flexDirection: "row", gap: 5 }}>
             <Ionicons name="timer-outline" size={24} color="black" />
+            {/* timer */}
             <Text style={{ fontFamily: "regular", fontSize: 14 }}>30:00</Text>
           </View>
           {!isCustomer && (

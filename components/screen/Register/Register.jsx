@@ -6,8 +6,11 @@ import {
   Input,
   InputField,
   InputSlot,
+  Toast,
+  ToastTitle,
   VStack,
   View,
+  useToast,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -22,7 +25,7 @@ import { useRegisterApi } from "../../../API/ProfileApi";
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const { register, loading, code, setCode } = useRegisterApi();
+  const { register, code, setCode } = useRegisterApi();
   const [registerData, setRegisterData] = useState({
     first_name: "",
     last_name: "",
@@ -34,18 +37,34 @@ const Register = () => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
-  console.log("code", code);
+  const toast = useToast();
 
   useEffect(() => {
     if (code === 201) {
-      alert("Register Successful");
+      toast.show({
+        description: "Login success!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Register Success</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       navigation.navigate("Home");
       dispatch(setLoginModalOpen(true));
       setCode(null);
     } else if (code === 400) {
       console.log("error");
       alert("Error registering, please try again");
+      setCode(null);
+    } else if (code === 409) {
+      console.log("error");
+      alert("Error registering, email already exists");
       setCode(null);
     }
   }, [code]);
@@ -271,11 +290,13 @@ const Register = () => {
             <Button
               onPress={handleRegister}
               isDisabled={!isFormValid()}
-              backgroundColor={!isFormValid() ? COLORS.gray2 : COLORS.primary}
+              backgroundColor={
+                !isFormValid() ? COLORS.darkGray : COLORS.primary
+              }
             >
               <Text
                 style={{
-                  color: COLORS.white,
+                  color: COLORS.offwhite,
                   fontFamily: "bold",
                   fontSize: 16,
                 }}

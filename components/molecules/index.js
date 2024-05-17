@@ -16,3 +16,4 @@ export * from "./BookingCard";
 export * from "./EditableTimeSelect";
 export * from "./MyBookingCard";
 export * from "./ChatModal";
+export * from "./MyCoins";

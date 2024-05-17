@@ -359,6 +359,47 @@ const useGetActiveBookings = () => {
   return { getActiveBookings, loading, error, data };
 };
 
+const useUpdateOnlineStatus = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const updateOnlineStatus = async (online_status) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      console.log("update online status", online_status);
+
+      const response = await axios.put(
+        `${API_URL}/stylist/online-status`,
+        online_status,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      setCode(code);
+      console.log("updated online status");
+    } catch (error) {
+      setError(error);
+      console.log("error", error.response);
+      setCode(error.response.status);
+      setLoading(false);
+    }
+  };
+  return { updateOnlineStatus, loading, error, code, setCode };
+};
+
 export {
   useGetStylistByAuthApi,
   useUpdateStylistByIdApi,
@@ -369,4 +410,5 @@ export {
   useGetStylistByIdApi,
   useGetScheduleByIdApi,
   useGetActiveBookings,
+  useUpdateOnlineStatus,
 };

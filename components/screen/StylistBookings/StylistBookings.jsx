@@ -1,23 +1,45 @@
-import { useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { Switch } from "@gluestack-ui/themed";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useAcceptBookingApi } from "../../../API/OrderAPI";
 import {
-  useAcceptBookingApi,
-  useUpdateBookingStatus,
-} from "../../../API/OrderAPI";
-import { useGetActiveBookings } from "../../../API/StylistApi";
+  useGetActiveBookings,
+  useGetStylistByAuthApi,
+  useUpdateOnlineStatus,
+} from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
 import { BookingCard } from "../../molecules";
 
 const StylistBookings = () => {
   const [selectedMenu, setSelectedMenu] = useState("active");
   const [filteredBookings, setFilteredBookings] = useState([]);
+  const { getStylistByAuth, stylistData } = useGetStylistByAuthApi();
+  const {
+    updateOnlineStatus,
+    code: statusCode,
+    setCode: setStatusCode,
+  } = useUpdateOnlineStatus();
 
   const { getActiveBookings, data } = useGetActiveBookings();
-  // const { updateBookingStatus, code, setCode } = useUpdateBookingStatus();
   const { acceptBooking, code, setCode } = useAcceptBookingApi();
+
+  const isOnline = stylistData?.online_status === "online";
+
+  const navigation = useNavigation();
+
+  const toggleOnlineStatus = async () => {
+    if (isOnline) {
+      setStatusCode(null);
+      await updateOnlineStatus({ online_status: "offline" });
+    } else {
+      setStatusCode(null);
+      await updateOnlineStatus({ online_status: "online" });
+    }
+  };
 
   // Filter and sort booking stylist
   const filterBookings = (menu) => {
@@ -67,6 +89,7 @@ const StylistBookings = () => {
   useFocusEffect(
     useCallback(() => {
       getActiveBookings();
+      getStylistByAuth();
     }, []),
   );
 
@@ -75,8 +98,11 @@ const StylistBookings = () => {
       getActiveBookings();
       setCode(null);
     }
-  });
-  console.log("codeacc", code);
+    if (statusCode === 200) {
+      getStylistByAuth();
+      setStatusCode(null);
+    }
+  }, [code, statusCode]);
 
   useEffect(() => {
     setFilteredBookings(filterBookings(selectedMenu));
@@ -89,11 +115,38 @@ const StylistBookings = () => {
         style={{
           padding: 15,
           alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
         }}
       >
+        <Ionicons
+          name="calendar-outline"
+          size={24}
+          color={COLORS.primary}
+          onPress={() => navigation.navigate("ManageSchedule")}
+        />
         <Text style={{ fontSize: 20, fontFamily: "semibold" }}>
           My Bookings
         </Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text
+            style={{ fontFamily: "medium", color: isOnline ? "green" : "red" }}
+          >
+            {isOnline ? "Online" : "Offline"}
+          </Text>
+          <Switch
+            size="md"
+            value={isOnline}
+            onToggle={toggleOnlineStatus}
+            sx={{
+              _android: {
+                props: {
+                  trackColor: { true: "green", false: "red" },
+                },
+              },
+            }}
+          />
+        </View>
       </View>
       <View style={{ flex: 1, paddingHorizontal: 15 }}>
         <View style={{ flexDirection: "row", backgroundColor: COLORS.bgGray }}>
