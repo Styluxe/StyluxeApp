@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback } from "react";
+import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 
 import { LoginModal } from "./components/molecules";
@@ -30,6 +30,7 @@ import {
   StylistAboutMe,
   StylistManageSchedule,
   StylistPayment,
+  ManageAddress,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -45,24 +46,26 @@ export default function App() {
     extrabold: require("./fonts/Poppins-ExtraBold.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
     }
+    prepare();
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
     return null;
   }
 
-  onLayoutRootView();
-
   return (
     <GluestackUIProvider config={config}>
       <Provider store={store}>
         <StatusBar style="auto" />
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator initialRouteName="bottomTab">
             <Stack.Screen
               name="bottomTab"
               component={BottomTabNav}
@@ -138,6 +141,12 @@ export default function App() {
             <Stack.Screen
               name="MyAddress"
               component={MyAddress}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="ManageAddress"
+              component={ManageAddress}
               options={{ headerShown: false }}
             />
 

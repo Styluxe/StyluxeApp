@@ -58,28 +58,65 @@ const ChatRoom = () => {
       " " +
       conversation?.booking?.customer?.last_name;
 
-  useEffect(() => {
-    const socket = io("http://10.0.2.2:8080");
-    socket.on("connect", () => {
-      console.log("connected to server");
-    });
+  // useEffect(() => {
+  //   const socket = io("http://10.0.2.2:8080");
+  //   socket.on("connect", () => {
+  //     console.log("connected to server");
+  //   });
 
-    socket.on("new-message", (newMessage) => {
-      if (newMessage?.conversation_id === conversation?.conversation_id) {
-        setMessages((prevMessages) => [...prevMessages, newMessage.message]);
-      }
-    });
+  //   socket.on("new-message", (newMessage) => {
+  //     if (newMessage?.conversation_id === conversation?.conversation_id) {
+  //       console.log("new message", newMessage?.message);
+  //       setMessages((prevMessages) => [...prevMessages, newMessage?.message]);
+  //     }
+  //   });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  //   socket.on("error", (error) => {
+  //     console.error("Socket error:", error);
+  //   });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   useFocusEffect(
     useCallback(() => {
+      const socket = io("http://10.0.2.2:8080");
+
+      socket.on("connect", () => {
+        console.log("connected to server");
+
+        socket.emit("joinRoom", {
+          conversation_id: conversation?.conversation_id,
+        });
+
+        socket.on("new-message", (newMessage) => {
+          console.log("Received new message", newMessage);
+          if (newMessage?.conversation_id === conversation?.conversation_id) {
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              newMessage.message,
+            ]);
+          }
+        });
+
+        socket.on("error", (error) => {
+          console.error("Socket error:", error);
+        });
+
+        socket.on("disconnect", () => {
+          console.log("Disconnected from server");
+        });
+      });
+
       getConversationById(booking_id);
       getMessageById(booking_id);
-    }, [booking_id]),
+
+      return () => {
+        socket.disconnect();
+      };
+    }, [conversation?.conversation_id, booking_id]),
   );
 
   useEffect(() => {

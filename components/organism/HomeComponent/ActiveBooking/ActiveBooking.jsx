@@ -7,10 +7,15 @@ import { useGetActiveBookings } from "../../../../API/StylistApi";
 import { COLORS, SIZES } from "../../../../constants";
 import { MyBookingCard } from "../../../molecules";
 import Carousel from "react-native-reanimated-carousel";
+import { Spinner } from "@gluestack-ui/themed";
 
 const ActiveBooking = ({ role }) => {
-  const { data, getMyBookings } = useGetMyBookings();
-  const { getActiveBookings, data: bookingsStylist } = useGetActiveBookings();
+  const { data, getMyBookings, loading } = useGetMyBookings();
+  const {
+    getActiveBookings,
+    data: bookingsStylist,
+    loading: loadingStylist,
+  } = useGetActiveBookings();
 
   useFocusEffect(
     useCallback(() => {
@@ -29,14 +34,26 @@ const ActiveBooking = ({ role }) => {
         booking?.status === "accepted" || booking?.status === "scheduled",
     )
     .sort((a, b) => {
-      const dateA = new Date(
-        `${a.booking_details.booking_date}T${a.booking_details.booking_time}:00+07:00`,
-      );
-      const dateB = new Date(
-        `${b.booking_details.booking_date}T${b.booking_details.booking_time}:00+07:00`,
-      );
+      const dateA = new Date(`${a.booking_date}T${a.booking_time}:00+07:00`);
+      const dateB = new Date(`${b.booking_date}T${b.booking_time}:00+07:00`);
       return dateA - dateB;
     });
+
+  const filterBookingUser = data
+    ?.filter((booking) => booking?.status === "scheduled")
+    .sort((a, b) => {
+      const dateA = new Date(`${a.booking_date}T${a.booking_time}:00+07:00`);
+      const dateB = new Date(`${b.booking_date}T${b.booking_time}:00+07:00`);
+      return dateA - dateB;
+    });
+
+  if (loading || loadingStylist) {
+    return (
+      <View>
+        <Spinner color={COLORS.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={{ paddingHorizontal: 14, paddingVertical: 10 }}>
@@ -47,7 +64,7 @@ const ActiveBooking = ({ role }) => {
       <View>
         {data?.length > 0 ? (
           <View style={{ padding: 10 }}>
-            <MyBookingCard item={data[0]} />
+            <MyBookingCard item={filterBookingUser[0]} />
           </View>
         ) : bookingsStylist.length > 0 ? (
           // <FlatList

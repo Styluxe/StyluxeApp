@@ -267,6 +267,89 @@ const useGetMyBookings = () => {
   return { getMyBookings, loading, error, data };
 };
 
+const useGetUserCoinsApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [code, setCode] = useState(null);
+
+  const getUserCoins = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}/user/coins`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { data, code } = response?.data;
+
+      setData(data);
+      console.log("fetch user coins");
+      setCode(code);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+      setCode(error.response.status);
+    }
+  };
+
+  return { getUserCoins, loading, error, data, code, setCode };
+};
+
+const useClaimCoinApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const claimCoin = async (coin_amount, last_claim_date, claim_day) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/user/coin/claim`,
+        {
+          coin_amount,
+          last_claim_date,
+          claim_day,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response.data;
+
+      console.log("fetch user coins");
+      setCode(code);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+      setCode(error.response.status);
+    }
+  };
+  return { claimCoin, loading, error, code, setCode };
+};
+
 export {
   useProfilePictureApi,
   useProfileApi,
@@ -274,4 +357,6 @@ export {
   useRegisterApi,
   useGetAllActivityApi,
   useGetMyBookings,
+  useGetUserCoinsApi,
+  useClaimCoinApi,
 };

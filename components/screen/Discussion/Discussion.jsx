@@ -10,11 +10,15 @@ import {
 } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 
 import { COLORS } from "../../../constants";
 import { discussionExplore } from "../../../mocks/Dummydiscussion";
+import {
+  authKeyState,
+  setLoginModalOpen,
+} from "../../../redux/slice/app.slice";
 import { DiscussionHeader, DiscussionListCard } from "../../organism";
-import { LoginModal } from "../../molecules";
 
 const Discussion = () => {
   const navigation = useNavigation();
@@ -23,7 +27,9 @@ const Discussion = () => {
   const iconOpacity = useRef(new Animated.Value(1)).current;
   const [refreshing, setRefreshing] = useState(false);
   const scrollTimeout = useRef(null);
+  const auth = useSelector(authKeyState);
   const scrollViewRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     Animated.timing(iconOpacity, {
@@ -86,7 +92,13 @@ const Discussion = () => {
       />
 
       {scrollDirection === "up" ? (
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            !auth
+              ? dispatch(setLoginModalOpen(true))
+              : alert("Coming Soon/add post");
+          }}
+        >
           <View
             style={{
               position: "absolute",

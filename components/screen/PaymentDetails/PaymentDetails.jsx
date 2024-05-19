@@ -128,7 +128,7 @@ const PaymentDetails = () => {
         <Text style={{ fontFamily: "medium", fontSize: 20 }}>
           {isProduct
             ? orderData?.payment_details?.provider
-            : bookingData?.booking_details?.payment_details?.provider}{" "}
+            : bookingData?.payment_details?.provider}{" "}
           Payment
         </Text>
         <Text
@@ -141,8 +141,7 @@ const PaymentDetails = () => {
             {moment(
               isProduct
                 ? orderData?.payment_details?.payment_deadline
-                : bookingData?.booking_details?.payment_details
-                    ?.payment_deadline,
+                : bookingData?.payment_details?.payment_deadline,
             ).format("ll")}
           </Text>{" "}
           at{" "}
@@ -150,8 +149,7 @@ const PaymentDetails = () => {
             {moment(
               isProduct
                 ? orderData?.payment_details?.payment_deadline
-                : bookingData?.booking_details?.payment_details
-                    ?.payment_deadline,
+                : bookingData?.payment_details?.payment_deadline,
             ).format("LT")}
           </Text>{" "}
           or your order will be automatically canceled by the system
@@ -211,7 +209,7 @@ const PaymentDetails = () => {
           >
             {isProduct
               ? orderData?.payment_details?.provider
-              : bookingData?.booking_details?.payment_details?.provider}
+              : bookingData?.payment_details?.provider}
           </Text>
         </View>
         <View
@@ -241,7 +239,7 @@ const PaymentDetails = () => {
               {providerAccountNumberSwitch(
                 isProduct
                   ? orderData?.payment_details?.provider
-                  : bookingData?.booking_details?.payment_details?.provider,
+                  : bookingData?.payment_details?.provider,
               )}
             </Text>
             <Text
@@ -285,8 +283,7 @@ const PaymentDetails = () => {
               {parseInt(
                 isProduct
                   ? orderData?.payment_details?.transfer_amount
-                  : bookingData?.booking_details?.payment_details
-                      ?.transfer_amount,
+                  : bookingData?.payment_details?.transfer_amount,
                 10,
               ).toLocaleString("id-ID")}
             </Text>

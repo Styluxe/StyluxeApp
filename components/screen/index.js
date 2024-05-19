@@ -22,3 +22,4 @@ export * from "./StylistBookings";
 export * from "./StylistAboutMe";
 export * from "./StylistManageSchedule";
 export * from "./StylistPayment";
+export * from "./ManageAddress";

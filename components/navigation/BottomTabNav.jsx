@@ -23,7 +23,7 @@ const BottomTabNav = () => {
   const isStylist = userData?.user_role === "stylist" || false;
 
   return (
-    <Tab.Navigator screenOptions={screenOptions}>
+    <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
       <Tab.Screen
         name="Home"
         component={Home}

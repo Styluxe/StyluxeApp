@@ -170,12 +170,11 @@ const Home = () => {
           </ImageBackground> */}
         </View>
 
-        {isCustomer ||
-          (profile?.user_role && (
-            <View style={{ paddingHorizontal: 14, paddingVertical: 14 }}>
-              <MyCoins />
-            </View>
-          ))}
+        {profile?.user_role && profile?.user_role !== "stylist" && (
+          <View style={{ paddingHorizontal: 14, paddingVertical: 14 }}>
+            <MyCoins />
+          </View>
+        )}
 
         <TouchableOpacity onPress={() => navigation.navigate("Search")}>
           <View style={styles.search_container}>

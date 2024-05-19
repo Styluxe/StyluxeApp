@@ -26,6 +26,10 @@ const OrderDetails = () => {
   const isProduct = !!order_id;
   const isBooking = !!booking_id;
 
+  console.log("booking", bookingData?.booking_date);
+  const fullbookingDate =
+    isBooking && `${bookingData?.booking_date}T00:00:00.000Z`;
+
   useFocusEffect(
     useCallback(() => {
       if (isProduct) {
@@ -38,7 +42,7 @@ const OrderDetails = () => {
 
   const isPaid =
     orderData?.payment_details?.payment_status === "paid" ||
-    bookingData?.booking_details.payment_details?.payment_status === "paid";
+    bookingData?.payment_details?.payment_status === "paid";
   const isRouteFromCheckout = routeFrom === "Checkout";
 
   const statusSwitch = (status) => {
@@ -200,7 +204,7 @@ const OrderDetails = () => {
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
                 {isProduct
                   ? orderData?.payment_details?.provider
-                  : bookingData?.booking_details.payment_details?.provider}
+                  : bookingData?.payment_details?.provider}
               </Text>
             </View>
             <Button
@@ -316,9 +320,7 @@ const OrderDetails = () => {
                     Booking Date:
                   </Text>
                   <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                    {moment(bookingData?.booking_details?.booking_date).format(
-                      "DD MMM YYYY",
-                    )}
+                    {moment(fullbookingDate).format("DD MMM YYYY")}
                   </Text>
                 </View>
                 <View
@@ -337,9 +339,7 @@ const OrderDetails = () => {
                     Booking Time :
                   </Text>
                   <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                    {formatTimeWithAMPM(
-                      bookingData?.booking_details?.booking_time,
-                    )}
+                    {formatTimeWithAMPM(bookingData?.booking_time)}
                   </Text>
                 </View>
               </VStack>
@@ -367,7 +367,7 @@ const OrderDetails = () => {
                 {parseFloat(
                   isProduct
                     ? orderData?.total
-                    : bookingData?.booking_details?.payment_details?.amount,
+                    : bookingData?.payment_details?.amount,
                 ).toLocaleString("id-ID")}
               </Text>
             </HStack>
@@ -388,7 +388,7 @@ const OrderDetails = () => {
                 {parseFloat(
                   isProduct
                     ? orderData?.total
-                    : bookingData?.booking_details?.payment_details?.amount,
+                    : bookingData?.payment_details?.amount,
                 ).toLocaleString("id-ID")}
               </Text>
             </HStack>

@@ -9,7 +9,7 @@ import { COLORS, SHADOWS } from "../../../constants";
 const MyBookingCard = ({ item, role }) => {
   const navigation = useNavigation();
 
-  const fullOrderDateTime = `${item?.booking_details.booking_date}T${item?.booking_details?.booking_time}:00+07:00`;
+  const fullOrderDateTime = `${item?.booking_date}T${item?.booking_time}:00+07:00`;
 
   const product_image = item?.order_items?.[0]?.product?.images?.[0]
     ? item?.order_items[0].product.images[0]

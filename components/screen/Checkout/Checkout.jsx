@@ -27,6 +27,8 @@ const Checkout = () => {
     createOrder(selectedPayment, summaryData.address?.address_id);
   };
 
+  console.log("summary", summaryData);
+
   useEffect(() => {
     if (code === 200) {
       navigation.navigate("PaymentDetails", {
@@ -69,16 +71,16 @@ const Checkout = () => {
               backgroundColor: COLORS.white,
             }}
           >
-            {summaryData?.address ? (
-              <CheckoutAddressCard
-                address_name={summaryData.address?.name}
-                user_name={summaryData.address?.receiver_name}
-                address={summaryData.address?.address}
-                phone={summaryData.address?.mobile}
-                onPress={() => navigation.navigate("MyAddress")}
-              />
-            ) : (
-              <View
+            {/* {summaryData?.address ? ( */}
+            <CheckoutAddressCard
+              address_name={summaryData.address?.name}
+              user_name={summaryData.address?.receiver_name}
+              address={summaryData.address?.address}
+              phone={summaryData.address?.mobile}
+              onPress={() => navigation.navigate("MyAddress")}
+            />
+            {/* ) : ( */}
+            {/* <View
                 style={{
                   borderWidth: 1,
                   borderColor: COLORS.gray2,
@@ -103,7 +105,7 @@ const Checkout = () => {
                   Create Now
                 </Text>
               </View>
-            )}
+            )} */}
           </View>
           <View
             style={{
@@ -251,12 +253,8 @@ const Checkout = () => {
         </View>
 
         <Button
-          disabled={!selectedPayment || !summaryData.address}
-          bgColor={
-            !selectedPayment || !summaryData.address
-              ? COLORS.gray2
-              : COLORS.primary
-          }
+          disabled={!selectedPayment}
+          bgColor={!selectedPayment ? COLORS.gray2 : COLORS.primary}
           onPress={handleCheckout}
         >
           <ButtonText

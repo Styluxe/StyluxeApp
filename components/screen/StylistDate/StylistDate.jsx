@@ -49,8 +49,8 @@ const StylistDate = () => {
   const allBookingDate = bookingsData?.map((o) => {
     return {
       booking_id: o.booking_id,
-      date: o.booking_details.booking_date,
-      time: o.booking_details.booking_time,
+      date: o.booking_date,
+      time: o.booking_time,
     };
   });
 

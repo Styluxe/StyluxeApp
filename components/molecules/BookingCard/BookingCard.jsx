@@ -9,10 +9,10 @@ import { formatTimeWithAMPM } from "../../../hook/hook";
 import { StarRating } from "../StarRating";
 
 const BookingCard = ({ data, handleAccept, handleReject }) => {
-  const fullBookingDate = `${data?.booking_details?.booking_date}T00:00:00+07:00`;
+  const fullBookingDate = `${data?.booking_date}T00:00:00+07:00`;
   const navigation = useNavigation();
 
-  const bookingTime = data?.booking_details?.booking_time;
+  const bookingTime = data?.booking_time;
   const fullOrderDateTime = `2024-05-14T${bookingTime}:00+07:00`;
 
   const endTime = moment(fullOrderDateTime).add(30, "m").format("HH:mm");
@@ -44,8 +44,8 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
         <Text
           style={{ fontFamily: "medium", fontSize: 14, color: COLORS.darkGray }}
         >
-          Order Time: {formatTimeWithAMPM(data?.booking_details?.booking_time)}{" "}
-          - {formatTimeWithAMPM(endTime)}
+          Order Time: {formatTimeWithAMPM(data?.booking_time)} -{" "}
+          {formatTimeWithAMPM(endTime)}
         </Text>
       </View>
 

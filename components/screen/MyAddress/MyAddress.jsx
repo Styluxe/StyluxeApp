@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,9 +19,11 @@ const MyAddress = () => {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    getAddress();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getAddress();
+    }, []),
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -47,7 +49,9 @@ const MyAddress = () => {
           </Text>
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ManageAddress", { type: "new" })}
+        >
           <View style={{ flexDirection: "row", gap: 5 }}>
             <Ionicons name="add-outline" size={18} color={COLORS.darkGray} />
             <Text
@@ -113,7 +117,7 @@ const MyAddress = () => {
             isPrimary={data.item.is_primary}
           />
         )}
-        contentContainerStyle={{ padding: 12 }}
+        contentContainerStyle={{ padding: 12, gap: 15 }}
       />
     </SafeAreaView>
   );

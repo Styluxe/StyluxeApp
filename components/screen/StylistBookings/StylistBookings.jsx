@@ -69,10 +69,10 @@ const StylistBookings = () => {
             }
 
             const dateA = new Date(
-              `${a.booking_details.booking_date}T${a.booking_details.booking_time}:00+07:00`,
+              `${a.booking_date}T${a.booking_time}:00+07:00`,
             );
             const dateB = new Date(
-              `${b.booking_details.booking_date}T${b.booking_details.booking_time}:00+07:00`,
+              `${b.booking_date}T${b.booking_time}:00+07:00`,
             );
             return dateA - dateB;
           });
