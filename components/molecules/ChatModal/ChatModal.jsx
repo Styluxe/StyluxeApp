@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import {
   ButtonText,
   Heading,
@@ -12,9 +11,10 @@ import {
 } from "@gluestack-ui/themed";
 import React from "react";
 import { View, Text } from "react-native";
+
 import { COLORS } from "../../../constants";
 
-const ChatModal = ({ showModal, setShowModal, modalRef }) => {
+const ChatModal = ({ showModal, setShowModal, modalRef, handleEnd }) => {
   return (
     <Modal
       isOpen={showModal}
@@ -54,9 +54,7 @@ const ChatModal = ({ showModal, setShowModal, modalRef }) => {
             size="sm"
             action="negative"
             borderWidth="$0"
-            onPress={() => {
-              setShowModal(false);
-            }}
+            onPress={handleEnd}
           >
             <ButtonText style={{ color: COLORS.white, fontFamily: "medium" }}>
               End now

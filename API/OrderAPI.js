@@ -365,7 +365,7 @@ const useAcceptBookingApi = () => {
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState(null);
 
-  const acceptBooking = async (bookingId) => {
+  const acceptBooking = async (bookingId, start_time, end_time) => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem("token");
@@ -377,7 +377,10 @@ const useAcceptBookingApi = () => {
 
       const response = await axios.put(
         `${API_URL}/booking/accept-booking/${bookingId}`,
-        {},
+        {
+          start_time,
+          end_time,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -433,6 +436,46 @@ const usePublicGetBookingsApi = () => {
   return { error, loading, getBookings, bookingsData };
 };
 
+const useEndBookingApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const endBooking = async (bookingId) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/booking/end-booking/${bookingId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      console.log("end booking");
+      setCode(code);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+      setCode(error?.response?.status);
+    }
+  };
+  return { error, loading, endBooking, code, setCode };
+};
+
 export {
   useGetOrderApi,
   useGetOrderById,
@@ -445,4 +488,5 @@ export {
   useUpdateBookingStatus,
   useAcceptBookingApi,
   usePublicGetBookingsApi,
+  useEndBookingApi,
 };

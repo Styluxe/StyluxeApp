@@ -25,6 +25,7 @@ import {
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
 import { ChatBox, ChatModal } from "../../molecules";
+import { useEndBookingApi } from "../../../API/OrderAPI";
 
 const ChatRoom = () => {
   const [inputText, setInputText] = useState("");
@@ -34,6 +35,8 @@ const ChatRoom = () => {
   const userData = useSelector(userDataState);
   const [showModal, setShowModal] = useState(false);
   const ref = useRef();
+  const [remainingTime, setRemainingTime] = useState(null);
+  const timerIntervalRef = useRef();
 
   const route = useRoute();
   const { booking_id } = route.params;
@@ -41,6 +44,11 @@ const ChatRoom = () => {
 
   const navigation = useNavigation();
   const { conversation, getConversationById } = useGetConversationById();
+  const {
+    endBooking,
+    code: endBookingCode,
+    setCode: setEndBookingCode,
+  } = useEndBookingApi();
   const {
     getMessageById,
     message: fetchedMessages,
@@ -57,28 +65,6 @@ const ChatRoom = () => {
     : conversation?.booking?.customer?.first_name +
       " " +
       conversation?.booking?.customer?.last_name;
-
-  // useEffect(() => {
-  //   const socket = io("http://10.0.2.2:8080");
-  //   socket.on("connect", () => {
-  //     console.log("connected to server");
-  //   });
-
-  //   socket.on("new-message", (newMessage) => {
-  //     if (newMessage?.conversation_id === conversation?.conversation_id) {
-  //       console.log("new message", newMessage?.message);
-  //       setMessages((prevMessages) => [...prevMessages, newMessage?.message]);
-  //     }
-  //   });
-
-  //   socket.on("error", (error) => {
-  //     console.error("Socket error:", error);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -155,6 +141,50 @@ const ChatRoom = () => {
     }
   };
 
+  const endTime = conversation?.end_time;
+
+  useEffect(() => {
+    if (endTime) {
+      const calculateRemainingTime = () => {
+        const now = new Date().getTime();
+        const end = new Date(endTime).getTime();
+        const timeLeft = Math.max(0, end - now);
+        setRemainingTime(timeLeft);
+      };
+
+      calculateRemainingTime();
+
+      timerIntervalRef.current = setInterval(calculateRemainingTime, 1000);
+
+      return () => {
+        if (timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+        }
+      };
+    }
+  }, [endTime]);
+
+  const formatTime = (milliseconds) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
+
+  const isEnded = remainingTime === 0;
+
+  const handleEndBooking = () => {
+    endBooking(booking_id);
+  };
+
+  useEffect(() => {
+    if (endBookingCode === 200) {
+      alert("Booking ended");
+      navigation.goBack();
+      setEndBookingCode(null);
+    }
+  }, [endBookingCode]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header_container}>
@@ -183,9 +213,11 @@ const ChatRoom = () => {
           <View style={{ flexDirection: "row", gap: 5 }}>
             <Ionicons name="timer-outline" size={24} color="black" />
             {/* timer */}
-            <Text style={{ fontFamily: "regular", fontSize: 14 }}>30:00</Text>
+            <Text style={{ fontFamily: "regular", fontSize: 14 }}>
+              {remainingTime !== null ? formatTime(remainingTime) : "00:00"}
+            </Text>
           </View>
-          {!isCustomer && (
+          {!isCustomer && !isEnded && (
             <Ionicons
               name="log-out-outline"
               size={24}
@@ -219,32 +251,56 @@ const ChatRoom = () => {
           onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
         />
       </View>
-      <View style={styles.footer_container}>
-        <View style={styles.input_container}>
-          <View style={styles.camera_input_wrapper}>
-            <Ionicons name="camera-outline" size={29} />
-            <TextInput
-              style={{ flex: 1 }}
-              multiline
-              numberOfLines={numberOfLines}
-              value={inputText}
-              onChangeText={handleTextChange}
-              placeholder="Type a message"
-            />
-          </View>
-
-          <TouchableOpacity onPress={() => postMessage(booking_id, inputText)}>
-            <View style={styles.send_button}>
-              <Ionicons name="send" size={18} color={COLORS.white} />
-            </View>
-          </TouchableOpacity>
+      {isEnded ? (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            paddingVertical: 15,
+          }}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              fontFamily: "semibold",
+              color: COLORS.darkGray,
+            }}
+          >
+            The conversation has ended
+          </Text>
         </View>
-      </View>
-      {!isCustomer && (
+      ) : (
+        <View style={styles.footer_container}>
+          <View style={styles.input_container}>
+            <View style={styles.camera_input_wrapper}>
+              <Ionicons name="camera-outline" size={29} />
+              <TextInput
+                style={{ flex: 1 }}
+                multiline
+                numberOfLines={numberOfLines}
+                value={inputText}
+                onChangeText={handleTextChange}
+                placeholder="Type a message"
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => postMessage(booking_id, inputText)}
+            >
+              <View style={styles.send_button}>
+                <Ionicons name="send" size={18} color={COLORS.white} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {!isCustomer && !isEnded && (
         <ChatModal
           setShowModal={setShowModal}
           showModal={showModal}
           modalRef={ref}
+          handleEnd={handleEndBooking}
         />
       )}
     </SafeAreaView>

@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Switch } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -109,6 +110,7 @@ const StylistBookings = () => {
   }, [selectedMenu, data]);
 
   const menu = ["active", "upcoming", "past"];
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -200,8 +202,13 @@ const StylistBookings = () => {
           renderItem={({ item }) => (
             <BookingCard
               data={item}
-              handleAccept={() => {
-                acceptBooking(item?.booking_id);
+              handleAccept={async () => {
+                const fullDate = `${item?.booking_date}T${item?.booking_time}:00+07:00`;
+
+                const startDate = moment(fullDate).toISOString();
+                const endDate = moment(fullDate).add(30, "m").toISOString();
+
+                await acceptBooking(item?.booking_id, startDate, endDate);
               }}
             />
           )}

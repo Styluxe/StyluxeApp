@@ -1,7 +1,7 @@
 import { Button } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 
 import { COLORS } from "../../../constants";
@@ -9,17 +9,28 @@ import { formatTimeWithAMPM } from "../../../hook/hook";
 import { StarRating } from "../StarRating";
 
 const BookingCard = ({ data, handleAccept, handleReject }) => {
-  const fullBookingDate = `${data?.booking_date}T00:00:00+07:00`;
   const navigation = useNavigation();
 
-  const bookingTime = data?.booking_time;
-  const fullOrderDateTime = `2024-05-14T${bookingTime}:00+07:00`;
+  const fullDate = `${data?.booking_date}T${data?.booking_time}:00+07:00`;
 
-  const endTime = moment(fullOrderDateTime).add(30, "m").format("HH:mm");
+  const endDate = moment(fullDate).add(30, "m").toISOString();
+
+  const endTime = moment(endDate).format("HH:mm");
 
   const isAccepted = data?.status === "accepted";
   const isScheduled = data?.status === "scheduled";
   const past = data?.status === "done";
+
+  const [timeFromNow, setTimeFromNow] = useState(moment(fullDate).fromNow());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeFromNow(moment(fullDate).fromNow());
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, [fullDate]);
+
   return (
     <View
       style={{
@@ -39,7 +50,7 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
         <Text
           style={{ fontFamily: "medium", fontSize: 14, color: COLORS.darkGray }}
         >
-          Order Date: {moment(fullBookingDate).format("DD MMM YYYY")}
+          Order Date: {moment(fullDate).format("DD MMM YYYY")}
         </Text>
         <Text
           style={{ fontFamily: "medium", fontSize: 14, color: COLORS.darkGray }}
@@ -70,7 +81,7 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
       ) : isAccepted ? (
         <Button disabled bgColor={COLORS.secondary}>
           <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>
-            Chat will be open in {moment(fullBookingDate).fromNow("day")}
+            Chat will be open in {timeFromNow}
           </Text>
         </Button>
       ) : isScheduled ? (
