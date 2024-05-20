@@ -7,7 +7,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "preview": "expo start --no-dev --minify",
+    "build": "eas build -p android --profile preview"
   },
   "dependencies": {
     "@expo/config-plugins": "^8.0.4",
@@ -25,10 +27,10 @@
     "axios": "^1.6.8",
     "core-js": "^3.37.0",
     "date-fns": "^3.6.0",
-    "expo": "^51.0.2",
+    "expo": "~51.0.8",
     "expo-build-properties": "~0.12.1",
     "expo-font": "~12.0.5",
-    "expo-image-picker": "~15.0.4",
+    "expo-image-picker": "~15.0.5",
     "expo-splash-screen": "~0.27.4",
     "expo-status-bar": "~1.12.1",
     "jwt-decode": "^4.0.0",

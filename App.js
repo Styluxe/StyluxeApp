@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Provider } from "react-redux";
 
 import { LoginModal } from "./components/molecules";
@@ -46,14 +46,10 @@ export default function App() {
     extrabold: require("./fonts/Poppins-ExtraBold.ttf"),
   });
 
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-      if (fontsLoaded) {
-        await SplashScreen.hideAsync();
-      }
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
     }
-    prepare();
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
