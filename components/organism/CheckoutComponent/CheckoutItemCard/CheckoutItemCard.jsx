@@ -17,7 +17,9 @@ const CheckoutItemCard = ({
 }) => {
   const fullOrderDateTime = `2024-05-14T${orderTime}:00+07:00`;
 
-  const endTime = moment(fullOrderDateTime).add(30, "m").format("HH:mm");
+  const endTime = isStylist
+    ? moment(fullOrderDateTime).add(30, "m").format("HH:mm")
+    : null;
 
   return (
     <View

@@ -1,4 +1,4 @@
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Button, Divider, HStack, VStack } from "@gluestack-ui/themed";
 import {
   useFocusEffect,
@@ -6,7 +6,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import moment from "moment";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -26,7 +26,6 @@ const OrderDetails = () => {
   const isProduct = !!order_id;
   const isBooking = !!booking_id;
 
-  console.log("booking", bookingData?.booking_date);
   const fullbookingDate =
     isBooking && `${bookingData?.booking_date}T00:00:00.000Z`;
 
@@ -81,6 +80,11 @@ const OrderDetails = () => {
         return {
           color: COLORS.primary,
           message: "Accepted by Stylist",
+        };
+      case "done":
+        return {
+          color: COLORS.green,
+          message: "Consultation Completed",
         };
       default:
         return {
@@ -320,7 +324,8 @@ const OrderDetails = () => {
                     Booking Date:
                   </Text>
                   <Text style={{ fontFamily: "medium", fontSize: 14 }}>
-                    {moment(fullbookingDate).format("DD MMM YYYY")}
+                    {bookingData?.booking_date &&
+                      moment(fullbookingDate).format("DD MMM YYYY")}
                   </Text>
                 </View>
                 <View
@@ -403,6 +408,45 @@ const OrderDetails = () => {
               </Text>
             </Button>
           )}
+          {isBooking && bookingData?.status === "done" && (
+            <Button
+              size="sm"
+              bgColor={COLORS.primary}
+              onPress={() => {
+                navigation.navigate("ChatRoom", {
+                  booking_id: bookingData?.booking_id,
+                });
+              }}
+            >
+              <Text
+                style={{ fontFamily: "medium", fontSize: 14, color: "white" }}
+              >
+                View Chat History
+              </Text>
+            </Button>
+          )}
+
+          {isBooking &&
+            bookingData?.status === "done" &&
+            !bookingData?.isReviewed && (
+              <Button
+                size="sm"
+                borderColor={COLORS.primary}
+                borderWidth={2}
+                variant="outline"
+                bgColor={COLORS.white}
+              >
+                <Text
+                  style={{
+                    fontFamily: "semibold",
+                    fontSize: 14,
+                    color: COLORS.primary,
+                  }}
+                >
+                  Write Review
+                </Text>
+              </Button>
+            )}
         </View>
       </ScrollView>
     </SafeAreaView>

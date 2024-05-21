@@ -56,7 +56,9 @@ const StylistDetailCard = ({ stylist }) => {
                     { color: isOnline ? "#3A70E2" : COLORS.darkGray })
                   }
                 >
-                  {stylist?.online_status}
+                  {stylist?.online_status === "online"
+                    ? "Available"
+                    : "Offline"}
                 </Text>
               </View>
             </View>

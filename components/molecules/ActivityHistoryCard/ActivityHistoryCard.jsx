@@ -39,6 +39,21 @@ const ActivityHistoryCard = ({ item }) => {
           color: COLORS.green,
           message: "Delivered",
         };
+      case "done":
+        return {
+          color: COLORS.green,
+          message: "Consultation Completed",
+        };
+      case "accepted":
+        return {
+          color: COLORS.primary,
+          message: "Accepted by Stylist",
+        };
+      case "cancelled":
+        return {
+          color: COLORS.red,
+          message: "Cancelled",
+        };
       default:
         return { color: COLORS.primary, message: status };
     }

@@ -17,7 +17,10 @@ const LogoutSheet = ({ showBottomSheet, setShowBottomSheet, handleLogout }) => {
   return (
     <Actionsheet
       isOpen={showBottomSheet}
-      onClose={() => setShowBottomSheet(false)}
+      onClose={() => {
+        setShowBottomSheet(false);
+        alert("close");
+      }}
       zIndex={999}
     >
       <ActionsheetBackdrop />

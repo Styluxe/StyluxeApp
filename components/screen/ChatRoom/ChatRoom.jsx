@@ -198,7 +198,7 @@ const ChatRoom = () => {
           <View>
             <Text
               numberOfLines={1}
-              style={{ fontFamily: "bold", fontSize: 16, maxWidth: "90%" }}
+              style={{ fontFamily: "bold", fontSize: 16, maxWidth: 200 }}
             >
               {display_name}
             </Text>

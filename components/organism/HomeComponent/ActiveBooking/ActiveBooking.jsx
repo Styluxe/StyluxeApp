@@ -66,7 +66,7 @@ const ActiveBooking = ({ role }) => {
           <View style={{ padding: 10 }}>
             <MyBookingCard item={filterBookingUser[0]} />
           </View>
-        ) : bookingsStylist.length > 0 ? (
+        ) : filterBookingStylist?.length > 0 ? (
           <Carousel
             width={SIZES.width - 20}
             height={200}
