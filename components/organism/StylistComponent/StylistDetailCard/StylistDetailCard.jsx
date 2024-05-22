@@ -71,7 +71,7 @@ const StylistDetailCard = ({ stylist }) => {
                 key={index}
                 name="star"
                 size={18}
-                color={stylist.rating >= item ? "yellow" : "gray"}
+                color={stylist.rating >= item ? "orange" : "gray"}
               />
             ))}
             <Text style={styles.rating}>{stylist?.rating || 0}</Text>

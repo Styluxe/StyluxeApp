@@ -20,3 +20,4 @@ export * from "./MyCoins";
 export * from "./SelectComponent";
 export * from "./FilterModal";
 export * from "./FilterAccordion";
+export * from "./ReviewModal";

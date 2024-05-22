@@ -239,13 +239,13 @@ const StylistDetails = () => {
 
               <FlatList
                 data={stylistData?.reviews.slice(0, numToShow)}
-                renderItem={(data) => (
+                renderItem={({ item }) => (
                   <ReviewBox
-                    name={data.item.name}
-                    rating={data.item.rating}
-                    comment={data.item.comment}
-                    created_at={data.item.created_at}
-                    image={data.item.image_url}
+                    name={item.user.first_name}
+                    rating={item.rating}
+                    comment={item.feedback}
+                    created_at={item.createdAt}
+                    image={item.user.profile_picture}
                   />
                 )}
                 showsVerticalScrollIndicator={false}

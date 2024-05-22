@@ -6,28 +6,60 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import moment from "moment";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGetBookingById, useGetOrderById } from "../../../API/OrderAPI";
 import { COLORS, SHADOWS } from "../../../constants";
 import { formatTimeWithAMPM } from "../../../hook/hook";
+import { ReviewModal } from "../../molecules";
 import { CheckoutItemCard } from "../../organism";
+import { useAddStylistReviewApi } from "../../../API/StylistApi";
 
 const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { getOrderById, orderData } = useGetOrderById();
   const { getBookingById, bookingData } = useGetBookingById();
+  const { addStylistReview, code, setCode } = useAddStylistReviewApi();
 
   const { order_id, booking_id, routeFrom } = route.params;
 
+  const modalRef = useRef();
+  const [showModal, setShowModal] = useState(false);
+  const [reviewData, setReviewData] = useState({
+    rating: 0,
+    feedback: "",
+  });
+
   const isProduct = !!order_id;
   const isBooking = !!booking_id;
+  const bookingComplete =
+    isBooking && bookingData?.status === "done" && !bookingData?.isReviewed;
 
   const fullbookingDate =
     isBooking && `${bookingData?.booking_date}T00:00:00.000Z`;
+
+  const reviewRequest = {
+    stylist_id: bookingData?.stylist_id,
+    rating: reviewData.rating,
+    feedback: reviewData.feedback,
+    booking_id: bookingData?.booking_id,
+  };
+
+  const handleReview = () => {
+    console.log(reviewRequest);
+    addStylistReview(reviewRequest);
+  };
+
+  useEffect(() => {
+    if (code === 200) {
+      getBookingById(booking_id);
+      setCode(null);
+      setShowModal(false);
+    }
+  }, [code]);
 
   useFocusEffect(
     useCallback(() => {
@@ -38,6 +70,12 @@ const OrderDetails = () => {
       }
     }, [order_id, isProduct]),
   );
+
+  useEffect(() => {
+    if (bookingComplete) {
+      setShowModal(true);
+    }
+  }, [bookingComplete]);
 
   const isPaid =
     orderData?.payment_details?.payment_status === "paid" ||
@@ -435,29 +473,36 @@ const OrderDetails = () => {
             </Button>
           )}
 
-          {isBooking &&
-            bookingData?.status === "done" &&
-            !bookingData?.isReviewed && (
-              <Button
-                size="sm"
-                borderColor={COLORS.primary}
-                borderWidth={2}
-                variant="outline"
-                bgColor={COLORS.white}
+          {bookingComplete && (
+            <Button
+              size="sm"
+              borderColor={COLORS.primary}
+              borderWidth={2}
+              variant="outline"
+              bgColor={COLORS.white}
+              onPress={() => setShowModal(true)}
+            >
+              <Text
+                style={{
+                  fontFamily: "semibold",
+                  fontSize: 14,
+                  color: COLORS.primary,
+                }}
               >
-                <Text
-                  style={{
-                    fontFamily: "semibold",
-                    fontSize: 14,
-                    color: COLORS.primary,
-                  }}
-                >
-                  Write Review
-                </Text>
-              </Button>
-            )}
+                Write Review
+              </Text>
+            </Button>
+          )}
         </View>
       </ScrollView>
+      <ReviewModal
+        modalRef={modalRef}
+        setShowModal={setShowModal}
+        showModal={showModal}
+        reviewData={reviewData}
+        setReviewData={setReviewData}
+        handlePost={handleReview}
+      />
     </SafeAreaView>
   );
 };

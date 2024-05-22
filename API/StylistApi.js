@@ -8,6 +8,7 @@ import {
   setStylistSchedule,
   stylistScheduleState,
 } from "../redux/slice/stylist.slice";
+import { useGetBookingById } from "./OrderAPI";
 
 const useGetStylistByAuthApi = () => {
   const [error, setError] = useState(null);
@@ -470,6 +471,42 @@ const useSearchStylistApi = () => {
   return { error, loading, stylist, keyword, searchStylist };
 };
 
+const useAddStylistReviewApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const addStylistReview = async (data) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.post(`${API_URL}/stylist/review`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { code } = response?.data;
+
+      setCode(code);
+      console.log("added stylist review");
+    } catch (error) {
+      setError(error);
+      console.log("error", error.response);
+      setCode(error.response.status);
+      setLoading(false);
+    }
+  };
+
+  return { addStylistReview, loading, error, code, setCode };
+};
+
 export {
   useGetStylistByAuthApi,
   useUpdateStylistByIdApi,
@@ -483,4 +520,5 @@ export {
   useUpdateOnlineStatus,
   useDeleteScheduleApi,
   useSearchStylistApi,
+  useAddStylistReviewApi,
 };
