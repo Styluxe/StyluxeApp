@@ -100,7 +100,7 @@ const MyProfile = () => {
           name="arrow-back"
           size={24}
           onPress={() => {
-            navigation.navigate("Home");
+            navigation.goBack();
           }}
         />
         <Text style={{ fontFamily: "medium", fontSize: 18 }}>My Profile</Text>

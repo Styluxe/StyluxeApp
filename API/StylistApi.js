@@ -400,6 +400,76 @@ const useUpdateOnlineStatus = () => {
   return { updateOnlineStatus, loading, error, code, setCode };
 };
 
+const useDeleteScheduleApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+  const { getSchedule } = useGetScheduleApi();
+
+  const deleteSchedule = async (schedule_id) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.delete(
+        `${API_URL}/stylist/schedule/${schedule_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      setCode(code);
+      console.log("deleted schedule");
+      getSchedule();
+    } catch (error) {
+      setError(error);
+      console.log("error", error.response);
+      setCode(error.response.status);
+      setLoading(false);
+    }
+  };
+
+  return { deleteSchedule, loading, error, code, setCode };
+};
+
+const useSearchStylistApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [stylist, setStylist] = useState([]);
+  const [keyword, setKeyword] = useState("");
+
+  const searchStylist = async (query) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_URL}/stylist/search?search=${query}`,
+      );
+
+      const { data, keyword } = response?.data;
+
+      setStylist(data);
+      setKeyword(keyword);
+      console.log("fetch search stylist");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, stylist, keyword, searchStylist };
+};
+
 export {
   useGetStylistByAuthApi,
   useUpdateStylistByIdApi,
@@ -411,4 +481,6 @@ export {
   useGetScheduleByIdApi,
   useGetActiveBookings,
   useUpdateOnlineStatus,
+  useDeleteScheduleApi,
+  useSearchStylistApi,
 };

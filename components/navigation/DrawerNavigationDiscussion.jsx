@@ -16,6 +16,7 @@ import {
   userDataState,
 } from "../../redux/slice/app.slice";
 import { Discussion } from "../screen/Discussion";
+import { DiscussionProfile } from "../screen";
 
 const DrawerNavigationDiscussion = () => {
   const Drawer = createDrawerNavigator();
@@ -39,16 +40,6 @@ const DrawerNavigationDiscussion = () => {
                 {userData?.first_name} {userData?.last_name}
               </Text>
               <Text style={styles.email}>{userData?.email}</Text>
-            </View>
-            <View
-              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
-            >
-              <Text style={{ fontFamily: "regular", fontSize: 12 }}>
-                <Text style={{ fontFamily: "bold" }}>100</Text> Following
-              </Text>
-              <Text style={{ fontFamily: "regular", fontSize: 12 }}>
-                <Text style={{ fontFamily: "bold" }}>300</Text> Followers
-              </Text>
             </View>
           </View>
         ) : (
@@ -80,6 +71,25 @@ const DrawerNavigationDiscussion = () => {
       initialRouteName="Explore"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
+      {auth && (
+        <Drawer.Screen
+          name="My Profile"
+          component={DiscussionProfile}
+          options={{
+            headerShown: false,
+            drawerIcon: () => (
+              <Ionicons
+                name="person-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+            ),
+            drawerStyle: styles.drawerStyle,
+            drawerLabelStyle: styles.drawerLabelStyle,
+          }}
+        />
+      )}
+
       <Drawer.Screen
         name="Explore"
         component={Discussion}

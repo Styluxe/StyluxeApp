@@ -1,22 +1,32 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useProductCategoryApi } from "../../../API/CategoryAPI";
+import { useSearchProductApi } from "../../../API/ProductAPI";
 import { COLORS } from "../../../constants";
-import { CartIcon, ProductCard } from "../../molecules";
+import { CartIcon, FilterModal, ProductCard } from "../../molecules";
 
 const ProductList = () => {
   const navigation = useNavigation();
   const { getProductCategory, productCategory } = useProductCategoryApi();
+  const { searchProduct, products } = useSearchProductApi();
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef();
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSort, setSelectedSort] = useState(null);
 
   const route = useRoute();
-  const { subCategoryId } = route.params;
+  const { subCategoryId, search } = route.params;
 
   useEffect(() => {
-    getProductCategory({ categoryId: subCategoryId });
+    if (subCategoryId) {
+      getProductCategory({ categoryId: subCategoryId });
+    } else if (search) {
+      searchProduct(search);
+    }
   }, []);
 
   return (
@@ -54,7 +64,7 @@ const ProductList = () => {
       </View>
       <View style={{ flex: 1 }}>
         <FlatList
-          data={productCategory.products}
+          data={search ? products : productCategory?.products}
           numColumns={2}
           columnWrapperStyle={{
             justifyContent: "space-between",
@@ -70,13 +80,28 @@ const ProductList = () => {
             >
               <Text style={{ fontFamily: "medium", fontSize: 14 }}>
                 Showing Products from{" "}
-                <Text style={{ fontFamily: "semibold", color: COLORS.primary }}>
-                  {productCategory?.sub_category_name} (
-                  {productCategory?.products?.length})
-                </Text>
+                {search ? (
+                  <Text
+                    style={{ fontFamily: "semibold", color: COLORS.primary }}
+                  >
+                    {search} ({products?.length})
+                  </Text>
+                ) : (
+                  <Text
+                    style={{ fontFamily: "semibold", color: COLORS.primary }}
+                  >
+                    {productCategory?.sub_category_name} (
+                    {productCategory?.products?.length})
+                  </Text>
+                )}
               </Text>
 
-              <Ionicons name="filter" size={24} color={COLORS.primary} />
+              <Feather
+                name="filter"
+                size={24}
+                color={COLORS.primary}
+                onPress={() => setShowModal(true)}
+              />
             </View>
           )}
           contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
@@ -95,6 +120,15 @@ const ProductList = () => {
           )}
         />
       </View>
+      <FilterModal
+        modalRef={modalRef}
+        setShowModal={setShowModal}
+        showModal={showModal}
+        selectedSize={selectedSize}
+        selectedSort={selectedSort}
+        setSelectedSize={setSelectedSize}
+        setSelectedSort={setSelectedSort}
+      />
     </SafeAreaView>
   );
 };

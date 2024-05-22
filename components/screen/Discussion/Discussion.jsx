@@ -94,9 +94,11 @@ const Discussion = () => {
       {scrollDirection === "up" ? (
         <TouchableOpacity
           onPress={() => {
-            !auth
-              ? dispatch(setLoginModalOpen(true))
-              : alert("Coming Soon/add post");
+            if (!auth) {
+              dispatch(setLoginModalOpen(true));
+            } else {
+              navigation.navigate("CreateDiscussion");
+            }
           }}
         >
           <View

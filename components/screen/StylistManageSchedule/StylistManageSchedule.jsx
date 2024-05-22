@@ -24,7 +24,7 @@ const StylistManageSchedule = () => {
   const { getSchedule, scheduleData } = useGetScheduleApi();
   const { addTime } = useAddTimeApi();
   const [sortedScheduleData, setSortedScheduleData] = useState([]);
-
+  const [isDeleting, setIsDeleting] = useState(false);
   useFocusEffect(
     useCallback(() => {
       getSchedule();
@@ -62,6 +62,13 @@ const StylistManageSchedule = () => {
             Manage Your Schedule
           </Text>
         </View>
+
+        <Ionicons
+          name={isDeleting ? "checkmark-circle-outline" : "trash-outline"}
+          size={24}
+          color={isDeleting ? COLORS.green : COLORS.red}
+          onPress={() => setIsDeleting(!isDeleting)}
+        />
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -156,6 +163,7 @@ const StylistManageSchedule = () => {
                     time={item.time}
                     id={item.stylist_schedule_time_id}
                     isAvailable={item.status === "Available"}
+                    isDeleting={isDeleting}
                   />
                 )}
               />

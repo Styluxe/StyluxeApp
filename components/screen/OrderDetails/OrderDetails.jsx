@@ -43,6 +43,9 @@ const OrderDetails = () => {
     orderData?.payment_details?.payment_status === "paid" ||
     bookingData?.payment_details?.payment_status === "paid";
   const isRouteFromCheckout = routeFrom === "Checkout";
+  const isCancelled =
+    orderData?.order_status === "cancelled" ||
+    bookingData?.status === "cancelled";
 
   const statusSwitch = (status) => {
     switch (status) {
@@ -211,24 +214,30 @@ const OrderDetails = () => {
                   : bookingData?.payment_details?.provider}
               </Text>
             </View>
-            <Button
-              size="sm"
-              bg={isPaid ? COLORS.green : COLORS.primary}
-              disabled={isPaid}
-              onPress={() => {
-                navigation.navigate("PaymentDetails", {
-                  routeFrom: "OrderDetails",
-                  order_id,
-                  booking_id,
-                });
-              }}
-            >
-              <Text
-                style={{ fontFamily: "semibold", fontSize: 14, color: "white" }}
+            {!isCancelled && (
+              <Button
+                size="sm"
+                bg={isPaid ? COLORS.green : COLORS.primary}
+                disabled={isPaid}
+                onPress={() => {
+                  navigation.navigate("PaymentDetails", {
+                    routeFrom: "OrderDetails",
+                    order_id,
+                    booking_id,
+                  });
+                }}
               >
-                {isPaid ? "Paid" : "Pay"}
-              </Text>
-            </Button>
+                <Text
+                  style={{
+                    fontFamily: "semibold",
+                    fontSize: 14,
+                    color: "white",
+                  }}
+                >
+                  {isPaid ? "Paid" : "Pay"}
+                </Text>
+              </Button>
+            )}
           </View>
           {isProduct && (
             <View

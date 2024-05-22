@@ -53,6 +53,8 @@ const MyCoins = () => {
     }
   }, [code, data]);
 
+  console.log("check", checkingCoints[1].value + points);
+
   const handleClaim = async () => {
     if (!buttonDisabled) {
       // Add points based on current day
