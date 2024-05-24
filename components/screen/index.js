@@ -25,3 +25,6 @@ export * from "./StylistPayment";
 export * from "./ManageAddress";
 export * from "./CreateDiscussion";
 export * from "./DiscussionProfile";
+export * from "./DiscussionAuthor";
+export * from "./DiscussionBookmarks";
+export * from "./StylistReviewList";

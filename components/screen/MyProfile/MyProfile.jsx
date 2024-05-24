@@ -24,11 +24,7 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
-import {
-  useGetProfileApi,
-  useProfileApi,
-  useProfilePictureApi,
-} from "../../../API/ProfileApi";
+import { useProfileApi, useProfilePictureApi } from "../../../API/ProfileApi";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
 
@@ -47,7 +43,6 @@ const MyProfile = () => {
   const navigation = useNavigation();
   const { updateProfileImage } = useProfilePictureApi();
   const { updateProfile } = useProfileApi();
-  const { getProfile } = useGetProfileApi();
 
   const handleUpdateProfile = () => {
     updateProfile(
@@ -86,7 +81,7 @@ const MyProfile = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View
         style={{
           padding: 15,
@@ -94,6 +89,7 @@ const MyProfile = () => {
           gap: 20,
           borderBottomWidth: 1,
           borderColor: COLORS.gray2,
+          backgroundColor: COLORS.white,
         }}
       >
         <Ionicons

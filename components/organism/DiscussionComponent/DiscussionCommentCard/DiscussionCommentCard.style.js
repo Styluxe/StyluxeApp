@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+
 import { COLORS } from "../../../../constants";
 
 export const styles = StyleSheet.create({
@@ -6,6 +7,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 5,
     borderBottomWidth: 1,
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
     borderColor: COLORS.gray2,
   },
   profile_container: {

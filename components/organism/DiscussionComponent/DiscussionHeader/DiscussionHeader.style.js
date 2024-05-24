@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "bold",
-    fontSize: 18,
+    fontSize: 20,
     color: COLORS.primary,
   },
 });

@@ -1,70 +1,69 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button } from "@gluestack-ui/themed";
-import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import { Button, Toast, ToastTitle, useToast } from "@gluestack-ui/themed";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, TextInput, Image, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 
 import { COLORS } from "../../../constants";
 import { SelectComponent } from "../../molecules";
+import {
+  useCreateDiscussionApi,
+  useGetDiscussionCategoryApi,
+} from "../../../API/DiscussionApi";
+import { useSelector } from "react-redux";
+import { userDataState } from "../../../redux/slice/app.slice";
 
 const CreateDiscussion = () => {
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [title, setTitle] = useState("");
   const [discussionText, setDiscussionText] = useState("");
   const [images, setImages] = useState([]);
+  const profileData = useSelector(userDataState);
 
-  const discussion_category = [
-    {
-      id: 1,
-      label: "Outfit",
-      value: "outfit",
-    },
-    {
-      id: 2,
-      label: "Tutorial",
-      value: "tutorial",
-    },
-    {
-      id: 3,
-      label: "Events",
-      value: "events",
-    },
-    {
-      id: 4,
-      label: "Fashion News",
-      value: "fashion_news",
-    },
-    {
-      id: 5,
-      label: "DIY & Customization",
-      value: "diy",
-    },
-  ];
+  const toast = useToast();
+
+  const { getDiscussionCategory, discussionCategory } =
+    useGetDiscussionCategoryApi();
+  const { createDiscussion, code, setCode } = useCreateDiscussionApi();
+
+  useFocusEffect(
+    useCallback(() => {
+      getDiscussionCategory();
+    }, []),
+  );
+
+  const remapCategory = () => {
+    return discussionCategory?.map((category) => {
+      return {
+        id: category.post_category_id,
+        label: category.category_name,
+        value: category.post_category_id,
+      };
+    });
+  };
 
   const handleImagePick = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [1, 1],
         quality: 1,
       });
 
       if (!result.canceled && result.assets && Array.isArray(result.assets)) {
         const newFile = {
           uri: result.assets[0].uri,
-          type: result.assets[0].type,
-          name: result.assets[0].fileName || "image.jpeg",
+          type: result.assets[0].mimeType,
+          name: `image${Math.floor(Math.random() * (999 - 100 + 1) + 100)}.jpeg`,
         };
 
         setImages((prevImages) => [...prevImages, newFile]);
       }
     } catch (error) {
-      // Handle any errors that occur during the image picking process
       console.error("Error picking image:", error);
-      // Provide feedback to the user that an error occurred
     }
   };
 
@@ -72,6 +71,39 @@ const CreateDiscussion = () => {
     if (text.length <= 500) {
       setDiscussionText(text);
     }
+  };
+
+  useEffect(() => {
+    if (code === 201) {
+      navigation.goBack();
+      setCode(null);
+      toast.show({
+        description: "Your discussion has been created!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <ToastTitle>Success</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+    }
+  }, [code]);
+
+  const disabledPost =
+    title === "" || selectedCategory === null || discussionText === "";
+
+  const postData = {
+    category_id: selectedCategory,
+    title,
+    content: discussionText,
+    images,
+  };
+
+  const handlePost = () => {
+    createDiscussion(postData);
   };
 
   return (
@@ -93,7 +125,13 @@ const CreateDiscussion = () => {
           color="black"
           onPress={() => navigation.goBack()}
         />
-        <Button bgColor={COLORS.primary} rounded={20} size="sm">
+        <Button
+          disabled={disabledPost}
+          bgColor={disabledPost ? COLORS.secondary : COLORS.primary}
+          rounded={20}
+          size="sm"
+          onPress={handlePost}
+        >
           <Text style={{ color: COLORS.white, fontFamily: "bold" }}>Post</Text>
         </Button>
       </View>
@@ -113,19 +151,32 @@ const CreateDiscussion = () => {
             alignItems: "center",
           }}
         >
-          <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 5,
+              alignItems: "center",
+              maxWidth: "60%",
+            }}
+          >
             <Image
-              source={require("../../../assets/content/profpic.png")}
+              source={
+                profileData?.profile_picture
+                  ? { uri: profileData?.profile_picture }
+                  : require("../../../assets/content/profpic.png")
+              }
               style={{ width: 40, height: 40, borderRadius: 5 }}
             />
-            <Text style={{ fontFamily: "bold" }}>John Doe</Text>
+            <Text numberOfLines={2} style={{ fontFamily: "bold", flex: 1 }}>
+              {profileData?.first_name + " " + profileData?.last_name}
+            </Text>
           </View>
 
           <View style={{ gap: 10, width: "40%" }}>
             <Text style={{ fontFamily: "bold" }}>Category</Text>
             <SelectComponent
               placeholder="Select Category"
-              items={discussion_category}
+              items={remapCategory()}
               onValueChange={(value) => setSelectedCategory(value)}
             />
           </View>
@@ -138,6 +189,12 @@ const CreateDiscussion = () => {
             gap: 10,
           }}
         >
+          <TextInput
+            placeholder="Title"
+            style={{ fontFamily: "bold", fontSize: 18 }}
+            value={title}
+            onChangeText={setTitle}
+          />
           <TextInput
             placeholder="Write a Discussion"
             style={{ flex: 1, textAlignVertical: "top", fontFamily: "regular" }}

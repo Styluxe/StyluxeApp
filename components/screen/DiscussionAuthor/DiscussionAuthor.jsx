@@ -1,22 +1,25 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button } from "@gluestack-ui/themed";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
 
 import {
   useGetLikedPostByAuthorIdApi,
   useGetPostByAuthorIdApi,
 } from "../../../API/DiscussionApi";
-import { COLORS, SIZES } from "../../../constants";
-import { userDataState } from "../../../redux/slice/app.slice";
+import { COLORS } from "../../../constants";
 import { DiscussionListCard } from "../../organism";
 
-const DiscussionProfile = () => {
+const DiscussionAuthor = () => {
   const navigation = useNavigation();
-  const user = useSelector(userDataState);
+  const route = useRoute();
+
+  const { author_id } = route.params;
 
   const navMenu = [
     {
@@ -37,11 +40,11 @@ const DiscussionProfile = () => {
   useFocusEffect(
     useCallback(() => {
       if (selectedNavMenu === 1) {
-        getPostByAuthorId(user.user_id);
+        getPostByAuthorId(author_id);
       } else {
-        getLikedPostByAuthorId(user.user_id);
+        getLikedPostByAuthorId(author_id);
       }
-    }, [selectedNavMenu, user.user_id]),
+    }, [selectedNavMenu, author_id]),
   );
 
   return (
@@ -56,10 +59,10 @@ const DiscussionProfile = () => {
         }}
       >
         <Ionicons
-          name="menu"
+          name="chevron-back-circle"
           size={30}
           color={COLORS.primary}
-          onPress={() => navigation.openDrawer()}
+          onPress={() => navigation.goBack()}
         />
 
         <View style={{ flex: 1, alignItems: "center" }}>
@@ -89,20 +92,6 @@ const DiscussionProfile = () => {
           <Text style={{ fontSize: 14, fontFamily: "medium" }}>
             {responseData?.author?.email}
           </Text>
-          <View style={{ alignSelf: "flex-start" }}>
-            <Button
-              onPress={() => {
-                navigation.navigate("MyProfile");
-              }}
-              variant="outline"
-              borderColor={COLORS.primary}
-              size="xs"
-            >
-              <Text style={{ color: COLORS.primary, fontFamily: "semibold" }}>
-                Edit Profile
-              </Text>
-            </Button>
-          </View>
         </View>
 
         <View
@@ -166,25 +155,6 @@ const DiscussionProfile = () => {
           <DiscussionListCard key={index} postData={item} />
         )}
         keyExtractor={(item, index) => index.toString()}
-        ListEmptyComponent={
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              height: SIZES.height / 1.5,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "bold",
-                fontSize: 18,
-                color: COLORS.darkGray,
-              }}
-            >
-              No Posts yet
-            </Text>
-          </View>
-        }
         style={{
           paddingHorizontal: 10,
           paddingVertical: 5,
@@ -198,4 +168,4 @@ const DiscussionProfile = () => {
   );
 };
 
-export default DiscussionProfile;
+export default DiscussionAuthor;

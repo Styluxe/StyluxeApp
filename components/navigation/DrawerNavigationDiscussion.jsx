@@ -16,7 +16,7 @@ import {
   userDataState,
 } from "../../redux/slice/app.slice";
 import { Discussion } from "../screen/Discussion";
-import { DiscussionProfile } from "../screen";
+import { DiscussionBookmarks, DiscussionProfile } from "../screen";
 
 const DrawerNavigationDiscussion = () => {
   const Drawer = createDrawerNavigator();
@@ -33,7 +33,13 @@ const DrawerNavigationDiscussion = () => {
           <View style={styles.drawerHeader}>
             <Image
               style={styles.profileImage}
-              source={require("../../assets/content/profpic.png")}
+              source={
+                userData?.profile_picture
+                  ? {
+                      uri: userData?.profile_picture,
+                    }
+                  : require("../../assets/content/profpic.png")
+              }
             />
             <View style={{ flexDirection: "column" }}>
               <Text style={styles.username}>
@@ -97,6 +103,23 @@ const DrawerNavigationDiscussion = () => {
           headerShown: false,
           drawerIcon: () => (
             <Ionicons name="globe-outline" size={24} color={COLORS.primary} />
+          ),
+          drawerStyle: styles.drawerStyle,
+          drawerLabelStyle: styles.drawerLabelStyle,
+        }}
+      />
+
+      <Drawer.Screen
+        name="Bookmark"
+        component={DiscussionBookmarks}
+        options={{
+          headerShown: false,
+          drawerIcon: () => (
+            <Ionicons
+              name="bookmarks-outline"
+              size={24}
+              color={COLORS.primary}
+            />
           ),
           drawerStyle: styles.drawerStyle,
           drawerLabelStyle: styles.drawerLabelStyle,

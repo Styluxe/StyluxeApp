@@ -32,6 +32,7 @@ import {
   StylistPayment,
   ManageAddress,
   CreateDiscussion,
+  DiscussionAuthor,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -191,6 +192,11 @@ export default function App() {
             <Stack.Screen
               name="CreateDiscussion"
               component={CreateDiscussion}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="DiscussionAuthor"
+              component={DiscussionAuthor}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

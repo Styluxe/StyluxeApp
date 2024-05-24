@@ -56,6 +56,16 @@ export const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginVertical: 10,
   },
+  comment_btn_disabled: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.secondary,
+    alignItems: "center",
+    borderRadius: 5,
+    alignSelf: "flex-end",
+    marginHorizontal: 12,
+    marginVertical: 10,
+  },
   btn_text: {
     fontFamily: "semibold",
     color: COLORS.white,

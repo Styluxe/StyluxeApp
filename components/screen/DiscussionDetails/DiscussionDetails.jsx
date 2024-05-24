@@ -1,19 +1,83 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import moment from "moment";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 import styles from "./DiscussionDetails.style";
+import {
+  useCommentDiscussionApi,
+  useGetPostByIdApi,
+  useReactDiscussionApi,
+} from "../../../API/DiscussionApi";
 import { COLORS } from "../../../constants";
-import { selectedDiscussionState } from "../../../redux/slice/discussion.slice";
+import { userDataState } from "../../../redux/slice/app.slice";
 import { DiscussionCommentCard, DiscussionResponseInput } from "../../organism";
 
 const DiscussionDetails = () => {
   const navigation = useNavigation();
-  const selectedDiscussion = useSelector(selectedDiscussionState);
+  const route = useRoute();
+
+  const { post_id } = route.params;
+  const { getPostById, responseData: post } = useGetPostByIdApi();
+  const { reactDiscussion } = useReactDiscussionApi();
+  const { commentDiscussion, code, setCode } = useCommentDiscussionApi();
+  const userData = useSelector(userDataState);
+
+  const [like, setLike] = useState(false);
+  const [likeCounter, setLikeCounter] = useState(0);
+  const [comment, setComment] = useState("");
+
+  useFocusEffect(
+    useCallback(() => {
+      getPostById(post_id);
+    }, [post_id]),
+  );
+
+  useEffect(() => {
+    if (post) {
+      const initialLikeState = post.reactions.some(
+        (reaction) => reaction.user_id === userData.user_id,
+      );
+      setLike(initialLikeState);
+      setLikeCounter(post.reactions.length);
+    }
+  }, [post, userData.user_id]);
+
+  const onLike = async () => {
+    try {
+      await reactDiscussion(post?.post_id);
+      if (like) {
+        setLike(false);
+        setLikeCounter(likeCounter - 1);
+      } else {
+        setLike(true);
+        setLikeCounter(likeCounter + 1);
+      }
+    } catch (error) {
+      console.error("Failed to like/unlike the post:", error);
+    }
+  };
+
+  const handleComment = () => {
+    if (comment) {
+      commentDiscussion(post?.post_id, comment);
+      setComment("");
+    }
+  };
+
+  useEffect(() => {
+    if (code === 201) {
+      getPostById(post_id);
+      setCode(null);
+    }
+  }, [code]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -51,9 +115,21 @@ const DiscussionDetails = () => {
                   paddingBottom: 30,
                 }}
               >
-                <View style={styles.userContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    navigation.navigate("DiscussionAuthor", {
+                      author_id: post?.author?.user_id,
+                    });
+                  }}
+                  style={styles.userContainer}
+                >
                   <Image
-                    source={require("../../../assets/content/profpic.png")}
+                    source={
+                      post?.author?.profile_picture
+                        ? { uri: post?.author?.profile_picture }
+                        : require("../../../assets/content/profpic.png")
+                    }
                     style={styles.profileImage}
                   />
                   <View style={styles.userInfo}>
@@ -66,61 +142,50 @@ const DiscussionDetails = () => {
                         }}
                       >
                         <Text style={styles.name}>
-                          {selectedDiscussion.author.first_name}
+                          {post?.author.first_name}
                         </Text>
-                        <Text style={styles.mail}>
-                          {selectedDiscussion.author.email}
-                        </Text>
+                        <Text style={styles.mail}>{post?.author.email}</Text>
                       </View>
                       <Text style={styles.time}>
-                        {moment(selectedDiscussion.created_at).format(
-                          // eslint-disable-next-line prettier/prettier
-                          "DD/MM/YYYY"
-                        )}{" "}
-                        •{" "}
-                        {moment(selectedDiscussion.created_at).format(
-                          // eslint-disable-next-line prettier/prettier
-                          "HH:mm a"
-                        )}
+                        {moment(post?.createdAt).format("DD/MM/YYYY")} •{" "}
+                        {moment(post?.createdAt).format("HH:mm a")}
                       </Text>
                     </View>
                     <View style={styles.tagContainer}>
                       <View style={styles.tag}>
                         <Text style={styles.tagText}>
-                          {selectedDiscussion.category}
+                          {post?.category?.category_name}
                         </Text>
                       </View>
                     </View>
                   </View>
-                </View>
+                </TouchableOpacity>
                 <Text
                   numberOfLines={2}
                   ellipsizeMode="tail"
                   style={styles.title}
                 >
-                  {selectedDiscussion.title}
+                  {post?.title}
                 </Text>
                 <View style={styles.content}>
-                  <Text style={styles.contentText}>
-                    {selectedDiscussion.content}
-                  </Text>
-                  {selectedDiscussion.images.length === 1 ? (
-                    <TouchableOpacity style={{ flex: 1, maxHeight: 200 }}>
+                  <Text style={styles.contentText}>{post?.content}</Text>
+                  {post?.images?.length === 1 ? (
+                    <TouchableOpacity style={{ flex: 1, maxHeight: 400 }}>
                       <Image
-                        source={{ uri: selectedDiscussion.images[0] }}
+                        source={{ uri: post?.images[0].image_uri }}
                         style={{ width: "100%", height: "100%" }}
                       />
                     </TouchableOpacity>
                   ) : (
                     <FlatList
-                      data={selectedDiscussion.images}
+                      data={post?.images}
                       numColumns={2}
                       renderItem={({ item }) => (
                         <TouchableOpacity
                           style={{ flex: 1, maxHeight: 200, padding: 2 }}
                         >
                           <Image
-                            source={{ uri: item }}
+                            source={{ uri: item.image_uri }}
                             style={{ width: "100%", height: "100%" }}
                           />
                         </TouchableOpacity>
@@ -139,25 +204,31 @@ const DiscussionDetails = () => {
                       />
                     </TouchableOpacity>
                   </View>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={onLike}>
                     <View style={styles.footerRight}>
                       <Ionicons
-                        name="heart-outline"
+                        name={like ? "heart" : "heart-outline"}
                         size={24}
-                        color={COLORS.primary}
+                        color={like ? "red" : COLORS.primary}
                       />
-                      <Text style={styles.likes}>
-                        {selectedDiscussion.reactions.length}
-                      </Text>
+                      <Text style={styles.likes}>{likeCounter}</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
               </View>
-              <DiscussionResponseInput data={selectedDiscussion} />
+              <DiscussionResponseInput
+                data={post}
+                length={post?.comments.length}
+                comment={comment}
+                setComment={setComment}
+                onComment={handleComment}
+              />
               <FlatList
-                data={selectedDiscussion.comments}
+                data={post?.comments}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item, index }) => <DiscussionCommentCard />}
+                renderItem={({ item }) => (
+                  <DiscussionCommentCard key={item.comment_id} data={item} />
+                )}
               />
             </View>
           </>

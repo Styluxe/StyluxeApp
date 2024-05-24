@@ -8,6 +8,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderColor: COLORS.gray2,
+    backgroundColor: COLORS.white,
+    borderRadius: 5,
   },
   title: {
     fontFamily: "semibold",
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   contentText: {
-    fontFamily: "regular",
+    fontFamily: "medium",
     fontSize: 14,
   },
   footer: {

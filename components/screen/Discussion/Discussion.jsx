@@ -1,10 +1,11 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useState, useRef, useEffect } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Animated,
   FlatList,
   RefreshControl,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -19,6 +20,7 @@ import {
   setLoginModalOpen,
 } from "../../../redux/slice/app.slice";
 import { DiscussionHeader, DiscussionListCard } from "../../organism";
+import { useGetAllDiscussionApi } from "../../../API/DiscussionApi";
 
 const Discussion = () => {
   const navigation = useNavigation();
@@ -30,6 +32,14 @@ const Discussion = () => {
   const auth = useSelector(authKeyState);
   const scrollViewRef = useRef(null);
   const dispatch = useDispatch();
+
+  const { getAllDiscussion, responseData } = useGetAllDiscussionApi();
+
+  useFocusEffect(
+    useCallback(() => {
+      getAllDiscussion();
+    }, []),
+  );
 
   useEffect(() => {
     Animated.timing(iconOpacity, {
@@ -59,6 +69,7 @@ const Discussion = () => {
 
   const onRefresh = () => {
     setRefreshing(true);
+    getAllDiscussion();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -78,7 +89,7 @@ const Discussion = () => {
 
       <FlatList
         ref={scrollViewRef}
-        data={discussionExplore}
+        data={responseData}
         renderItem={({ item, index }) => (
           <DiscussionListCard key={index} postData={item} />
         )}
