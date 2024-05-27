@@ -507,6 +507,42 @@ const useAddStylistReviewApi = () => {
   return { addStylistReview, loading, error, code, setCode };
 };
 
+const useGetCustomerReviewsAPI = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [reviewData, setReviewData] = useState([]);
+
+  const getCustomerReviews = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${API_URL}/stylist/reviews`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { data } = response?.data;
+
+      setReviewData(data);
+
+      console.log("fetch customer reviews");
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, reviewData, getCustomerReviews };
+};
+
 export {
   useGetStylistByAuthApi,
   useUpdateStylistByIdApi,
@@ -521,4 +557,5 @@ export {
   useDeleteScheduleApi,
   useSearchStylistApi,
   useAddStylistReviewApi,
+  useGetCustomerReviewsAPI,
 };

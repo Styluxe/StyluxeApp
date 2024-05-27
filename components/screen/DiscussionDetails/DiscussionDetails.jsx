@@ -8,16 +8,20 @@ import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./DiscussionDetails.style";
 import {
+  useAddToBookmarkApi,
   useCommentDiscussionApi,
   useGetPostByIdApi,
   useReactDiscussionApi,
 } from "../../../API/DiscussionApi";
 import { COLORS } from "../../../constants";
-import { userDataState } from "../../../redux/slice/app.slice";
+import {
+  setLoginModalOpen,
+  userDataState,
+} from "../../../redux/slice/app.slice";
 import { DiscussionCommentCard, DiscussionResponseInput } from "../../organism";
 
 const DiscussionDetails = () => {
@@ -28,11 +32,14 @@ const DiscussionDetails = () => {
   const { getPostById, responseData: post } = useGetPostByIdApi();
   const { reactDiscussion } = useReactDiscussionApi();
   const { commentDiscussion, code, setCode } = useCommentDiscussionApi();
+  const { addToBookmark } = useAddToBookmarkApi();
   const userData = useSelector(userDataState);
 
   const [like, setLike] = useState(false);
   const [likeCounter, setLikeCounter] = useState(0);
   const [comment, setComment] = useState("");
+  const dispatch = useDispatch();
+  const [bookmark, setBookmark] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -43,15 +50,26 @@ const DiscussionDetails = () => {
   useEffect(() => {
     if (post) {
       const initialLikeState = post.reactions.some(
-        (reaction) => reaction.user_id === userData.user_id,
+        (reaction) => reaction?.user_id === userData?.user_id,
       );
+
+      const initialBookmarkState = post.bookmarks.some(
+        (bookmark) => bookmark?.user_id === userData?.user_id,
+      );
+
       setLike(initialLikeState);
+      setBookmark(initialBookmarkState);
       setLikeCounter(post.reactions.length);
     }
-  }, [post, userData.user_id]);
+  }, [post, userData?.user_id]);
 
   const onLike = async () => {
     try {
+      if (!userData) {
+        dispatch(setLoginModalOpen(true));
+        return;
+      }
+
       await reactDiscussion(post?.post_id);
       if (like) {
         setLike(false);
@@ -78,6 +96,24 @@ const DiscussionDetails = () => {
       setCode(null);
     }
   }, [code]);
+
+  const onBookmark = async () => {
+    if (!userData) {
+      dispatch(setLoginModalOpen(true));
+      return;
+    }
+
+    try {
+      await addToBookmark(post.post_id);
+      if (bookmark) {
+        setBookmark(false);
+      } else {
+        setBookmark(true);
+      }
+    } catch (error) {
+      console.error("Failed to bookmark/unbookmark the post:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -198,9 +234,10 @@ const DiscussionDetails = () => {
                   <View style={styles.footerLeft}>
                     <TouchableOpacity>
                       <Ionicons
-                        name="bookmark-outline"
+                        name={bookmark ? "bookmark" : "bookmark-outline"}
                         size={24}
                         color={COLORS.primary}
+                        onPress={onBookmark}
                       />
                     </TouchableOpacity>
                   </View>
@@ -216,13 +253,15 @@ const DiscussionDetails = () => {
                   </TouchableOpacity>
                 </View>
               </View>
-              <DiscussionResponseInput
-                data={post}
-                length={post?.comments.length}
-                comment={comment}
-                setComment={setComment}
-                onComment={handleComment}
-              />
+              {userData && (
+                <DiscussionResponseInput
+                  data={post}
+                  length={post?.comments.length}
+                  comment={comment}
+                  setComment={setComment}
+                  onComment={handleComment}
+                />
+              )}
               <FlatList
                 data={post?.comments}
                 keyExtractor={(item, index) => index.toString()}

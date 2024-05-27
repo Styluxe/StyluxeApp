@@ -77,7 +77,7 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
       </View>
 
       {past ? (
-        <StarRating />
+        <StarRating total_likes={data?.review?.rating || 0} />
       ) : isAccepted ? (
         <Button disabled bgColor={COLORS.secondary}>
           <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>

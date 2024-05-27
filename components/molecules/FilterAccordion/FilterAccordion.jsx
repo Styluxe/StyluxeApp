@@ -24,11 +24,37 @@ const FilterAccordion = ({
       id: "a",
       label: "Sort By",
       child: [
-        { id: 1, label: "Price: Low to High", value: "asc" },
         {
-          id: 2,
+          id: 11,
+          label: "Price: Low to High",
+          value: {
+            order: "asc",
+            sortBy: "price",
+          },
+        },
+        {
+          id: 22,
           label: "Price: High to Low",
-          value: "desc",
+          value: {
+            order: "desc",
+            sortBy: "price",
+          },
+        },
+        {
+          id: 33,
+          label: "Name: A to Z",
+          value: {
+            order: "asc",
+            sortBy: "name",
+          },
+        },
+        {
+          id: 44,
+          label: "Name: Z to A",
+          value: {
+            order: "desc",
+            sortBy: "name",
+          },
         },
       ],
     },
@@ -39,34 +65,42 @@ const FilterAccordion = ({
         {
           id: 1,
           label: "S",
+          value: "S",
         },
         {
           id: 2,
           label: "M",
+          value: "M",
         },
         {
           id: 3,
           label: "L",
+          value: "L",
         },
         {
           id: 4,
           label: "XL",
+          value: "XL",
         },
         {
           id: 5,
           label: "30",
+          value: "30",
         },
         {
           id: 6,
           label: "32",
+          value: "32",
         },
         {
           id: 7,
           label: "34",
+          value: "34",
         },
         {
           id: 8,
           label: "36",
+          value: "36",
         },
       ],
     },
@@ -128,8 +162,8 @@ const FilterAccordion = ({
                     <HStack key={index} gap={5}>
                       <MaterialIcons
                         name={
-                          selectedSize === child.label ||
-                          selectedSort === child.label
+                          selectedSize?.label === child.label ||
+                          selectedSort?.label === child.label
                             ? "radio-button-checked"
                             : "radio-button-unchecked"
                         }
@@ -137,9 +171,9 @@ const FilterAccordion = ({
                         size={24}
                         onPress={() => {
                           if (item.label === "Size") {
-                            setSelectedSize(child.label);
+                            setSelectedSize(child);
                           } else if (item.label === "Sort By") {
-                            setSelectedSort(child.label);
+                            setSelectedSort(child);
                           }
                         }}
                       />

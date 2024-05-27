@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./DiscussionListCard.style";
 import {
@@ -11,7 +11,10 @@ import {
   useReactDiscussionApi,
 } from "../../../../API/DiscussionApi";
 import { COLORS } from "../../../../constants";
-import { userDataState } from "../../../../redux/slice/app.slice";
+import {
+  setLoginModalOpen,
+  userDataState,
+} from "../../../../redux/slice/app.slice";
 
 const DiscussionListCard = ({ postData }) => {
   const navigation = useNavigation();
@@ -20,16 +23,17 @@ const DiscussionListCard = ({ postData }) => {
   const userData = useSelector(userDataState);
 
   const initialLikeState = postData.reactions?.some(
-    (reaction) => reaction.user_id === userData.user_id,
+    (reaction) => reaction.user_id === userData?.user_id,
   );
 
   const initialBookmarkState = postData.bookmarks?.some(
-    (bookmark) => bookmark.user_id === userData.user_id,
+    (bookmark) => bookmark.user_id === userData?.user_id,
   );
 
   const [like, setLike] = useState(initialLikeState);
   const [likeCounter, setLikeCounter] = useState(null);
   const [bookmark, setBookmark] = useState(initialBookmarkState);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setLike(initialLikeState);
@@ -45,6 +49,11 @@ const DiscussionListCard = ({ postData }) => {
 
   const onLike = async () => {
     try {
+      if (!userData) {
+        dispatch(setLoginModalOpen(true));
+        return;
+      }
+
       await reactDiscussion(postData.post_id);
       if (like) {
         setLike(false);
@@ -59,6 +68,10 @@ const DiscussionListCard = ({ postData }) => {
   };
 
   const onBookmark = async () => {
+    if (!userData) {
+      dispatch(setLoginModalOpen(true));
+      return;
+    }
     try {
       await addToBookmark(postData.post_id);
       if (bookmark) {

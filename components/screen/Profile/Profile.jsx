@@ -135,6 +135,7 @@ const Profile = () => {
               hasIcon
               iconName="chatbox-outline"
               text="Customer Review"
+              onPress={() => navigation.navigate("StylistReviewList")}
             />
           </>
         ) : (

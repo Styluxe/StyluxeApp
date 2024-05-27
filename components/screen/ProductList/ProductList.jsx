@@ -1,33 +1,89 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useProductCategoryApi } from "../../../API/CategoryAPI";
-import { useSearchProductApi } from "../../../API/ProductAPI";
+import {
+  useProductFilterApi,
+  useSearchProductApi,
+} from "../../../API/ProductAPI";
 import { COLORS } from "../../../constants";
 import { CartIcon, FilterModal, ProductCard } from "../../molecules";
 
 const ProductList = () => {
   const navigation = useNavigation();
-  const { getProductCategory, productCategory } = useProductCategoryApi();
-  const { searchProduct, products } = useSearchProductApi();
+  const {
+    getProductCategory,
+    productCategory,
+    code: productCategoryCode,
+    setCode: setProductCategoryCode,
+  } = useProductCategoryApi();
+  const {
+    searchProduct,
+    products,
+    code: searchCode,
+    setCode: setSearchCode,
+  } = useSearchProductApi();
+  const {
+    productFilter,
+    setCode: setProductFilterCode,
+    code: productFilterCode,
+    products: productFilterData,
+  } = useProductFilterApi();
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedSort, setSelectedSort] = useState(null);
 
+  const [productdata, setProductData] = useState([]);
+
   const route = useRoute();
   const { subCategoryId, search } = route.params;
 
+  useFocusEffect(
+    useCallback(() => {
+      if (subCategoryId) {
+        getProductCategory({ categoryId: subCategoryId });
+      } else if (search) {
+        searchProduct(search);
+      }
+    }, []),
+  );
+
   useEffect(() => {
-    if (subCategoryId) {
-      getProductCategory({ categoryId: subCategoryId });
-    } else if (search) {
-      searchProduct(search);
+    if (productCategoryCode === 200) {
+      setProductData(productCategory?.products);
+      setProductCategoryCode(null);
+    } else if (searchCode === 200) {
+      setProductData(products);
+      setSearchCode(null);
     }
-  }, []);
+  }, [productCategoryCode, searchCode, productCategory, products]);
+
+  const filterRequest = {
+    size: selectedSize?.value,
+    order: selectedSort?.value?.order,
+    sortBy: selectedSort?.value?.sortBy,
+    keyword: search ? search : productCategory?.sub_category_name,
+  };
+
+  const handleFilter = () => {
+    productFilter(filterRequest);
+  };
+
+  useEffect(() => {
+    if (productFilterCode === 200) {
+      setProductData(productFilterData);
+      setProductFilterCode(null);
+      setShowModal(false);
+    }
+  }, [productFilterCode, productFilterData]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -64,7 +120,7 @@ const ProductList = () => {
       </View>
       <View style={{ flex: 1 }}>
         <FlatList
-          data={search ? products : productCategory?.products}
+          data={productdata}
           numColumns={2}
           columnWrapperStyle={{
             justifyContent: "space-between",
@@ -128,6 +184,7 @@ const ProductList = () => {
         selectedSort={selectedSort}
         setSelectedSize={setSelectedSize}
         setSelectedSort={setSelectedSort}
+        handleApply={handleFilter}
       />
     </SafeAreaView>
   );

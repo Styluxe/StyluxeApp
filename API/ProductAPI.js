@@ -37,6 +37,7 @@ const useSearchProductApi = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [keyword, setKeyword] = useState("");
+  const [code, setCode] = useState(null);
 
   const searchProduct = async (query) => {
     setLoading(true);
@@ -46,19 +47,49 @@ const useSearchProductApi = () => {
         `${API_URL}/product/search?search=${query}`,
       );
 
-      const { data, keyword } = response?.data;
+      const { data, keyword, code } = response?.data;
 
       console.log("fetch search product:");
       setProducts(data);
       setKeyword(keyword);
+      setCode(code);
     } catch (error) {
       setError(error);
       console.log("error", error);
       setLoading(false);
+
+      setCode(error?.response?.status);
     }
   };
 
-  return { error, loading, products, keyword, searchProduct };
+  return { error, loading, products, keyword, searchProduct, code, setCode };
 };
 
-export { useGetSingleProductApi, useSearchProductApi };
+// product filtering
+
+const useProductFilterApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [code, setCode] = useState(null);
+
+  const productFilter = async (filter) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_URL}/product/filter`, filter);
+      console.log("fetch product filter");
+
+      const { data, code } = response?.data;
+      setProducts(data);
+      setCode(code);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+      setCode(error?.response?.status);
+    }
+  };
+  return { error, loading, products, productFilter, code, setCode };
+};
+
+export { useGetSingleProductApi, useSearchProductApi, useProductFilterApi };

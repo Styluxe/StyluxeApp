@@ -13,14 +13,13 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
+import { useGetAllDiscussionApi } from "../../../API/DiscussionApi";
 import { COLORS } from "../../../constants";
-import { discussionExplore } from "../../../mocks/Dummydiscussion";
 import {
   authKeyState,
   setLoginModalOpen,
 } from "../../../redux/slice/app.slice";
 import { DiscussionHeader, DiscussionListCard } from "../../organism";
-import { useGetAllDiscussionApi } from "../../../API/DiscussionApi";
 
 const Discussion = () => {
   const navigation = useNavigation();

@@ -24,14 +24,14 @@ const DiscussionResponseInput = ({
         <View style={styles.profile_container}>
           <Image
             source={
-              useProfile.profile_picture
-                ? { uri: useProfile.profile_picture }
+              useProfile?.profile_picture
+                ? { uri: useProfile?.profile_picture }
                 : require("../../../../assets/content/profpic.png")
             }
             style={styles.profile_image}
           />
           <Text style={styles.profile_name}>
-            {useProfile.first_name + " " + useProfile.last_name}
+            {useProfile?.first_name + " " + useProfile?.last_name}
           </Text>
         </View>
         <TextInput
