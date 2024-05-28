@@ -5,6 +5,7 @@ import { View, TouchableOpacity, Image } from "react-native";
 import Swiper from "react-native-swiper";
 
 import { COLORS } from "../../../../constants";
+import { CartIcon } from "../../../molecules";
 
 const ProductImageSlider = ({ images }) => {
   const navigation = useNavigation();
@@ -63,6 +64,9 @@ const ProductImageSlider = ({ images }) => {
           <Ionicons name="arrow-back-outline" size={24} color={COLORS.white} />
         </View>
       </TouchableOpacity>
+      <View style={{ position: "absolute", top: 20, right: 20 }}>
+        <CartIcon size={30} />
+      </View>
     </View>
   );
 };

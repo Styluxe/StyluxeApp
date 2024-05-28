@@ -79,6 +79,7 @@ const useGetPaymentSummary = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [summaryData, setSummaryData] = useState({});
+  const [code, setCode] = useState(null);
 
   const getPaymentSummary = async () => {
     setLoading(true);
@@ -96,11 +97,12 @@ const useGetPaymentSummary = () => {
         },
       });
 
-      const { data } = response?.data;
+      const { data, code } = response?.data;
 
       console.log("fetch payment summary");
       setSummaryData(data);
       setLoading(false);
+      setCode(code);
     } catch (error) {
       setError(error);
       console.log("error", error);
@@ -108,7 +110,7 @@ const useGetPaymentSummary = () => {
     }
   };
 
-  return { error, loading, getPaymentSummary, summaryData };
+  return { error, loading, getPaymentSummary, summaryData, code, setCode };
 };
 
 const useCreateOrder = () => {
@@ -117,7 +119,7 @@ const useCreateOrder = () => {
   const [responseData, setResponseData] = useState(null);
   const [code, setCode] = useState(null);
 
-  const createOrder = async (payment_provider, address_id) => {
+  const createOrder = async (payment_provider, address_id, discount) => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem("token");
@@ -129,7 +131,7 @@ const useCreateOrder = () => {
 
       const response = await axios.post(
         `${API_URL}/order/create-order`,
-        { payment_provider, address_id },
+        { payment_provider, address_id, discount },
         {
           headers: {
             Authorization: `Bearer ${token}`,

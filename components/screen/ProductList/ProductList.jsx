@@ -123,7 +123,8 @@ const ProductList = () => {
           data={productdata}
           numColumns={2}
           columnWrapperStyle={{
-            justifyContent: "space-between",
+            // justifyContent: "space-between",
+            gap: 40,
             paddingHorizontal: 15,
           }}
           ListHeaderComponent={() => (
@@ -160,7 +161,10 @@ const ProductList = () => {
               />
             </View>
           )}
-          contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
+          contentContainerStyle={{
+            gap: 15,
+            paddingVertical: 15,
+          }}
           renderItem={({ item }) => (
             <ProductCard
               category={productCategory?.sub_category_name}

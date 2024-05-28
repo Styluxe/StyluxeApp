@@ -14,7 +14,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./ProductAccordion.style";
 import { COLORS } from "../../../../constants";
 
-const ProductAccordion = ({ accordionData }) => {
+const ProductAccordion = ({ accordionData, onPressReference }) => {
   const careRepeater = [
     {
       id: 1,
@@ -46,14 +46,14 @@ const ProductAccordion = ({ accordionData }) => {
   const accordionRepeater = [
     {
       id: 1,
-      title: "Details ",
+      title: "Details",
       content: (
         <View style={{ gap: 5 }}>
           <Text style={{ fontFamily: "regular" }}>
             {accordionData?.product_description}
           </Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onPressReference}>
             <View style={styles.reference_button}>
               <Text style={styles.reference_button_text}>
                 View Outfit Reference
@@ -156,7 +156,7 @@ const ProductAccordion = ({ accordionData }) => {
       variant="unfilled"
       type="multiple"
       width="100%"
-      defaultValue="Details"
+      defaultValue={["Details", "Materials", "Care Instructions"]}
     >
       {accordionRepeater.map((item) => (
         <View key={item.id}>

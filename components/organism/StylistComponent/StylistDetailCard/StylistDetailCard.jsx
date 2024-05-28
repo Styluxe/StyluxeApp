@@ -1,4 +1,4 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
@@ -14,7 +14,7 @@ const StylistDetailCard = ({ stylist }) => {
     if (stylist?.schedules) {
       return stylist?.schedules
         .map((item) => {
-          return item.day.substring(0, 2);
+          return item.day.substring(0, 3);
         })
         .join(", ");
     }
@@ -30,12 +30,33 @@ const StylistDetailCard = ({ stylist }) => {
     >
       <View style={styles.container}>
         <View style={styles.image_container}>
-          <Image
-            style={styles.image}
-            source={{
-              uri: "https://blog.myskill.id/wp-content/uploads/2024/02/11-fascinating-facts-about-fashion-designer-1695688811-825x510.webp",
-            }}
-          />
+          {stylist?.images?.length > 0 ? (
+            <Image
+              style={styles.image}
+              source={{
+                uri: stylist?.images[0]?.image_url,
+              }}
+            />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Ionicons name="image-sharp" size={50} color={COLORS.primary} />
+              <Text
+                style={{
+                  fontFamily: "medium",
+                  fontSize: 12,
+                  color: COLORS.primary,
+                }}
+              >
+                No Image
+              </Text>
+            </View>
+          )}
         </View>
         <View style={styles.information_container}>
           <View style={{ gap: 2 }}>

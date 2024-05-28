@@ -81,55 +81,80 @@ const StylistDetails = () => {
           <View style={styles.detail_body_container}>
             <View style={styles.card_container}>
               <View style={styles.image_container}>
-                <Swiper
-                  showsButtons={dummyStylistDetail.images.length > 1}
-                  activeDotColor={COLORS.primary}
-                  nextButton={
-                    <View
-                      style={{
-                        padding: 5,
-                        backgroundColor: COLORS.white,
-                        borderRadius: 100,
-                        ...SHADOWS.medium,
-                      }}
-                    >
-                      <AntDesign
-                        name="arrowright"
-                        size={24}
-                        color={COLORS.primary}
-                      />
-                    </View>
-                  }
-                  prevButton={
-                    <View
-                      style={{
-                        padding: 5,
-                        backgroundColor: COLORS.white,
-                        borderRadius: 100,
-                        ...SHADOWS.medium,
-                      }}
-                    >
-                      <AntDesign
-                        name="arrowleft"
-                        size={24}
-                        color={COLORS.primary}
-                      />
-                    </View>
-                  }
-                >
-                  {dummyStylistDetail.images.map((item, index) => (
-                    <View key={index} style={{ flex: 1 }}>
-                      <Image
-                        source={{ uri: item.image_url }}
+                {stylistData?.images?.length > 0 ? (
+                  <Swiper
+                    showsButtons={stylistData?.images.length > 1}
+                    activeDotColor={COLORS.primary}
+                    nextButton={
+                      <View
                         style={{
-                          width: "100%",
-                          height: "100%",
-                          resizeMode: "cover",
+                          padding: 5,
+                          backgroundColor: COLORS.white,
+                          borderRadius: 100,
+                          ...SHADOWS.medium,
                         }}
-                      />
-                    </View>
-                  ))}
-                </Swiper>
+                      >
+                        <AntDesign
+                          name="arrowright"
+                          size={24}
+                          color={COLORS.primary}
+                        />
+                      </View>
+                    }
+                    prevButton={
+                      <View
+                        style={{
+                          padding: 5,
+                          backgroundColor: COLORS.white,
+                          borderRadius: 100,
+                          ...SHADOWS.medium,
+                        }}
+                      >
+                        <AntDesign
+                          name="arrowleft"
+                          size={24}
+                          color={COLORS.primary}
+                        />
+                      </View>
+                    }
+                  >
+                    {stylistData.images.map((item, index) => (
+                      <View key={index} style={{ flex: 1 }}>
+                        <Image
+                          source={{ uri: item.image_url }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            resizeMode: "cover",
+                          }}
+                        />
+                      </View>
+                    ))}
+                  </Swiper>
+                ) : (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Ionicons
+                      name="image-sharp"
+                      size={50}
+                      color={COLORS.primary}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: "medium",
+                        fontSize: 12,
+                        color: COLORS.primary,
+                      }}
+                    >
+                      No Image
+                    </Text>
+                  </View>
+                )}
               </View>
 
               <View style={styles.info_container}>

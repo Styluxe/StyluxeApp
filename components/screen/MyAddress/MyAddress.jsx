@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,20 +10,44 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useAddressApi } from "../../../API/AddressApi";
+import {
+  useAddressApi,
+  useSetPrimaryAddressApi,
+} from "../../../API/AddressApi";
 import { COLORS } from "../../../constants";
 import AddressCard from "../../molecules/AddressCard/AddressCard";
 
 const MyAddress = () => {
   const { getAddress, address, loading } = useAddressApi();
+  const { setPrimaryAddress, setCode, code } = useSetPrimaryAddressApi();
+  const [search, setSearch] = useState("");
 
   const navigation = useNavigation();
+
+  const searchAddress = () => {
+    return address.filter((item) =>
+      item?.name?.toLowerCase().includes(search.toLowerCase()),
+    );
+  };
 
   useFocusEffect(
     useCallback(() => {
       getAddress();
     }, []),
   );
+
+  const handleRadioPress = (item) => {
+    if (!item.is_primary) {
+      setPrimaryAddress(item.address_id);
+    }
+  };
+
+  useEffect(() => {
+    if (code === 200) {
+      getAddress();
+      setCode(null);
+    }
+  }, [code]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -94,27 +118,32 @@ const MyAddress = () => {
                 borderWidth: 1,
               }}
               placeholder="What are you looking for?"
+              value={search}
+              onChangeText={(text) => setSearch(text)}
             />
           </View>
 
-          <View
+          <TouchableOpacity
             style={{
               padding: 3,
               backgroundColor: COLORS.primary,
               borderRadius: 5,
               justifyContent: "center",
             }}
+            onPress={searchAddress}
           >
             <Ionicons name="search-outline" size={24} color={COLORS.white} />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
       <FlatList
-        data={address}
-        renderItem={(data) => (
+        data={search ? searchAddress() : address}
+        keyExtractor={(item) => item.address_id.toString()}
+        renderItem={({ item }) => (
           <AddressCard
-            addressData={data.item}
-            isPrimary={data.item.is_primary}
+            addressData={item}
+            isPrimary={item?.is_primary}
+            onRadioPress={() => handleRadioPress(item)}
           />
         )}
         contentContainerStyle={{ padding: 12, gap: 15 }}

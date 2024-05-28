@@ -1,8 +1,16 @@
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Button } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, Image, TextInput, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 
@@ -13,7 +21,6 @@ import {
 } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
 import { useKeyboardVisibility } from "../../../hook/hook";
-import { dummyStylistDetail } from "../../../mocks/DummyStylist";
 
 const StylistAboutMe = () => {
   const navigation = useNavigation();
@@ -29,8 +36,29 @@ const StylistAboutMe = () => {
     type: null,
   });
   const [buttonVisible, setButtonVisible] = useState(true);
+  const [images, setImages] = useState([]);
 
-  console.log("edit", editData);
+  const handleImagePick = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled && result.assets && Array.isArray(result.assets)) {
+        const newFile = {
+          uri: result.assets[0].uri,
+          type: result.assets[0].mimeType,
+          name: `image${Math.floor(Math.random() * (999 - 100 + 1) + 100)}.jpeg`,
+        };
+
+        setImages((prevImages) => [...prevImages, newFile]);
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
 
   useKeyboardVisibility(setButtonVisible);
 
@@ -43,6 +71,7 @@ const StylistAboutMe = () => {
   useEffect(() => {
     if (stylistData) {
       setActualData(stylistData);
+      setImages(stylistData.images);
     }
   }, [stylistData]);
 
@@ -119,7 +148,7 @@ const StylistAboutMe = () => {
           <View style={styles.card_container}>
             <View style={styles.image_container}>
               <Swiper
-                showsButtons={dummyStylistDetail.images.length > 1}
+                showsButtons={images?.length > 1}
                 activeDotColor={COLORS.primary}
                 nextButton={
                   <View
@@ -154,18 +183,30 @@ const StylistAboutMe = () => {
                   </View>
                 }
               >
-                {dummyStylistDetail.images.map((item, index) => (
-                  <View key={index} style={{ flex: 1 }}>
-                    <Image
-                      source={{ uri: item.image_url }}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        resizeMode: "cover",
-                      }}
-                    />
+                {images.length === 0 ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Ionicons name="image" size={100} color={COLORS.primary} />
                   </View>
-                ))}
+                ) : (
+                  images.map((item, index) => (
+                    <View key={index} style={{ flex: 1 }}>
+                      <Image
+                        source={{ uri: item.uri }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          resizeMode: "cover",
+                        }}
+                      />
+                    </View>
+                  ))
+                )}
               </Swiper>
             </View>
 
@@ -241,7 +282,7 @@ const StylistAboutMe = () => {
                       borderBottomColor: COLORS.gray,
                       minWidth: "15%",
                     }}
-                    value={editData?.price.toString()}
+                    value={editData?.price?.toString() || 0}
                     placeholder="price"
                     keyboardType="numeric"
                     onChangeText={(text) =>
@@ -285,6 +326,66 @@ const StylistAboutMe = () => {
               <Text style={styles.stylist_content_text}>
                 {actualData?.about || "-"}
               </Text>
+            )}
+          </View>
+
+          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+            <Ionicons
+              name="images-outline"
+              size={24}
+              color={COLORS.primary}
+              onPress={() => {
+                if (images.length < 4) handleImagePick();
+                else alert("Max 4 images");
+              }}
+            />
+
+            <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
+              Add Images
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {images.length > 0 && (
+              <FlatList
+                data={images}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ gap: 15 }}
+                renderItem={({ item, index }) => (
+                  <View
+                    style={{
+                      width: 150,
+                      height: 150,
+                      borderRadius: 5,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <Image
+                      source={{ uri: item?.uri }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: "contain",
+                      }}
+                    />
+
+                    <Ionicons
+                      name="close-circle"
+                      size={24}
+                      color={COLORS.red}
+                      style={{
+                        position: "absolute",
+                        top: 5,
+                        right: 5,
+                      }}
+                      onPress={() =>
+                        setImages(images.filter((_, i) => i !== index))
+                      }
+                    />
+                  </View>
+                )}
+              />
             )}
           </View>
         </View>

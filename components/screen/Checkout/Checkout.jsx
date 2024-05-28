@@ -13,9 +13,15 @@ import { CheckoutAddressCard, CheckoutItemCard } from "../../organism";
 const Checkout = () => {
   const navigation = useNavigation();
 
-  const { getPaymentSummary, summaryData } = useGetPaymentSummary();
+  const {
+    getPaymentSummary,
+    summaryData,
+    code: summaryCode,
+    setCode: setSummaryCode,
+  } = useGetPaymentSummary();
   const [selectedPayment, setSelectedPayment] = useState(null);
   const { createOrder, responseData, code, setCode } = useCreateOrder();
+  const [discount, setDiscount] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -25,14 +31,18 @@ const Checkout = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!summaryData?.cartItems) {
-        navigation.navigate("Home");
+      if (summaryCode === 200) {
+        if (!summaryData?.cartItems) {
+          navigation.navigate("Home");
+        }
+
+        setSummaryCode(null);
       }
-    }, [summaryData]),
+    }, [summaryData, summaryCode]),
   );
 
   const handleCheckout = () => {
-    createOrder(selectedPayment, summaryData.address?.address_id);
+    createOrder(selectedPayment, summaryData.address?.address_id, discount);
   };
 
   useEffect(() => {
@@ -191,13 +201,27 @@ const Checkout = () => {
               setSelectedPayment={setSelectedPayment}
             />
 
-            <TouchableOpacity style={{ alignSelf: "flex-start" }}>
+            <TouchableOpacity
+              style={{ alignSelf: "flex-start" }}
+              onPress={() => {
+                if (summaryData?.user_coin?.coin_amount > 0) {
+                  setDiscount(summaryData?.user_coin?.coin_amount);
+                }
+                if (discount) {
+                  setDiscount(null);
+                }
+              }}
+              disabled={summaryData?.user_coin?.coin_amount <= 0}
+            >
               <View
                 style={{
                   flexDirection: "row",
                   paddingVertical: 3,
                   paddingHorizontal: 10,
-                  backgroundColor: COLORS.gray2,
+                  backgroundColor:
+                    summaryData?.user_coin?.coin_amount <= 0
+                      ? COLORS.secondary
+                      : COLORS.gray2,
                   borderRadius: 20,
                   gap: 11,
                   alignItems: "center",
@@ -207,15 +231,19 @@ const Checkout = () => {
                   <Text style={{ fontFamily: "bold", fontSize: 10 }}>
                     Use Styluxe Point
                   </Text>
-                  <Text style={{ fontFamily: "semibold", fontSize: 8 }}>
-                    25.000 points
+                  <Text style={{ fontFamily: "semibold", fontSize: 10 }}>
+                    {summaryData?.user_coin?.coin_amount} points
                   </Text>
                 </View>
 
                 <Ionicons
-                  name="radio-button-off-outline"
-                  size={16}
-                  color="black"
+                  name={
+                    discount
+                      ? "radio-button-on-sharp"
+                      : "radio-button-off-sharp"
+                  }
+                  size={20}
+                  color={COLORS.primary}
                 />
               </View>
             </TouchableOpacity>
@@ -245,17 +273,26 @@ const Checkout = () => {
             Your Total
           </Text>
           <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-            Rp {parseInt(summaryData.total_price, 10).toLocaleString("id-ID")}
+            Rp{" "}
+            {parseInt(
+              discount
+                ? summaryData.total_price - discount
+                : summaryData.total_price,
+              10,
+            ).toLocaleString("id-ID")}
           </Text>
-          <Text
-            style={{
-              fontFamily: "medium",
-              fontSize: 10,
-              color: "green",
-            }}
-          >
-            you saved 25.000 from using styluxe point!
-          </Text>
+          {discount && (
+            <Text
+              style={{
+                fontFamily: "medium",
+                fontSize: 10,
+                color: "green",
+              }}
+            >
+              you saved Rp {parseInt(discount, 10).toLocaleString("id-ID")} from
+              using styluxe point!
+            </Text>
+          )}
         </View>
 
         <Button

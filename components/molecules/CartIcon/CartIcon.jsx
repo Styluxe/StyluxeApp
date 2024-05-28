@@ -13,7 +13,7 @@ import {
   setLoginModalOpen,
 } from "../../../redux/slice/app.slice";
 
-const CartIcon = () => {
+const CartIcon = ({ size = 24 }) => {
   const { getCart } = useViewCartApi();
   const auth = useSelector(authKeyState);
   const cartCount = useSelector(cartCountState);
@@ -31,13 +31,15 @@ const CartIcon = () => {
   return (
     <TouchableOpacity
       onPress={() => {
-        auth
-          ? navigation.navigate("ShoppingCart")
-          : dispatch(setLoginModalOpen(true));
+        if (auth) {
+          navigation.navigate("ShoppingCart");
+        } else {
+          dispatch(setLoginModalOpen(true));
+        }
       }}
     >
       <View>
-        <Ionicons name="cart-outline" size={24} color={COLORS.primary} />
+        <Ionicons name="cart-outline" size={size} color={COLORS.primary} />
         <View style={styles.cart_counter_container}>
           <Text style={styles.cart_counter_text}>{cartCount}</Text>
         </View>

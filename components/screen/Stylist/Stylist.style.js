@@ -46,6 +46,19 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.primary,
     backgroundColor: COLORS.white,
   },
+  category_box_active: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
+    borderRadius: 4,
+    backgroundColor: COLORS.secondary,
+  },
+  category_text_active: {
+    color: COLORS.white,
+    fontFamily: "medium",
+    fontSize: 12,
+  },
   category_text: {
     color: COLORS.primary,
     fontFamily: "medium",

@@ -16,9 +16,28 @@ import { COLORS } from "../../../constants";
 import { StylistDetailCard } from "../../organism";
 
 const Stylist = () => {
-  const navigation = useNavigation();
   const [stylistList, setStylistList] = useState([]);
   const { getAllStylist, code, data, setCode } = useGetAllStylistApi();
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [search, setSearch] = useState("");
+
+  const filteredStylistList = () => {
+    let filteredList = stylistList;
+
+    if (selectedCategory) {
+      filteredList = filteredList.filter(
+        (item) => item?.type === selectedCategory,
+      );
+    }
+
+    if (search) {
+      filteredList = filteredList.filter((item) =>
+        item?.brand_name?.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    return filteredList;
+  };
 
   const categoryData = [
     "Party Stylist",
@@ -40,23 +59,34 @@ const Stylist = () => {
     }
   }, [code, data]);
 
+  const onSelectedCategory = (item) => {
+    setSelectedCategory(selectedCategory === item ? null : item);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header_container}>
         <View style={styles.header_items_wrapper}>
-          <TouchableOpacity>
-            <Ionicons name="menu" size={32} color={COLORS.primary} />
+          <TouchableOpacity
+            style={{
+              padding: 3,
+              backgroundColor: COLORS.white,
+              borderRadius: 5,
+              borderWidth: 2,
+              borderColor: COLORS.primary,
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name="heart" size={28} color={COLORS.primary} />
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => navigation.navigate("Search")}
-          >
+          <TouchableOpacity style={{ flex: 1 }}>
             <View style={styles.search_input_container}>
               <TextInput
                 style={styles.search_input}
                 placeholder="Search your stylist"
-                editable={false}
+                value={search}
+                onChangeText={(text) => setSearch(text)}
               />
               <View style={styles.search_btn}>
                 <Ionicons
@@ -76,9 +106,23 @@ const Stylist = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity>
-              <View style={styles.category_box}>
-                <Text style={styles.category_text}>{item}</Text>
+            <TouchableOpacity onPress={() => onSelectedCategory(item)}>
+              <View
+                style={
+                  selectedCategory === item
+                    ? styles.category_box_active
+                    : styles.category_box
+                }
+              >
+                <Text
+                  style={
+                    selectedCategory === item
+                      ? styles.category_text_active
+                      : styles.category_text
+                  }
+                >
+                  {item}
+                </Text>
               </View>
             </TouchableOpacity>
           )}
@@ -98,7 +142,7 @@ const Stylist = () => {
               </Text>
             </View>
           )}
-          data={stylistList}
+          data={filteredStylistList()}
           renderItem={({ item }) => <StylistDetailCard stylist={item} />}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ gap: 10 }}

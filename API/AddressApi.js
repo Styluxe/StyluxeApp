@@ -69,4 +69,40 @@ const usePostAddressApi = () => {
   return { error, loading, postAddress, code, setCode };
 };
 
-export { useAddressApi, usePostAddressApi };
+const useSetPrimaryAddressApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const setPrimaryAddress = async (id) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      const response = await axios.put(
+        `${API_URL}/user/address-primary/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+      setCode(code);
+      console.log("primary address set");
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+    }
+  };
+
+  return { error, loading, setPrimaryAddress, code, setCode };
+};
+
+export { useAddressApi, usePostAddressApi, useSetPrimaryAddressApi };

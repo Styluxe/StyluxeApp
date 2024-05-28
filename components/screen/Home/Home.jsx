@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -258,7 +258,7 @@ const Home = () => {
                 ))}
               </View>
             </View>
-            <PopularStylist />
+            {/* <PopularStylist /> */}
           </>
         ) : null}
 

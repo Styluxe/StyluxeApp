@@ -76,11 +76,11 @@ const LoginModal = () => {
       console.log(error);
       toast.show({
         description: "Login failed!",
-        placement: "top",
+        placement: "bottom right",
         render: ({ id }) => {
           const toastId = "toast-" + id;
           return (
-            <Toast nativeID={toastId} action="danger" variant="solid">
+            <Toast nativeID={toastId} action="error" variant="solid">
               <VStack>
                 <ToastTitle>Wrong Password</ToastTitle>
               </VStack>
@@ -93,11 +93,11 @@ const LoginModal = () => {
       console.log(error);
       toast.show({
         description: "Login failed!",
-        placement: "top",
+        placement: "bottom right",
         render: ({ id }) => {
           const toastId = "toast-" + id;
           return (
-            <Toast nativeID={toastId} action="danger" variant="solid">
+            <Toast nativeID={toastId} action="error" variant="solid">
               <VStack>
                 <ToastTitle>Email Not Found</ToastTitle>
               </VStack>

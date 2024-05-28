@@ -95,8 +95,11 @@ const StylistManageSchedule = () => {
           };
 
           const showTimePicker = () => {
+            const defaultTime = new Date();
+            defaultTime.setHours(0, 0, 0, 0);
+
             DateTimePickerAndroid.open({
-              value: new Date(),
+              value: defaultTime,
               mode: "time",
               is24Hour: true,
               display: "spinner",

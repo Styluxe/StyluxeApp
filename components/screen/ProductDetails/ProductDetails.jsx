@@ -1,5 +1,12 @@
 import { FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
-import { Divider } from "@gluestack-ui/themed";
+import {
+  Divider,
+  Spinner,
+  Toast,
+  ToastTitle,
+  VStack,
+  useToast,
+} from "@gluestack-ui/themed";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
@@ -22,23 +29,27 @@ import {
 } from "../../../redux/slice/app.slice";
 import {
   ProductAccordion,
+  ProductBottomSheet,
   ProductDetailFooter,
   ProductImageSlider,
   SizeSelection,
 } from "../../organism";
+import { COLORS } from "../../../constants";
 
 const ProductDetails = () => {
   const route = useRoute();
   const { product_id } = route.params;
 
-  const navigation = useNavigation();
   const user = useSelector(userDataState);
 
   const dispatch = useDispatch();
 
-  const { getProduct, product } = useGetSingleProductApi();
+  const { getProduct, product, loading } = useGetSingleProductApi();
   const { getCart } = useViewCartApi();
   const { addToCart, code, setCode } = useAddToCartApi();
+
+  const [openSheet, setOpenSheet] = useState(false);
+  const toast = useToast();
 
   const no_auth = !user?.user_role;
 
@@ -48,10 +59,22 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (code === 200) {
-      alert("Added to cart");
+      toast.show({
+        description: "Success add to cart!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Add Success</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       getCart();
       setCode(null);
-      // navigation.navigate("ShoppingCart");
     }
   }, [code]);
 
@@ -75,8 +98,16 @@ const ProductDetails = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Spinner color={COLORS.primary} />
+      </View>
+    );
+  }
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ flex: 9 }}>
         <ScrollView>
           <ProductImageSlider images={product?.images} />
@@ -162,7 +193,10 @@ const ProductDetails = () => {
               </View>
             </View>
             <Divider marginTop={20} bg="$backgroundLight400" />
-            <ProductAccordion accordionData={product} />
+            <ProductAccordion
+              accordionData={product}
+              onPressReference={() => setOpenSheet(true)}
+            />
           </View>
         </ScrollView>
       </View>
@@ -175,6 +209,12 @@ const ProductDetails = () => {
           }
         }}
         isDisabled={!selectedSize?.size}
+      />
+      <ProductBottomSheet
+        isOpen={openSheet}
+        onClose={() => setOpenSheet(false)}
+        data={product?.references}
+        product_name={product?.product_name}
       />
     </SafeAreaView>
   );

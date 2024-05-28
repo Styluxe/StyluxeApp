@@ -1,11 +1,21 @@
-import React from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 
 import { styles } from "./NewestCollection.style";
-import { dummyLatestCollection } from "../../../../mocks/DummyHome";
+import { useGetLatestProductApi } from "../../../../API/ProductAPI";
 import { ProductCard } from "../../../molecules";
 
 const NewestCollection = () => {
+  const { getLatestProduct, products } = useGetLatestProductApi();
+  const navigation = useNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+      getLatestProduct();
+    }, []),
+  );
+
   return (
     <View style={styles.featured_container}>
       <View style={styles.featured_title_container}>
@@ -18,15 +28,20 @@ const NewestCollection = () => {
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={dummyLatestCollection.products}
-        renderItem={(data) => (
+        data={products}
+        renderItem={({ item }) => (
           <ProductCard
             hasBanner
-            imageUrl={data.item.image_url}
-            category={data.item.category}
-            price={data.item.price}
-            rating={data.item.rating}
-            title={data.item.name}
+            bannerText="LATEST ITEM"
+            imageUrl={item?.images[0]?.image_url}
+            category={item?.sub_category?.sub_category_name}
+            price={parseFloat(item?.product_price).toLocaleString("id-ID")}
+            title={item?.product_name}
+            onPress={() =>
+              navigation.navigate("ProductDetails", {
+                product_id: item?.product_id,
+              })
+            }
           />
         )}
         contentContainerStyle={{
