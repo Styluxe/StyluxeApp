@@ -75,6 +75,9 @@ const DrawerNavigationDiscussion = () => {
   return (
     <Drawer.Navigator
       initialRouteName="Explore"
+      screenOptions={{
+        unmountOnBlur: true,
+      }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       {auth && (

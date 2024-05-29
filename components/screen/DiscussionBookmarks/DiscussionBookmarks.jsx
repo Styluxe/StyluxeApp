@@ -11,7 +11,7 @@ import { DiscussionListCard } from "../../organism";
 const DiscussionBookmarks = () => {
   const navigation = useNavigation();
 
-  const { getBookmarks, responseData } = useGetBookmarksApi();
+  const { getBookmarks, bookmarksData: responseData } = useGetBookmarksApi();
 
   useFocusEffect(
     useCallback(() => {

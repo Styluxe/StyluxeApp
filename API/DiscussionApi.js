@@ -3,6 +3,11 @@ import axios from "axios";
 import { useState } from "react";
 
 import { API_URL } from "./constant";
+import {
+  bookmarksDataState,
+  setBookmarksData,
+} from "../redux/slice/discussion.slice";
+import { useDispatch, useSelector } from "react-redux";
 
 const useGetDiscussionCategoryApi = () => {
   const [error, setError] = useState(null);
@@ -302,6 +307,7 @@ const useAddToBookmarkApi = () => {
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState(null);
   const { getAllDiscussion } = useGetAllDiscussionApi();
+  const { getBookmarks } = useGetBookmarksApi();
 
   const addToBookmark = async (postId) => {
     setLoading(true);
@@ -321,13 +327,12 @@ const useAddToBookmarkApi = () => {
           },
         },
       );
-      if (response?.data?.code) {
-        setCode(response.data.code);
-        console.log("Post added to bookmark successfully");
-        getAllDiscussion();
-      } else {
-        console.error("Unexpected response format:", response.data);
-      }
+
+      const { code } = response?.data;
+      setCode(code);
+      console.log("Post added to bookmark successfully");
+      await getAllDiscussion();
+      await getBookmarks();
     } catch (error) {
       setError(error);
       console.error("Error creating discussion:", error);
@@ -342,7 +347,8 @@ const useAddToBookmarkApi = () => {
 const useGetBookmarksApi = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [responseData, setResponseData] = useState([]);
+  const bookmarksData = useSelector(bookmarksDataState);
+  const dispatch = useDispatch();
 
   const getBookmarks = async () => {
     setLoading(true);
@@ -362,7 +368,7 @@ const useGetBookmarksApi = () => {
       const { data } = response?.data;
 
       console.log("fetching bookmarks", data);
-      setResponseData(data);
+      dispatch(setBookmarksData(data));
       setLoading(false);
     } catch (error) {
       setError(error);
@@ -371,7 +377,7 @@ const useGetBookmarksApi = () => {
     }
   };
 
-  return { error, loading, responseData, getBookmarks };
+  return { error, loading, bookmarksData, getBookmarks };
 };
 
 export {
