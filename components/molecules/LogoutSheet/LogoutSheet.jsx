@@ -19,7 +19,6 @@ const LogoutSheet = ({ showBottomSheet, setShowBottomSheet, handleLogout }) => {
       isOpen={showBottomSheet}
       onClose={() => {
         setShowBottomSheet(false);
-        alert("close");
       }}
       zIndex={999}
     >

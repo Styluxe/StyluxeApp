@@ -1,22 +1,19 @@
 import { Button } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image } from "react-native";
 
 import { COLORS, SHADOWS } from "../../../constants";
 
 const MyBookingCard = ({ item, role }) => {
   const navigation = useNavigation();
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const fullOrderDateTime = `${item?.booking_date}T${item?.booking_time}:00+07:00`;
-
   const product_image = item?.order_items?.[0]?.product?.images?.[0]
     ? item?.order_items[0].product.images[0]
     : item?.stylist?.images?.[0];
-
-  const isAccepted = item?.status === "accepted";
-  const isScheduled = item?.status === "scheduled";
 
   const statusSwitch = (status) => {
     switch (status) {
@@ -38,7 +35,7 @@ const MyBookingCard = ({ item, role }) => {
       case "shipped":
         return {
           color: COLORS.primary,
-          message: "Shipped",
+          message: "On Delivery",
         };
       case "delivered":
         return {
@@ -54,6 +51,21 @@ const MyBookingCard = ({ item, role }) => {
         return { color: COLORS.primary, message: status };
     }
   };
+
+  useEffect(() => {
+    const checkChatAvailability = () => {
+      const now = moment();
+      const bookingMoment = moment(fullOrderDateTime);
+      setIsChatOpen(now.isSameOrAfter(bookingMoment));
+    };
+
+    const intervalId = setInterval(checkChatAvailability, 60000); // Check every minute
+
+    // Initial check
+    checkChatAvailability();
+
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, [fullOrderDateTime]);
 
   return (
     <View
@@ -168,13 +180,7 @@ const MyBookingCard = ({ item, role }) => {
         </View>
       </View>
       <View style={{ flex: 1 }}>
-        {isAccepted ? (
-          <Button bgColor={COLORS.secondary} disabled>
-            <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>
-              Chat will be open in {moment(fullOrderDateTime).fromNow("day")}
-            </Text>
-          </Button>
-        ) : isScheduled ? (
+        {isChatOpen ? (
           <Button
             onPress={() => {
               navigation.navigate("ChatRoom", { booking_id: item?.booking_id });
@@ -185,7 +191,13 @@ const MyBookingCard = ({ item, role }) => {
               Open Chat
             </Text>
           </Button>
-        ) : null}
+        ) : (
+          <Button bgColor={COLORS.secondary} disabled>
+            <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>
+              Chat will be open in {moment(fullOrderDateTime).fromNow()}
+            </Text>
+          </Button>
+        )}
       </View>
     </View>
   );

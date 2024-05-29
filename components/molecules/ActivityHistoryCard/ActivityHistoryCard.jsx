@@ -32,7 +32,7 @@ const ActivityHistoryCard = ({ item }) => {
       case "shipped":
         return {
           color: COLORS.primary,
-          message: "Shipped",
+          message: "On Delivery",
         };
       case "delivered":
         return {

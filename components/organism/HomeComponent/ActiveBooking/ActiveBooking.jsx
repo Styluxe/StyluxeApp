@@ -40,7 +40,10 @@ const ActiveBooking = ({ role }) => {
     });
 
   const filterBookingUser = data
-    ?.filter((booking) => booking?.status === "scheduled")
+    ?.filter(
+      (booking) =>
+        booking?.status === "scheduled" || booking?.status === "accepted",
+    )
     .sort((a, b) => {
       const dateA = new Date(`${a.booking_date}T${a.booking_time}:00+07:00`);
       const dateB = new Date(`${b.booking_date}T${b.booking_time}:00+07:00`);

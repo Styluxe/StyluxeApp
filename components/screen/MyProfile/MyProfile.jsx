@@ -42,7 +42,7 @@ const MyProfile = () => {
   const [showRepeatPassword, setShowRepeatPassword] = useState(true);
   const navigation = useNavigation();
   const { updateProfileImage } = useProfilePictureApi();
-  const { updateProfile } = useProfileApi();
+  const { updateProfile, code } = useProfileApi();
 
   const handleUpdateProfile = () => {
     updateProfile(

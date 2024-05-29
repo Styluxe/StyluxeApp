@@ -7,8 +7,8 @@ import {
   VStack,
   useToast,
 } from "@gluestack-ui/themed";
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -25,9 +25,11 @@ const Profile = () => {
   const { logout } = useAuth();
   const { getProfile, loading } = useGetProfileApi();
 
-  useEffect(() => {
-    getProfile();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getProfile();
+    }, []),
+  );
 
   const navigation = useNavigation();
   const toast = useToast();

@@ -87,11 +87,7 @@ const useProfileApi = () => {
       const { data, code } = response;
       console.log("Profile updated successfully", data);
 
-      if (code === 200) {
-        console.log("Profile updated successfully");
-
-        getProfile();
-      }
+      setCode(code);
     } catch (error) {
       setError(error);
       console.error("Error updating profile", error);
