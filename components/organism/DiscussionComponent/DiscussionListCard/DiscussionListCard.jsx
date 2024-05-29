@@ -1,4 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetItem,
+  ActionsheetItemText,
+} from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
@@ -34,6 +41,7 @@ const DiscussionListCard = ({ postData }) => {
   const [likeCounter, setLikeCounter] = useState(null);
   const [bookmark, setBookmark] = useState(initialBookmarkState);
   const dispatch = useDispatch();
+  const [openSheet, setOpenSheet] = useState(false);
 
   useEffect(() => {
     setLike(initialLikeState);
@@ -84,12 +92,35 @@ const DiscussionListCard = ({ postData }) => {
     }
   };
 
+  const myPost = () => {
+    if (postData.author?.user_id === userData?.user_id) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={onTouchCard}>
       <View style={styles.container}>
-        <Text numberOfLines={2} ellipsizeMode="tail" style={styles.title}>
-          {postData.title}
-        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.title}>
+            {postData.title}
+          </Text>
+          {myPost() && (
+            <Ionicons
+              name="ellipsis-vertical"
+              size={24}
+              onPress={() => setOpenSheet(true)}
+              color={COLORS.primary}
+            />
+          )}
+        </View>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("DiscussionAuthor", {
@@ -193,6 +224,29 @@ const DiscussionListCard = ({ postData }) => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <Actionsheet
+        isOpen={openSheet}
+        onClose={() => setOpenSheet(false)}
+        zIndex={999}
+        h={"50%"}
+      >
+        <ActionsheetBackdrop />
+        <ActionsheetContent>
+          <ActionsheetItem onPress={() => setOpenSheet(false)}>
+            <ActionsheetItemText
+              style={{ fontFamily: "medium", color: COLORS.primary }}
+            >
+              Edit Discussion
+            </ActionsheetItemText>
+          </ActionsheetItem>
+          <ActionsheetItem onPress={() => setOpenSheet(false)}>
+            <ActionsheetItemText style={{ fontFamily: "medium", color: "red" }}>
+              Delete Discussion
+            </ActionsheetItemText>
+          </ActionsheetItem>
+        </ActionsheetContent>
+      </Actionsheet>
     </TouchableOpacity>
   );
 };
