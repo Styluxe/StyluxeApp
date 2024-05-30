@@ -1,19 +1,23 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Toast, ToastTitle, useToast } from "@gluestack-ui/themed";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, TextInput, Image, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as ImagePicker from "expo-image-picker";
+import { useSelector } from "react-redux";
 
-import { COLORS } from "../../../constants";
-import { SelectComponent } from "../../molecules";
 import {
   useCreateDiscussionApi,
   useGetDiscussionCategoryApi,
 } from "../../../API/DiscussionApi";
-import { useSelector } from "react-redux";
+import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
+import { SelectComponent } from "../../molecules";
 
 const CreateDiscussion = () => {
   const navigation = useNavigation();
@@ -22,8 +26,36 @@ const CreateDiscussion = () => {
   const [discussionText, setDiscussionText] = useState("");
   const [images, setImages] = useState([]);
   const profileData = useSelector(userDataState);
+  const [isDirty, setIsDirty] = useState(false);
 
   const toast = useToast();
+
+  const route = useRoute();
+
+  const { edit_data } = route.params || {};
+
+  useEffect(() => {
+    if (edit_data) {
+      setTitle(edit_data.title);
+      setSelectedCategory(edit_data.category.category_name);
+      setDiscussionText(edit_data.content);
+      const imageUri = edit_data.images?.map((image) => {
+        return {
+          uri: image.image_uri,
+        };
+      });
+      setImages(imageUri);
+    }
+  }, [edit_data]);
+
+  useEffect(() => {
+    const isDiscussionDirty =
+      title !== edit_data?.title ||
+      selectedCategory !== edit_data?.category?.category_name ||
+      discussionText !== edit_data?.content ||
+      images?.length !== edit_data?.images?.length;
+    setIsDirty(isDiscussionDirty);
+  }, [title, selectedCategory, discussionText, images, edit_data]);
 
   const { getDiscussionCategory, discussionCategory } =
     useGetDiscussionCategoryApi();
@@ -125,15 +157,33 @@ const CreateDiscussion = () => {
           color="black"
           onPress={() => navigation.goBack()}
         />
-        <Button
-          disabled={disabledPost}
-          bgColor={disabledPost ? COLORS.secondary : COLORS.primary}
-          rounded={20}
-          size="sm"
-          onPress={handlePost}
-        >
-          <Text style={{ color: COLORS.white, fontFamily: "bold" }}>Post</Text>
-        </Button>
+        {edit_data ? (
+          <Button
+            disabled={disabledPost || !isDirty}
+            bgColor={
+              disabledPost || !isDirty ? COLORS.secondary : COLORS.primary
+            }
+            rounded={20}
+            size="sm"
+            onPress={handlePost}
+          >
+            <Text style={{ color: COLORS.white, fontFamily: "bold" }}>
+              Save
+            </Text>
+          </Button>
+        ) : (
+          <Button
+            disabled={disabledPost}
+            bgColor={disabledPost ? COLORS.secondary : COLORS.primary}
+            rounded={20}
+            size="sm"
+            onPress={handlePost}
+          >
+            <Text style={{ color: COLORS.white, fontFamily: "bold" }}>
+              Post
+            </Text>
+          </Button>
+        )}
       </View>
       <View
         style={{
@@ -178,6 +228,7 @@ const CreateDiscussion = () => {
               placeholder="Select Category"
               items={remapCategory()}
               onValueChange={(value) => setSelectedCategory(value)}
+              defaultValue={selectedCategory}
             />
           </View>
         </View>

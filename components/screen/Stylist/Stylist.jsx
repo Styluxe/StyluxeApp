@@ -67,36 +67,15 @@ const Stylist = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header_container}>
         <View style={styles.header_items_wrapper}>
-          <TouchableOpacity
-            style={{
-              padding: 3,
-              backgroundColor: COLORS.white,
-              borderRadius: 5,
-              borderWidth: 2,
-              borderColor: COLORS.primary,
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons name="heart" size={28} color={COLORS.primary} />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{ flex: 1 }}>
-            <View style={styles.search_input_container}>
-              <TextInput
-                style={styles.search_input}
-                placeholder="Search your stylist"
-                value={search}
-                onChangeText={(text) => setSearch(text)}
-              />
-              <View style={styles.search_btn}>
-                <Ionicons
-                  name="search-outline"
-                  size={24}
-                  color={COLORS.white}
-                />
-              </View>
-            </View>
-          </TouchableOpacity>
+          <TextInput
+            style={styles.search_input}
+            placeholder="Search your stylist"
+            value={search}
+            onChangeText={(text) => setSearch(text)}
+          />
+          <View style={styles.search_btn}>
+            <Ionicons name="search-outline" size={24} color={COLORS.white} />
+          </View>
         </View>
       </View>
 

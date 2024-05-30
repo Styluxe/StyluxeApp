@@ -37,12 +37,14 @@ const LoginModal = () => {
   const showModal = useSelector(loginModalState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
   const auth = useSelector(authKeyState);
 
   useEffect(() => {
     if (showModal) {
       setEmail("");
       setPassword("");
+      setEmailError("");
     }
   }, [showModal]);
 
@@ -109,7 +111,21 @@ const LoginModal = () => {
     }
   }, [code]);
 
+  const handleEmailChange = (email) => {
+    setEmail(email);
+    if (!email.includes("@")) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError("");
+    }
+  };
+
   const handleLogin = () => {
+    if (!email.includes("@")) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+    setEmailError("");
     login(email, password);
   };
 
@@ -152,7 +168,7 @@ const LoginModal = () => {
         </ModalHeader>
         <ModalBody>
           <VStack space="md">
-            <FormControl isInvalid={false}>
+            <FormControl isInvalid={!!emailError}>
               <FormControlLabel>
                 <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
                   Email
@@ -161,14 +177,16 @@ const LoginModal = () => {
               <Input>
                 <InputField
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={handleEmailChange}
                   type="text"
                   placeholder="Enter your email"
                 />
               </Input>
-              <FormControlError>
-                <FormControlErrorText>Input a valid email</FormControlErrorText>
-              </FormControlError>
+              {emailError ? (
+                <FormControlError>
+                  <FormControlErrorText>{emailError}</FormControlErrorText>
+                </FormControlError>
+              ) : null}
             </FormControl>
 
             <FormControl isInvalid={false}>

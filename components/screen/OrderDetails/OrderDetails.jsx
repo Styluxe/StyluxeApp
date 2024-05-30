@@ -10,12 +10,16 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useGetBookingById, useGetOrderById } from "../../../API/OrderAPI";
+import {
+  useCancelOrderApi,
+  useGetBookingById,
+  useGetOrderById,
+} from "../../../API/OrderAPI";
+import { useAddStylistReviewApi } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
 import { formatTimeWithAMPM } from "../../../hook/hook";
-import { ReviewModal } from "../../molecules";
+import { ConfirmationModal, ReviewModal } from "../../molecules";
 import { CheckoutItemCard } from "../../organism";
-import { useAddStylistReviewApi } from "../../../API/StylistApi";
 
 const OrderDetails = () => {
   const navigation = useNavigation();
@@ -23,11 +27,17 @@ const OrderDetails = () => {
   const { getOrderById, orderData } = useGetOrderById();
   const { getBookingById, bookingData } = useGetBookingById();
   const { addStylistReview, code, setCode } = useAddStylistReviewApi();
+  const {
+    cancelOrder,
+    code: cancelCode,
+    setCode: setCancelCode,
+  } = useCancelOrderApi();
 
   const { order_id, booking_id, routeFrom } = route.params;
 
   const modalRef = useRef();
   const [showModal, setShowModal] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
   const [reviewData, setReviewData] = useState({
     rating: 0,
     feedback: "",
@@ -53,13 +63,25 @@ const OrderDetails = () => {
     addStylistReview(reviewRequest);
   };
 
+  const handleCancelOrder = () => {
+    if (isProduct) {
+      cancelOrder(order_id);
+    }
+  };
+
   useEffect(() => {
     if (code === 200) {
       getBookingById(booking_id);
       setCode(null);
       setShowModal(false);
     }
-  }, [code]);
+
+    if (cancelCode === 200) {
+      getOrderById(order_id);
+      setCancelCode(null);
+      setConfirmModal(false);
+    }
+  }, [code, cancelCode, booking_id, order_id]);
 
   useFocusEffect(
     useCallback(() => {
@@ -447,7 +469,13 @@ const OrderDetails = () => {
           </View>
 
           {isCancelBtnVisible && (
-            <Button size="sm" bg="$red900">
+            <Button
+              size="sm"
+              bg="$red900"
+              onPress={() => {
+                setConfirmModal(true);
+              }}
+            >
               <Text
                 style={{ fontFamily: "medium", fontSize: 14, color: "white" }}
               >
@@ -502,6 +530,19 @@ const OrderDetails = () => {
         reviewData={reviewData}
         setReviewData={setReviewData}
         handlePost={handleReview}
+      />
+
+      <ConfirmationModal
+        modalRef={modalRef}
+        setShowModal={setConfirmModal}
+        showModal={confirmModal}
+        title="Cancel Order"
+        header_color="red"
+        btnPositiveText="Cancel Order"
+        btnNegativeText="Back"
+        btnPositiveColor="red"
+        content="Are you sure you want to cancel this order? You will not be able to undo this action."
+        handlePositive={handleCancelOrder}
       />
     </SafeAreaView>
   );

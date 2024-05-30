@@ -16,10 +16,13 @@ import {
   SelectTrigger,
   VStack,
   Button,
+  useToast,
+  Toast,
+  ToastTitle,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -42,7 +45,10 @@ const MyProfile = () => {
   const [showRepeatPassword, setShowRepeatPassword] = useState(true);
   const navigation = useNavigation();
   const { updateProfileImage } = useProfilePictureApi();
-  const { updateProfile, code } = useProfileApi();
+  const { updateProfile, code, setCode } = useProfileApi();
+  const [isDirty, setIsDirty] = useState(false);
+
+  const toast = useToast();
 
   const handleUpdateProfile = () => {
     updateProfile(
@@ -50,10 +56,42 @@ const MyProfile = () => {
       profileData.last_name,
       profileData.email,
       profileData.mobile,
-      // eslint-disable-next-line prettier/prettier
       profileData.gender,
     );
   };
+
+  useEffect(() => {
+    const isProfileDirty =
+      profileData.first_name !== (userData?.first_name || "") ||
+      profileData.last_name !== (userData?.last_name || "") ||
+      profileData.email !== (userData?.email || "") ||
+      profileData.mobile !== (userData?.mobile || "") ||
+      profileData.gender !== (userData?.gender || "");
+
+    setIsDirty(isProfileDirty);
+  }, [profileData, userData]);
+
+  useEffect(() => {
+    if (code === 200) {
+      toast.show({
+        description: "Profile updated successfully",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Profile updated successfully!</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+
+      navigation.goBack();
+      setCode(null);
+    }
+  }, [code]);
 
   const handleImagePick = async () => {
     try {
@@ -353,7 +391,11 @@ const MyProfile = () => {
               </VStack>
             </View>
 
-            <Button bgColor={COLORS.primary} onPress={handleUpdateProfile}>
+            <Button
+              disabled={!isDirty}
+              bgColor={!isDirty ? COLORS.secondary : COLORS.primary}
+              onPress={handleUpdateProfile}
+            >
               <Text
                 style={{
                   color: COLORS.white,

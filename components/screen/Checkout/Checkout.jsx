@@ -1,13 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Button, ButtonText } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCreateOrder, useGetPaymentSummary } from "../../../API/OrderAPI";
 import { COLORS } from "../../../constants";
-import { PaymentMethodCard } from "../../molecules";
+import { ConfirmationModal, PaymentMethodCard } from "../../molecules";
 import { CheckoutAddressCard, CheckoutItemCard } from "../../organism";
 
 const Checkout = () => {
@@ -22,6 +22,8 @@ const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const { createOrder, responseData, code, setCode } = useCreateOrder();
   const [discount, setDiscount] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef();
 
   useFocusEffect(
     useCallback(() => {
@@ -43,6 +45,7 @@ const Checkout = () => {
 
   const handleCheckout = () => {
     createOrder(selectedPayment, summaryData.address?.address_id, discount);
+    setShowModal(false);
   };
 
   useEffect(() => {
@@ -117,6 +120,9 @@ const Checkout = () => {
                     color: COLORS.primary,
                     textDecorationLine: "underline",
                   }}
+                  onPress={() =>
+                    navigation.navigate("ManageAddress", { type: "new" })
+                  }
                 >
                   Create Now
                 </Text>
@@ -298,7 +304,9 @@ const Checkout = () => {
         <Button
           disabled={!selectedPayment && !summaryData?.address}
           bgColor={!selectedPayment ? COLORS.gray2 : COLORS.primary}
-          onPress={handleCheckout}
+          onPress={() => {
+            setShowModal(true);
+          }}
         >
           <ButtonText
             style={{
@@ -311,6 +319,15 @@ const Checkout = () => {
           </ButtonText>
         </Button>
       </View>
+
+      <ConfirmationModal
+        modalRef={modalRef}
+        setShowModal={setShowModal}
+        showModal={showModal}
+        title="Payment Confirmation"
+        content="Are you sure you have double checked your order details?"
+        handlePositive={handleCheckout}
+      />
     </SafeAreaView>
   );
 };

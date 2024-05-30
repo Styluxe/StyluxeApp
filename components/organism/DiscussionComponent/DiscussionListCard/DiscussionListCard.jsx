@@ -8,7 +8,7 @@ import {
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -22,6 +22,7 @@ import {
   setLoginModalOpen,
   userDataState,
 } from "../../../../redux/slice/app.slice";
+import { ConfirmationModal } from "../../../molecules";
 
 const DiscussionListCard = ({ postData }) => {
   const navigation = useNavigation();
@@ -42,6 +43,8 @@ const DiscussionListCard = ({ postData }) => {
   const [bookmark, setBookmark] = useState(initialBookmarkState);
   const dispatch = useDispatch();
   const [openSheet, setOpenSheet] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     setLike(initialLikeState);
@@ -117,7 +120,7 @@ const DiscussionListCard = ({ postData }) => {
               name="ellipsis-vertical"
               size={24}
               onPress={() => setOpenSheet(true)}
-              color={COLORS.primary}
+              color={COLORS.black}
             />
           )}
         </View>
@@ -227,26 +230,47 @@ const DiscussionListCard = ({ postData }) => {
 
       <Actionsheet
         isOpen={openSheet}
-        onClose={() => setOpenSheet(false)}
+        onClose={() => setOpenSheet(null)}
         zIndex={999}
-        h={"50%"}
       >
         <ActionsheetBackdrop />
         <ActionsheetContent>
-          <ActionsheetItem onPress={() => setOpenSheet(false)}>
+          <ActionsheetItem
+            onPress={() => {
+              navigation.navigate("CreateDiscussion", { edit_data: postData });
+              setOpenSheet(false);
+            }}
+          >
             <ActionsheetItemText
               style={{ fontFamily: "medium", color: COLORS.primary }}
             >
               Edit Discussion
             </ActionsheetItemText>
           </ActionsheetItem>
-          <ActionsheetItem onPress={() => setOpenSheet(false)}>
+          <ActionsheetItem
+            onPress={() => {
+              setOpenSheet(false);
+              setShowModal(postData.post_id);
+            }}
+          >
             <ActionsheetItemText style={{ fontFamily: "medium", color: "red" }}>
               Delete Discussion
             </ActionsheetItemText>
           </ActionsheetItem>
         </ActionsheetContent>
       </Actionsheet>
+
+      <ConfirmationModal
+        showModal={showModal === postData.post_id}
+        setShowModal={setShowModal}
+        modalRef={modalRef}
+        btnPositiveColor="red"
+        header_color="red"
+        title="Delete Discussion"
+        content="Are you sure want to delete this discussion? You can't undo this action"
+        btnPositiveText="Delete"
+        btnNegativeText="Cancel"
+      />
     </TouchableOpacity>
   );
 };

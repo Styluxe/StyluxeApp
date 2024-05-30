@@ -1,12 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button } from "@gluestack-ui/themed";
+import {
+  Button,
+  ButtonText,
+  Heading,
+  Modal,
+  ModalBackdrop,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@gluestack-ui/themed";
 import {
   useFocusEffect,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
 import moment from "moment";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,6 +34,8 @@ const PaymentDetails = () => {
 
   const { routeFrom, order_id, booking_id } = route.params || {};
   const { getBookingById, bookingData } = useGetBookingById();
+  const [showModal, setShowModal] = React.useState(false);
+  const modalRef = useRef();
 
   const { getOrderById, orderData } = useGetOrderById();
   const { updateStatus, code, loading, setCode } = useUpdateStatus();
@@ -48,11 +60,11 @@ const PaymentDetails = () => {
 
   useEffect(() => {
     if (code === 200) {
-      navigation.navigate("MyActivity");
+      setShowModal(true);
       setCode(null);
     }
     if (bookingCode === 200) {
-      navigation.navigate("MyActivity");
+      setShowModal(true);
       setBookingCode(null);
     }
   }, [code, bookingCode]);
@@ -355,6 +367,53 @@ const PaymentDetails = () => {
           </Text>
         </Button>
       </View>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          navigation.navigate("MyActivity");
+        }}
+        finalFocusRef={modalRef}
+        closeOnOverlayClick={false}
+      >
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader>
+            <Heading
+              size="lg"
+              style={{ color: COLORS.green, fontFamily: "bold" }}
+            >
+              Payment Accepted
+            </Heading>
+          </ModalHeader>
+          <ModalBody>
+            <Text style={{ color: COLORS.darkGray, fontFamily: "medium" }}>
+              Your payment has been received. and it will be confirmed soon.
+              please wait...
+            </Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant="solid"
+              bgColor={COLORS.primary}
+              size="sm"
+              action="secondary"
+              mr="$3"
+              onPress={() => {
+                navigation.navigate("MyActivity");
+                setShowModal(false);
+              }}
+            >
+              <ButtonText
+                style={{ color: COLORS.white, fontFamily: "semibold" }}
+              >
+                Continue
+              </ButtonText>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </SafeAreaView>
   );
 };

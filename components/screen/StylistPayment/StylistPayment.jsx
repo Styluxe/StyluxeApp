@@ -6,14 +6,14 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import moment from "moment";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCreateBookingApi } from "../../../API/OrderAPI";
 import { useGetStylistByIdApi } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
-import { PaymentMethodCard } from "../../molecules";
+import { ConfirmationModal, PaymentMethodCard } from "../../molecules";
 import { CheckoutItemCard } from "../../organism";
 
 const StylistPayment = () => {
@@ -25,6 +25,8 @@ const StylistPayment = () => {
   const { getStylistById, data } = useGetStylistByIdApi();
   const [selectedPayment, setSelectedPayment] = useState(null);
   const { createBooking, code, responseData, setCode } = useCreateBookingApi();
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef();
 
   useFocusEffect(
     useCallback(() => {
@@ -39,6 +41,7 @@ const StylistPayment = () => {
         routeFrom: "StylistPayment",
       });
       setCode(null);
+      setShowModal(false);
     } else if (code === 500) {
       alert("Error");
     }
@@ -226,7 +229,7 @@ const StylistPayment = () => {
         <Button
           disabled={!selectedPayment}
           bgColor={!selectedPayment ? COLORS.gray2 : COLORS.primary}
-          onPress={handlePayment}
+          onPress={() => setShowModal(true)}
         >
           <ButtonText
             style={{
@@ -239,6 +242,15 @@ const StylistPayment = () => {
           </ButtonText>
         </Button>
       </View>
+
+      <ConfirmationModal
+        modalRef={modalRef}
+        setShowModal={setShowModal}
+        showModal={showModal}
+        content="Are you sure you have double check on your booking details and continue to payment?"
+        title="Confirm Booking Details"
+        handlePositive={handlePayment}
+      />
     </SafeAreaView>
   );
 };

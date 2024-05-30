@@ -113,7 +113,7 @@ const MyBookingCard = ({ item, role }) => {
                 color: COLORS.primary,
               }}
             >
-              {moment(item?.createdAt).format("DD MMM YYYY")}
+              {moment(item?.booking_date).format("DD MMM YYYY")}
             </Text>
           </View>
           <View
@@ -194,7 +194,7 @@ const MyBookingCard = ({ item, role }) => {
         ) : (
           <Button bgColor={COLORS.secondary} disabled>
             <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>
-              Chat will be open in {moment(fullOrderDateTime).fromNow()}
+              Chat will be open {moment(fullOrderDateTime).fromNow()}
             </Text>
           </Button>
         )}

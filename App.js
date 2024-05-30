@@ -37,6 +37,7 @@ import {
   StylistReviewList,
 } from "./components/screen";
 import store from "./redux/store";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Stack = createNativeStackNavigator();
 

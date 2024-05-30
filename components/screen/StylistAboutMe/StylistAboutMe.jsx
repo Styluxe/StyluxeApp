@@ -10,6 +10,7 @@ import {
   TextInput,
   ScrollView,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
@@ -71,7 +72,12 @@ const StylistAboutMe = () => {
   useEffect(() => {
     if (stylistData) {
       setActualData(stylistData);
-      setImages(stylistData.images);
+      const image_uri = stylistData.images?.map((image) => {
+        return {
+          uri: image.image_url,
+        };
+      });
+      setImages(image_uri);
     }
   }, [stylistData]);
 
@@ -329,65 +335,86 @@ const StylistAboutMe = () => {
             )}
           </View>
 
-          <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-            <Ionicons
-              name="images-outline"
-              size={24}
-              color={COLORS.primary}
-              onPress={() => {
-                if (images.length < 4) handleImagePick();
-                else alert("Max 4 images");
-              }}
-            />
+          {isEditing && (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  if (images.length < 4) handleImagePick();
+                  else alert("Max 4 images");
+                }}
+                style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  alignItems: "center",
+                  padding: 10,
+                  borderWidth: 1,
+                  borderRadius: 5,
+                  borderColor: COLORS.primary,
+                  alignSelf: "flex-end",
+                  backgroundColor: COLORS.white,
+                }}
+              >
+                <Ionicons
+                  name="images-outline"
+                  size={24}
+                  color={COLORS.primary}
+                />
 
-            <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-              Add Images
-            </Text>
-          </View>
+                <Text
+                  style={{
+                    fontFamily: "semibold",
+                    fontSize: 14,
+                  }}
+                >
+                  Add Images
+                </Text>
+              </TouchableOpacity>
 
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            {images.length > 0 && (
-              <FlatList
-                data={images}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 15 }}
-                renderItem={({ item, index }) => (
-                  <View
-                    style={{
-                      width: 150,
-                      height: 150,
-                      borderRadius: 5,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item?.uri }}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        resizeMode: "contain",
-                      }}
-                    />
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                {images.length > 0 && (
+                  <FlatList
+                    data={images}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ gap: 15 }}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          width: 150,
+                          height: 150,
+                          borderRadius: 5,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <Image
+                          source={{ uri: item?.uri }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            resizeMode: "contain",
+                          }}
+                        />
 
-                    <Ionicons
-                      name="close-circle"
-                      size={24}
-                      color={COLORS.red}
-                      style={{
-                        position: "absolute",
-                        top: 5,
-                        right: 5,
-                      }}
-                      onPress={() =>
-                        setImages(images.filter((_, i) => i !== index))
-                      }
-                    />
-                  </View>
+                        <Ionicons
+                          name="close-circle"
+                          size={24}
+                          color={COLORS.red}
+                          style={{
+                            position: "absolute",
+                            top: 5,
+                            right: 5,
+                          }}
+                          onPress={() =>
+                            setImages(images.filter((_, i) => i !== index))
+                          }
+                        />
+                      </View>
+                    )}
+                  />
                 )}
-              />
-            )}
-          </View>
+              </View>
+            </>
+          )}
         </View>
       </ScrollView>
 

@@ -105,4 +105,73 @@ const useSetPrimaryAddressApi = () => {
   return { error, loading, setPrimaryAddress, code, setCode };
 };
 
-export { useAddressApi, usePostAddressApi, useSetPrimaryAddressApi };
+const useDeleteAddressApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const deleteAddress = async (id) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      const response = await axios.delete(`${API_URL}/user/address/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { code } = response?.data;
+
+      setCode(code);
+      console.log("address deleted");
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+    }
+  };
+  return { error, loading, deleteAddress, code, setCode };
+};
+
+const useEditAddressApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const editAddress = async (id, data) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      const response = await axios.put(`${API_URL}/user/address/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { code } = response?.data;
+      setCode(code);
+      console.log("address edited");
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+    }
+  };
+  return { error, loading, editAddress, code, setCode };
+};
+
+export {
+  useAddressApi,
+  usePostAddressApi,
+  useSetPrimaryAddressApi,
+  useDeleteAddressApi,
+  useEditAddressApi,
+};

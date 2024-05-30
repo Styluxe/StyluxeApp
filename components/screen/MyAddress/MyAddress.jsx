@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -12,15 +12,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   useAddressApi,
+  useDeleteAddressApi,
   useSetPrimaryAddressApi,
 } from "../../../API/AddressApi";
 import { COLORS } from "../../../constants";
 import AddressCard from "../../molecules/AddressCard/AddressCard";
+import { ConfirmationModal } from "../../molecules/ConfirmationModal";
 
 const MyAddress = () => {
   const { getAddress, address, loading } = useAddressApi();
   const { setPrimaryAddress, setCode, code } = useSetPrimaryAddressApi();
   const [search, setSearch] = useState("");
+
+  const modalRef = useRef();
+  const [showConfirmModal, setShowConfirmModal] = useState(null);
+
+  const {
+    code: deleteCode,
+    deleteAddress,
+    setCode: setDeleteCode,
+  } = useDeleteAddressApi();
 
   const navigation = useNavigation();
 
@@ -47,7 +58,20 @@ const MyAddress = () => {
       getAddress();
       setCode(null);
     }
-  }, [code]);
+
+    if (deleteCode === 200) {
+      getAddress();
+      setDeleteCode(null);
+    }
+  }, [code, deleteCode]);
+
+  const handleDelete = () => {
+    if (showConfirmModal) {
+      deleteAddress(showConfirmModal);
+      setShowConfirmModal(null);
+      setDeleteCode(null);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -144,9 +168,21 @@ const MyAddress = () => {
             addressData={item}
             isPrimary={item?.is_primary}
             onRadioPress={() => handleRadioPress(item)}
+            onDelete={() => setShowConfirmModal(item?.address_id)}
           />
         )}
         contentContainerStyle={{ padding: 12, gap: 15 }}
+      />
+
+      <ConfirmationModal
+        modalRef={modalRef}
+        setShowModal={setShowConfirmModal}
+        showModal={showConfirmModal !== null}
+        header_color="red"
+        title="Delete Address"
+        content="Are you sure you want to delete this address?"
+        btnPositiveColor="red"
+        handlePositive={handleDelete}
       />
     </SafeAreaView>
   );

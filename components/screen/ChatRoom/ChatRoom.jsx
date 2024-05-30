@@ -22,10 +22,11 @@ import {
   useGetMessageById,
   usePostMessage,
 } from "../../../API/ConversationAPI";
+import { useEndBookingApi } from "../../../API/OrderAPI";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
 import { ChatBox, ChatModal } from "../../molecules";
-import { useEndBookingApi } from "../../../API/OrderAPI";
+import { Toast, ToastTitle, VStack, useToast } from "@gluestack-ui/themed";
 
 const ChatRoom = () => {
   const [inputText, setInputText] = useState("");
@@ -56,6 +57,8 @@ const ChatRoom = () => {
     setCode: setFetchedCode,
   } = useGetMessageById();
   const { postMessage, code, setCode } = usePostMessage();
+
+  const toast = useToast();
 
   const display_name = isCustomer
     ? conversation?.booking?.stylist?.brand_name ||
@@ -179,7 +182,20 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (endBookingCode === 200) {
-      alert("Booking ended");
+      toast.show({
+        description: "Booking ended!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Booking Ended</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       navigation.goBack();
       setEndBookingCode(null);
     }

@@ -4,14 +4,13 @@ import { COLORS } from "../../../constants";
 
 export const styles = StyleSheet.create({
   header_container: {
-    flexDirection: "row",
     alignItems: "center",
   },
   header_items_wrapper: {
     paddingVertical: 20,
     paddingHorizontal: 15,
     flexDirection: "row",
-    gap: 20,
+    gap: 10,
     alignItems: "center",
   },
   search_input_container: {
@@ -24,13 +23,14 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
+    paddingVertical: 5,
     backgroundColor: COLORS.white,
     borderColor: COLORS.gray,
   },
   search_btn: {
-    padding: 3,
     backgroundColor: COLORS.primary,
     borderRadius: 5,
+    padding: 5,
     justifyContent: "center",
   },
   category_container: {

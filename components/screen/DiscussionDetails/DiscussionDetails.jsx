@@ -1,11 +1,18 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetItem,
+  ActionsheetItemText,
+} from "@gluestack-ui/themed";
+import {
   useFocusEffect,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
 import moment from "moment";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +29,7 @@ import {
   setLoginModalOpen,
   userDataState,
 } from "../../../redux/slice/app.slice";
+import { ConfirmationModal } from "../../molecules";
 import { DiscussionCommentCard, DiscussionResponseInput } from "../../organism";
 
 const DiscussionDetails = () => {
@@ -34,6 +42,9 @@ const DiscussionDetails = () => {
   const { commentDiscussion, code, setCode } = useCommentDiscussionApi();
   const { addToBookmark } = useAddToBookmarkApi();
   const userData = useSelector(userDataState);
+  const [openSheet, setOpenSheet] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef(null);
 
   const [like, setLike] = useState(false);
   const [likeCounter, setLikeCounter] = useState(0);
@@ -187,12 +198,27 @@ const DiscussionDetails = () => {
                         {moment(post?.createdAt).format("HH:mm a")}
                       </Text>
                     </View>
-                    <View style={styles.tagContainer}>
-                      <View style={styles.tag}>
-                        <Text style={styles.tagText}>
-                          {post?.category?.category_name}
-                        </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 10,
+                        alignItems: "center",
+                      }}
+                    >
+                      <View style={styles.tagContainer}>
+                        <View style={styles.tag}>
+                          <Text style={styles.tagText}>
+                            {post?.category?.category_name}
+                          </Text>
+                        </View>
                       </View>
+
+                      <Ionicons
+                        name="ellipsis-vertical"
+                        size={28}
+                        color={COLORS.black}
+                        onPress={() => setOpenSheet(true)}
+                      />
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -272,6 +298,50 @@ const DiscussionDetails = () => {
             </View>
           </>
         )}
+      />
+
+      <Actionsheet
+        isOpen={openSheet}
+        onClose={() => setOpenSheet(null)}
+        zIndex={999}
+      >
+        <ActionsheetBackdrop />
+        <ActionsheetContent>
+          <ActionsheetItem
+            onPress={() => {
+              navigation.navigate("CreateDiscussion", { edit_data: post });
+              setOpenSheet(false);
+            }}
+          >
+            <ActionsheetItemText
+              style={{ fontFamily: "medium", color: COLORS.primary }}
+            >
+              Edit Discussion
+            </ActionsheetItemText>
+          </ActionsheetItem>
+          <ActionsheetItem
+            onPress={() => {
+              setOpenSheet(false);
+              setShowModal(post_id);
+            }}
+          >
+            <ActionsheetItemText style={{ fontFamily: "medium", color: "red" }}>
+              Delete Discussion
+            </ActionsheetItemText>
+          </ActionsheetItem>
+        </ActionsheetContent>
+      </Actionsheet>
+
+      <ConfirmationModal
+        showModal={showModal === post_id}
+        setShowModal={setShowModal}
+        modalRef={modalRef}
+        btnPositiveColor="red"
+        header_color="red"
+        title="Delete Discussion"
+        content="Are you sure want to delete this discussion? You can't undo this action"
+        btnPositiveText="Delete"
+        btnNegativeText="Cancel"
       />
     </SafeAreaView>
   );

@@ -1,20 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "@gluestack-ui/themed";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text } from "react-native";
 
 import { COLORS } from "../../../constants";
 
-const AddressCard = ({ isPrimary, onRadioPress, addressData }) => {
+const AddressCard = ({ isPrimary, onRadioPress, addressData, onDelete }) => {
+  const navigation = useNavigation();
   return (
     <View
       style={{
-        borderWidth: 1,
+        borderWidth: isPrimary ? 3 : 1,
         borderRadius: 5,
         paddingVertical: 11,
         paddingHorizontal: 15,
         gap: 6,
-        borderColor: COLORS.primary,
+        borderColor: isPrimary ? COLORS.primary : COLORS.gray2,
         backgroundColor: COLORS.white,
       }}
     >
@@ -26,30 +28,9 @@ const AddressCard = ({ isPrimary, onRadioPress, addressData }) => {
         }}
       >
         <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
-          {/* <Ionicons name="caret-forward-sharp" size={16} color="black" /> */}
           <Text style={{ fontFamily: "medium", fontSize: 14 }}>
             {addressData?.name}
           </Text>
-          {isPrimary && (
-            <View
-              style={{
-                paddingVertical: 1,
-                paddingHorizontal: 3,
-                backgroundColor: COLORS.lightBrown,
-                borderRadius: 4,
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "normal",
-                  fontSize: 12,
-                  color: COLORS.darkGray,
-                }}
-              >
-                main address
-              </Text>
-            </View>
-          )}
         </View>
 
         <Ionicons
@@ -74,22 +55,37 @@ const AddressCard = ({ isPrimary, onRadioPress, addressData }) => {
           {addressData?.postal_code}
         </Text>
       </View>
-      <Button
-        variant="outline"
-        borderWidth={2}
-        borderColor={COLORS.primary}
-        onPress={() => {}}
-      >
-        <Text
-          style={{
-            fontFamily: "semibold",
-            fontSize: 14,
-            color: COLORS.primary,
+      <View style={{ flexDirection: "row", gap: 5 }}>
+        <Button
+          variant="outline"
+          borderWidth={2}
+          borderColor={COLORS.primary}
+          flex={1}
+          onPress={() => {
+            navigation.navigate("ManageAddress", { edit_data: addressData });
           }}
         >
-          Edit Address
-        </Text>
-      </Button>
+          <Text
+            style={{
+              fontFamily: "semibold",
+              fontSize: 14,
+              color: COLORS.primary,
+            }}
+          >
+            Edit Address
+          </Text>
+        </Button>
+        {!isPrimary && (
+          <Button
+            variant="solid"
+            bgColor="red"
+            onPress={onDelete}
+            borderRadius={5}
+          >
+            <Ionicons name="trash" size={24} color="white" />
+          </Button>
+        )}
+      </View>
     </View>
   );
 };

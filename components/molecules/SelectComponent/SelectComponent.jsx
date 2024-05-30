@@ -10,9 +10,15 @@ import {
 } from "@gluestack-ui/themed";
 import React from "react";
 
-const SelectComponent = ({ placeholder, items = [], onValueChange }) => {
+const SelectComponent = ({
+  placeholder,
+  items = [],
+  onValueChange,
+  defaultValue,
+}) => {
+  console.log("dev", defaultValue);
   return (
-    <Select onValueChange={onValueChange}>
+    <Select onValueChange={onValueChange} selectedValue={defaultValue}>
       <SelectTrigger variant="outline" size="sm">
         <SelectInput
           style={{ fontFamily: "medium", fontSize: 12 }}

@@ -19,26 +19,37 @@ const ConfirmationModal = ({
   setShowModal,
   modalRef,
   handlePositive,
+  title = "Confirmation",
+  content = "Are you sure you want to proceed?",
+  header_color = COLORS.primary,
+  btnPositiveText = "Yes",
+  btnNegativeText = "No",
+  btnNegativeColor = COLORS.primary,
+  btnPositiveColor = COLORS.primary,
+  btnPositiveTextColor = COLORS.white,
+  btnNegativeTextColor = COLORS.white,
 }) => {
   return (
     <Modal
       isOpen={showModal}
       onClose={() => {
-        setShowModal(false);
+        setShowModal(null);
       }}
       finalFocusRef={modalRef}
     >
       <ModalBackdrop />
       <ModalContent>
         <ModalHeader>
-          <Heading size="lg" style={{ color: COLORS.red, fontFamily: "bold" }}>
-            End this Chat
+          <Heading
+            size="lg"
+            style={{ color: header_color, fontFamily: "bold" }}
+          >
+            {title}
           </Heading>
         </ModalHeader>
         <ModalBody>
           <Text style={{ color: COLORS.darkGray, fontFamily: "medium" }}>
-            Are you sure you want to end this chat? you will leave the chat
-            after this
+            {content}
           </Text>
         </ModalBody>
         <ModalFooter>
@@ -48,21 +59,25 @@ const ConfirmationModal = ({
             action="secondary"
             mr="$3"
             onPress={() => {
-              setShowModal(false);
+              setShowModal(null);
             }}
           >
-            <ButtonText style={{ color: COLORS.primary, fontFamily: "medium" }}>
-              No
+            <ButtonText
+              style={{ color: btnNegativeColor, fontFamily: "medium" }}
+            >
+              {btnNegativeText}
             </ButtonText>
           </Button>
           <Button
             size="sm"
-            action="negative"
+            bgColor={btnPositiveColor}
             borderWidth="$0"
             onPress={handlePositive}
           >
-            <ButtonText style={{ color: COLORS.white, fontFamily: "medium" }}>
-              Yes
+            <ButtonText
+              style={{ color: btnPositiveTextColor, fontFamily: "medium" }}
+            >
+              {btnPositiveText}
             </ButtonText>
           </Button>
         </ModalFooter>

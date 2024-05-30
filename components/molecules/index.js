@@ -22,3 +22,4 @@ export * from "./FilterModal";
 export * from "./FilterAccordion";
 export * from "./ReviewModal";
 export * from "./StylistReviewBox";
+export * from "./ConfirmationModal";

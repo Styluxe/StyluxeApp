@@ -50,7 +50,6 @@ const useProfileApi = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState(null);
-  const { getProfile } = useGetProfileApi(); // Directly using the getProfile function from useGetProfileApi
 
   const updateProfile = async (
     first_name,
@@ -84,8 +83,8 @@ const useProfileApi = () => {
         },
       );
 
-      const { data, code } = response;
-      console.log("Profile updated successfully", data);
+      const { code } = response.data;
+      console.log("Profile updated successfully");
 
       setCode(code);
     } catch (error) {
@@ -96,7 +95,7 @@ const useProfileApi = () => {
     }
   };
 
-  return { updateProfile, loading, error, code };
+  return { updateProfile, loading, error, code, setCode };
 };
 
 const useProfilePictureApi = () => {

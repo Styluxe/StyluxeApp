@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "semibold",
     fontSize: 20,
+    maxWidth: "95%",
   },
   mail: {
     fontFamily: "regular",
