@@ -1,5 +1,11 @@
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
-import { Button } from "@gluestack-ui/themed";
+import {
+  Button,
+  Toast,
+  ToastTitle,
+  VStack,
+  useToast,
+} from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useEffect, useState } from "react";
@@ -38,6 +44,7 @@ const StylistAboutMe = () => {
   });
   const [buttonVisible, setButtonVisible] = useState(true);
   const [images, setImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
 
   const handleImagePick = async () => {
     try {
@@ -54,7 +61,7 @@ const StylistAboutMe = () => {
           name: `image${Math.floor(Math.random() * (999 - 100 + 1) + 100)}.jpeg`,
         };
 
-        setImages((prevImages) => [...prevImages, newFile]);
+        setNewImages((prevImages) => [...prevImages, newFile]);
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -81,14 +88,42 @@ const StylistAboutMe = () => {
     }
   }, [stylistData]);
 
+  const toast = useToast();
+
   useEffect(() => {
     if (code === 200) {
-      alert("Stylist updated successfully");
+      toast.show({
+        description: "Stylist update success",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Stylist update success</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       setIsEditing(false);
       getStylistByAuth();
       setCode(null);
     } else if (code === 400) {
-      alert("Stylist update failed");
+      toast.show({
+        description: "Error updating stylist, please Input again",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="error" variant="solid">
+              <VStack>
+                <ToastTitle>Error updating stylist</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       setIsEditing(false);
       setCode(null);
     }
@@ -133,8 +168,11 @@ const StylistAboutMe = () => {
           size={24}
           color={COLORS.primary}
           onPress={() => {
-            // eslint-disable-next-line no-unused-expressions
-            isEditing ? handleCancel() : navigation.goBack();
+            if (isEditing) {
+              handleCancel();
+            } else {
+              navigation.goBack();
+            }
           }}
         />
         <View style={{ flex: 1, alignItems: "center" }}>
@@ -405,7 +443,7 @@ const StylistAboutMe = () => {
                             right: 5,
                           }}
                           onPress={() =>
-                            setImages(images.filter((_, i) => i !== index))
+                            setNewImages(images.filter((_, i) => i !== index))
                           }
                         />
                       </View>

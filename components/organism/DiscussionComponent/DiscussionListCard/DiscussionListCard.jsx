@@ -22,9 +22,9 @@ import {
   setLoginModalOpen,
   userDataState,
 } from "../../../../redux/slice/app.slice";
-import { ConfirmationModal } from "../../../molecules";
+import { ConfirmationModal, ImageModal } from "../../../molecules";
 
-const DiscussionListCard = ({ postData }) => {
+const DiscussionListCard = ({ postData, onPressDelete }) => {
   const navigation = useNavigation();
   const { reactDiscussion } = useReactDiscussionApi();
   const { addToBookmark } = useAddToBookmarkApi();
@@ -44,6 +44,8 @@ const DiscussionListCard = ({ postData }) => {
   const dispatch = useDispatch();
   const [openSheet, setOpenSheet] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -165,7 +167,13 @@ const DiscussionListCard = ({ postData }) => {
         <View style={styles.content}>
           <Text style={styles.contentText}>{postData.content}</Text>
           {postData.images?.length === 1 ? (
-            <TouchableOpacity style={{ flex: 1, maxHeight: 400 }}>
+            <TouchableOpacity
+              style={{ flex: 1, maxHeight: 400 }}
+              onPress={() => {
+                setSelectedImage(postData.images[0].image_uri);
+                setShowImage(true);
+              }}
+            >
               <Image
                 source={{ uri: postData.images[0].image_uri }}
                 style={{ width: "100%", height: "100%" }}
@@ -179,6 +187,10 @@ const DiscussionListCard = ({ postData }) => {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={{ flex: 1, maxHeight: 200, padding: 2 }}
+                  onPress={() => {
+                    setSelectedImage(item.image_uri);
+                    setShowImage(true);
+                  }}
                 >
                   <Image
                     source={{ uri: item.image_uri }}
@@ -270,6 +282,14 @@ const DiscussionListCard = ({ postData }) => {
         content="Are you sure want to delete this discussion? You can't undo this action"
         btnPositiveText="Delete"
         btnNegativeText="Cancel"
+        handlePositive={onPressDelete}
+      />
+
+      <ImageModal
+        image_url={selectedImage}
+        showModal={showImage}
+        modalRef={modalRef}
+        setShowModal={setShowImage}
       />
     </TouchableOpacity>
   );

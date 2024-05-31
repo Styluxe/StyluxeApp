@@ -21,6 +21,12 @@ const DiscussionBookmarks = () => {
 
   const mappedData = responseData?.map((item) => item.post);
 
+  const sort_data = (data) => {
+    return data?.sort((a, b) => {
+      return new Date(b?.createdAt) - new Date(a?.createdAt);
+    });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -47,7 +53,7 @@ const DiscussionBookmarks = () => {
         </View>
       </View>
       <FlatList
-        data={mappedData}
+        data={sort_data(mappedData)}
         renderItem={({ item, index }) => (
           <DiscussionListCard key={index} postData={item} />
         )}

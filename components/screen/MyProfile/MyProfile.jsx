@@ -142,18 +142,30 @@ const MyProfile = () => {
       <View style={{ flex: 1 }}>
         <ScrollView>
           <View style={{ paddingVertical: 23 }}>
-            <TouchableOpacity onPress={handleImagePick}>
-              <Avatar alignSelf="center" size="2xl" marginTop={5}>
-                <AvatarImage
-                  source={
-                    userData?.profile_picture
-                      ? { uri: userData?.profile_picture }
-                      : require("../../../assets/content/profpic.png")
-                  }
-                  alt="profpic"
-                />
-              </Avatar>
-            </TouchableOpacity>
+            <Avatar alignSelf="center" size="2xl" marginTop={5}>
+              <AvatarImage
+                source={
+                  userData?.profile_picture
+                    ? { uri: userData?.profile_picture }
+                    : require("../../../assets/content/profpic.png")
+                }
+                alt="profpic"
+              />
+
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  borderRadius: 100,
+                  backgroundColor: COLORS.primary,
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                }}
+                onPress={handleImagePick}
+              >
+                <Ionicons name="camera" size={24} color={COLORS.white} />
+              </TouchableOpacity>
+            </Avatar>
           </View>
           <View style={{ paddingHorizontal: 30, paddingVertical: 20 }}>
             <Text

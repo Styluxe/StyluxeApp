@@ -44,6 +44,12 @@ const DiscussionProfile = () => {
     }, [selectedNavMenu, user.user_id]),
   );
 
+  const sort_data = (data) => {
+    return data?.sort((a, b) => {
+      return new Date(b?.createdAt) - new Date(a?.createdAt);
+    });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View
@@ -161,7 +167,11 @@ const DiscussionProfile = () => {
         ))}
       </View>
       <FlatList
-        data={selectedNavMenu === 1 ? responseData?.posts : likedData}
+        data={
+          selectedNavMenu === 1
+            ? sort_data(responseData?.posts)
+            : sort_data(likedData)
+        }
         renderItem={({ item, index }) => (
           <DiscussionListCard key={index} postData={item} />
         )}

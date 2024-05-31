@@ -73,6 +73,12 @@ const StylistDetails = () => {
     );
   }
 
+  const sort_data = (data) => {
+    return data?.sort((a, b) => {
+      return new Date(b?.createdAt) - new Date(a?.createdAt);
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -263,7 +269,7 @@ const StylistDetails = () => {
               <Text style={styles.stylist_header}>Customer's Review</Text>
 
               <FlatList
-                data={stylistData?.reviews.slice(0, numToShow)}
+                data={sort_data(stylistData?.reviews.slice(0, numToShow))}
                 renderItem={({ item }) => (
                   <ReviewBox
                     name={item.user.first_name}

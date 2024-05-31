@@ -18,9 +18,9 @@ import { Image, ScrollView, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 
+import { useRegisterApi } from "../../../API/ProfileApi";
 import { COLORS } from "../../../constants";
 import { setLoginModalOpen } from "../../../redux/slice/app.slice";
-import { useRegisterApi } from "../../../API/ProfileApi";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -60,11 +60,37 @@ const Register = () => {
       setCode(null);
     } else if (code === 400) {
       console.log("error");
-      alert("Error registering, please try again");
+      toast.show({
+        description: "Error registering, please Input again",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="error" variant="solid">
+              <VStack>
+                <ToastTitle>Error registering</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       setCode(null);
     } else if (code === 409) {
       console.log("error");
-      alert("Error registering, email already exists");
+      toast.show({
+        description: "Error registering, please Input again",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="error" variant="solid">
+              <VStack>
+                <ToastTitle>Email Already Exist</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       setCode(null);
     }
   }, [code]);

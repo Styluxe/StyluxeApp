@@ -367,7 +367,7 @@ const useGetBookmarksApi = () => {
 
       const { data } = response?.data;
 
-      console.log("fetching bookmarks", data);
+      console.log("fetching bookmarks");
       dispatch(setBookmarksData(data));
       setLoading(false);
     } catch (error) {
@@ -378,6 +378,74 @@ const useGetBookmarksApi = () => {
   };
 
   return { error, loading, bookmarksData, getBookmarks };
+};
+
+const useDeleteDiscussionApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const deleteDiscussion = async (postId) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      const response = await axios.delete(`${API_URL}/post/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { code } = response?.data;
+      setCode(code);
+      console.log("Post deleted successfully");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, code, setCode, deleteDiscussion };
+};
+
+const useEditDiscussionApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const editDiscussion = async (postId, data) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      const response = await axios.put(`${API_URL}/post/${postId}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { code } = response?.data;
+      setCode(code);
+      console.log("Post deleted successfully");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, code, setCode, editDiscussion };
 };
 
 export {
@@ -391,4 +459,6 @@ export {
   useGetLikedPostByAuthorIdApi,
   useAddToBookmarkApi,
   useGetBookmarksApi,
+  useDeleteDiscussionApi,
+  useEditDiscussionApi,
 };

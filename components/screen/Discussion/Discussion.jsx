@@ -1,4 +1,5 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { Toast, ToastTitle, VStack, useToast } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
@@ -13,7 +14,10 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useGetAllDiscussionApi } from "../../../API/DiscussionApi";
+import {
+  useDeleteDiscussionApi,
+  useGetAllDiscussionApi,
+} from "../../../API/DiscussionApi";
 import { COLORS } from "../../../constants";
 import {
   authKeyState,
@@ -33,12 +37,38 @@ const Discussion = () => {
   const dispatch = useDispatch();
 
   const { getAllDiscussion, responseData } = useGetAllDiscussionApi();
+  const { deleteDiscussion, code, setCode } = useDeleteDiscussionApi();
+
+  const toast = useToast();
 
   useFocusEffect(
     useCallback(() => {
       getAllDiscussion();
     }, []),
   );
+
+  useEffect(() => {
+    if (code === 200) {
+      getAllDiscussion();
+      toast.show({
+        title: "Success",
+        description: "Discussion deleted successfully",
+        status: "success",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Discussion deleted successfully</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+      setCode(null);
+    }
+  }, [code]);
 
   useEffect(() => {
     Animated.timing(iconOpacity, {
@@ -90,7 +120,13 @@ const Discussion = () => {
         ref={scrollViewRef}
         data={responseData}
         renderItem={({ item, index }) => (
-          <DiscussionListCard key={index} postData={item} />
+          <DiscussionListCard
+            key={index}
+            postData={item}
+            onPressDelete={() => {
+              deleteDiscussion(item.post_id);
+            }}
+          />
         )}
         keyExtractor={(item, index) => index.toString()}
         style={{ paddingHorizontal: 10 }}

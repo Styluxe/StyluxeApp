@@ -89,7 +89,7 @@ const usePostMessage = () => {
   const [message, setMessage] = useState(null);
   const [code, setCode] = useState(null);
 
-  const postMessage = async (booking_id, message) => {
+  const postMessage = async (booking_id, message, image) => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem("token");
@@ -99,12 +99,16 @@ const usePostMessage = () => {
         return;
       }
 
-      console.log("message", message);
+      let imageURL = null;
+      if (image) {
+        imageURL = await uploadImageToCloudinary(image);
+      }
 
       const response = await axios.post(
         `${API_URL}/conversation/${booking_id}/message`,
         {
           message,
+          media: imageURL,
         },
         {
           headers: {
@@ -117,16 +121,37 @@ const usePostMessage = () => {
 
       setMessage(data);
       setCode(code);
-
-      setLoading(false);
-
       console.log("message sent");
     } catch (error) {
       setError(error);
       console.log("error", error);
+    } finally {
       setLoading(false);
     }
   };
+
+  const uploadImageToCloudinary = async (image) => {
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", "user_preset");
+    formData.append("api_key", "761147494786172");
+
+    const uploadResponse = await fetch(
+      "https://api.cloudinary.com/v1_1/dkxeflvuu/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    const uploadData = await uploadResponse.json();
+    if (!uploadResponse.ok) {
+      throw new Error(`Cloudinary upload failed: ${uploadData.error.message}`);
+    }
+
+    return uploadData.secure_url;
+  };
+
   return { error, loading, message, code, setCode, postMessage };
 };
 

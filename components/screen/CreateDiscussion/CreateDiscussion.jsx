@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 
 import {
   useCreateDiscussionApi,
+  useEditDiscussionApi,
   useGetDiscussionCategoryApi,
 } from "../../../API/DiscussionApi";
 import { COLORS } from "../../../constants";
@@ -22,6 +23,7 @@ import { SelectComponent } from "../../molecules";
 const CreateDiscussion = () => {
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [editCategoryName, setEditCategoryName] = useState("");
   const [title, setTitle] = useState("");
   const [discussionText, setDiscussionText] = useState("");
   const [images, setImages] = useState([]);
@@ -37,7 +39,8 @@ const CreateDiscussion = () => {
   useEffect(() => {
     if (edit_data) {
       setTitle(edit_data.title);
-      setSelectedCategory(edit_data.category.category_name);
+      setSelectedCategory(edit_data.category.post_category_id);
+      setEditCategoryName(edit_data.category.category_name);
       setDiscussionText(edit_data.content);
       const imageUri = edit_data.images?.map((image) => {
         return {
@@ -51,7 +54,7 @@ const CreateDiscussion = () => {
   useEffect(() => {
     const isDiscussionDirty =
       title !== edit_data?.title ||
-      selectedCategory !== edit_data?.category?.category_name ||
+      selectedCategory !== edit_data?.category?.post_category_id ||
       discussionText !== edit_data?.content ||
       images?.length !== edit_data?.images?.length;
     setIsDirty(isDiscussionDirty);
@@ -60,6 +63,11 @@ const CreateDiscussion = () => {
   const { getDiscussionCategory, discussionCategory } =
     useGetDiscussionCategoryApi();
   const { createDiscussion, code, setCode } = useCreateDiscussionApi();
+  const {
+    editDiscussion,
+    code: editCode,
+    setCode: setEditCode,
+  } = useEditDiscussionApi();
 
   useFocusEffect(
     useCallback(() => {
@@ -135,8 +143,31 @@ const CreateDiscussion = () => {
   };
 
   const handlePost = () => {
-    createDiscussion(postData);
+    if (edit_data) {
+      editDiscussion(edit_data?.post_id, postData);
+    } else {
+      createDiscussion(postData);
+    }
   };
+
+  useEffect(() => {
+    if (editCode === 200) {
+      navigation.goBack();
+      setEditCode(null);
+      toast.show({
+        description: "Your discussion has been updated!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <ToastTitle>Your discussion has been updated!</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+    }
+  }, [editCode]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -228,7 +259,7 @@ const CreateDiscussion = () => {
               placeholder="Select Category"
               items={remapCategory()}
               onValueChange={(value) => setSelectedCategory(value)}
-              defaultValue={selectedCategory}
+              defaultValue={editCategoryName}
             />
           </View>
         </View>

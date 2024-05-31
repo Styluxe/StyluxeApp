@@ -5,6 +5,10 @@ import {
   ActionsheetContent,
   ActionsheetItem,
   ActionsheetItemText,
+  Toast,
+  ToastTitle,
+  VStack,
+  useToast,
 } from "@gluestack-ui/themed";
 import {
   useFocusEffect,
@@ -21,6 +25,7 @@ import styles from "./DiscussionDetails.style";
 import {
   useAddToBookmarkApi,
   useCommentDiscussionApi,
+  useDeleteDiscussionApi,
   useGetPostByIdApi,
   useReactDiscussionApi,
 } from "../../../API/DiscussionApi";
@@ -29,7 +34,7 @@ import {
   setLoginModalOpen,
   userDataState,
 } from "../../../redux/slice/app.slice";
-import { ConfirmationModal } from "../../molecules";
+import { ConfirmationModal, ImageModal } from "../../molecules";
 import { DiscussionCommentCard, DiscussionResponseInput } from "../../organism";
 
 const DiscussionDetails = () => {
@@ -45,6 +50,8 @@ const DiscussionDetails = () => {
   const [openSheet, setOpenSheet] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef(null);
+  const [showImage, setShowImage] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [like, setLike] = useState(false);
   const [likeCounter, setLikeCounter] = useState(0);
@@ -52,11 +59,42 @@ const DiscussionDetails = () => {
   const dispatch = useDispatch();
   const [bookmark, setBookmark] = useState(false);
 
+  const {
+    deleteDiscussion,
+    code: deleteCode,
+    setCode: setDeleteCode,
+  } = useDeleteDiscussionApi();
+
+  const toast = useToast();
+
   useFocusEffect(
     useCallback(() => {
       getPostById(post_id);
     }, [post_id]),
   );
+
+  useEffect(() => {
+    if (deleteCode === 200) {
+      navigation.goBack();
+      toast.show({
+        title: "Success",
+        description: "Discussion deleted successfully",
+        status: "success",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Discussion deleted successfully</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+      setDeleteCode(null);
+    }
+  }, [deleteCode]);
 
   useEffect(() => {
     if (post) {
@@ -124,6 +162,12 @@ const DiscussionDetails = () => {
     } catch (error) {
       console.error("Failed to bookmark/unbookmark the post:", error);
     }
+  };
+
+  const sort_data = (data) => {
+    return data?.sort((a, b) => {
+      return new Date(b?.createdAt) - new Date(a?.createdAt);
+    });
   };
 
   return (
@@ -232,7 +276,13 @@ const DiscussionDetails = () => {
                 <View style={styles.content}>
                   <Text style={styles.contentText}>{post?.content}</Text>
                   {post?.images?.length === 1 ? (
-                    <TouchableOpacity style={{ flex: 1, maxHeight: 400 }}>
+                    <TouchableOpacity
+                      style={{ flex: 1, maxHeight: 400 }}
+                      onPress={() => {
+                        setSelectedImage(post?.images[0].image_uri);
+                        setShowImage(true);
+                      }}
+                    >
                       <Image
                         source={{ uri: post?.images[0].image_uri }}
                         style={{ width: "100%", height: "100%" }}
@@ -245,6 +295,10 @@ const DiscussionDetails = () => {
                       renderItem={({ item }) => (
                         <TouchableOpacity
                           style={{ flex: 1, maxHeight: 200, padding: 2 }}
+                          onPress={() => {
+                            setSelectedImage(item.image_uri);
+                            setShowImage(true);
+                          }}
                         >
                           <Image
                             source={{ uri: item.image_uri }}
@@ -289,7 +343,7 @@ const DiscussionDetails = () => {
                 />
               )}
               <FlatList
-                data={post?.comments}
+                data={sort_data(post?.comments)}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <DiscussionCommentCard key={item.comment_id} data={item} />
@@ -342,6 +396,16 @@ const DiscussionDetails = () => {
         content="Are you sure want to delete this discussion? You can't undo this action"
         btnPositiveText="Delete"
         btnNegativeText="Cancel"
+        handlePositive={() => {
+          deleteDiscussion(post_id);
+        }}
+      />
+
+      <ImageModal
+        image_url={selectedImage}
+        showModal={showImage}
+        modalRef={modalRef}
+        setShowModal={setShowImage}
       />
     </SafeAreaView>
   );

@@ -1,9 +1,18 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
+  HStack,
+  Spinner,
+  Toast,
+  ToastTitle,
+  VStack,
+  useToast,
+} from "@gluestack-ui/themed";
+import {
   useFocusEffect,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
@@ -11,6 +20,8 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  Image,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -25,8 +36,7 @@ import {
 import { useEndBookingApi } from "../../../API/OrderAPI";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
-import { ChatBox, ChatModal } from "../../molecules";
-import { Toast, ToastTitle, VStack, useToast } from "@gluestack-ui/themed";
+import { ChatBox, ChatModal, ImageModal } from "../../molecules";
 
 const ChatRoom = () => {
   const [inputText, setInputText] = useState("");
@@ -37,6 +47,8 @@ const ChatRoom = () => {
   const [showModal, setShowModal] = useState(false);
   const ref = useRef();
   const [remainingTime, setRemainingTime] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
   const timerIntervalRef = useRef();
 
   const route = useRoute();
@@ -56,7 +68,7 @@ const ChatRoom = () => {
     code: fetchedCode,
     setCode: setFetchedCode,
   } = useGetMessageById();
-  const { postMessage, code, setCode } = usePostMessage();
+  const { postMessage, code, setCode, loading } = usePostMessage();
 
   const toast = useToast();
 
@@ -201,6 +213,31 @@ const ChatRoom = () => {
     }
   }, [endBookingCode]);
 
+  const handleImagePick = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        // aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const newFile = {
+          uri: result.assets[0].uri,
+          type: result.assets[0].mimeType,
+          name: `chat-${Math.floor(Math.random() * (999 - 100 + 1) + 100)}.jpeg`,
+        };
+
+        postMessage(booking_id, "image", newFile);
+      }
+    } catch (error) {
+      // Handle any errors that occur during the image picking process
+      console.error("Error picking image:", error);
+      // Provide feedback to the user that an error occurred
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header_container}>
@@ -257,6 +294,11 @@ const ChatRoom = () => {
               content={item?.message_text}
               isSender={item?.participant?.user_id === userData?.user_id}
               time={item?.createdAt}
+              image={item?.media}
+              onPressImage={() => {
+                setSelectedImage(item?.media);
+                setShowImageModal(true);
+              }}
             />
           )}
           ref={flatListRef}
@@ -287,10 +329,24 @@ const ChatRoom = () => {
         </View>
       ) : (
         <View style={styles.footer_container}>
+          {loading && (
+            <HStack space="md">
+              <Spinner color={COLORS.primary} $active-alignSelf="start" />
+              <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
+                Sending Message..
+              </Text>
+            </HStack>
+          )}
+
           <View style={styles.input_container}>
             <View style={styles.camera_input_wrapper}>
-              <Ionicons name="camera-outline" size={29} />
+              <Ionicons
+                name="camera-outline"
+                size={29}
+                onPress={handleImagePick}
+              />
               <TextInput
+                editable={!loading}
                 style={{ flex: 1 }}
                 multiline
                 numberOfLines={numberOfLines}
@@ -301,9 +357,19 @@ const ChatRoom = () => {
             </View>
 
             <TouchableOpacity
+              disabled={loading}
               onPress={() => postMessage(booking_id, inputText)}
             >
-              <View style={styles.send_button}>
+              <View
+                style={[
+                  styles.send_button,
+                  {
+                    backgroundColor: loading
+                      ? COLORS.secondary
+                      : COLORS.primary,
+                  },
+                ]}
+              >
                 <Ionicons name="send" size={18} color={COLORS.white} />
               </View>
             </TouchableOpacity>
@@ -319,6 +385,13 @@ const ChatRoom = () => {
           handleEnd={handleEndBooking}
         />
       )}
+
+      <ImageModal
+        image_url={selectedImage}
+        modalRef={ref}
+        setShowModal={setShowImageModal}
+        showModal={showImageModal}
+      />
     </SafeAreaView>
   );
 };

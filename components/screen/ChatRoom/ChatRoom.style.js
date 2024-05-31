@@ -46,6 +46,5 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 5,
     borderRadius: 100,
-    backgroundColor: COLORS.primary,
   },
 });

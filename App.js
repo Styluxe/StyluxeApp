@@ -7,6 +7,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect } from "react";
 import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 
 import { LoginModal } from "./components/molecules";
@@ -37,7 +38,6 @@ import {
   StylistReviewList,
 } from "./components/screen";
 import store from "./redux/store";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const Stack = createNativeStackNavigator();
 
@@ -71,8 +71,8 @@ export default function App() {
 
   return (
     <GluestackUIProvider config={config}>
+      <StatusBar style="auto" />
       <Provider store={store}>
-        <StatusBar style="auto" />
         <NavigationContainer onLayout={onLayoutRootView}>
           <Stack.Navigator initialRouteName="bottomTab">
             <Stack.Screen

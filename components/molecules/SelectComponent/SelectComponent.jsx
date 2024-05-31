@@ -16,7 +16,6 @@ const SelectComponent = ({
   onValueChange,
   defaultValue,
 }) => {
-  console.log("dev", defaultValue);
   return (
     <Select onValueChange={onValueChange} selectedValue={defaultValue}>
       <SelectTrigger variant="outline" size="sm">
