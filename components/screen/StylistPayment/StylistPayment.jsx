@@ -158,7 +158,7 @@ const StylistPayment = () => {
               selectedPayment={selectedPayment}
               setSelectedPayment={setSelectedPayment}
             />
-
+            {/* 
             <TouchableOpacity style={{ alignSelf: "flex-start" }}>
               <View
                 style={{
@@ -186,7 +186,7 @@ const StylistPayment = () => {
                   color="black"
                 />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </ScrollView>
       </View>
@@ -215,7 +215,7 @@ const StylistPayment = () => {
           <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
             Rp {parseInt(data?.price, 10).toLocaleString("id-ID")}
           </Text>
-          <Text
+          {/* <Text
             style={{
               fontFamily: "medium",
               fontSize: 10,
@@ -223,7 +223,7 @@ const StylistPayment = () => {
             }}
           >
             you saved 25.000 from using styluxe point!
-          </Text>
+          </Text> */}
         </View>
 
         <Button

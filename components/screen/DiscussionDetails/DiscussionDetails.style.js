@@ -106,5 +106,25 @@ const styles = StyleSheet.create({
   likes: {
     fontFamily: "semibold",
   },
+  counter_container: {
+    flexDirection: "row",
+    gap: 13,
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+  counter_text: {
+    fontFamily: "semibold",
+    fontSize: 20,
+  },
+  number_container: {
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    backgroundColor: COLORS.primary,
+    borderRadius: 5,
+  },
+  number_text: {
+    fontFamily: "semibold",
+    color: COLORS.white,
+  },
 });
 export default styles;

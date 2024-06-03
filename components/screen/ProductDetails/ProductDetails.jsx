@@ -67,7 +67,7 @@ const ProductDetails = () => {
           return (
             <Toast nativeID={toastId} action="success" variant="solid">
               <VStack>
-                <ToastTitle>Add Success</ToastTitle>
+                <ToastTitle>Success add to cart!</ToastTitle>
               </VStack>
             </Toast>
           );

@@ -341,7 +341,7 @@ const OrderDetails = () => {
             </Text>
             <Divider bg={COLORS.gray2} />
             {isProduct ? (
-              <VStack>
+              <VStack gap={10}>
                 {orderData?.order_items?.map((item, index) => (
                   <CheckoutItemCard
                     key={index}

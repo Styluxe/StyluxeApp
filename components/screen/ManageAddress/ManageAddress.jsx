@@ -86,7 +86,7 @@ const ManageAddress = () => {
   const { telephone, ...requiredFields } = formData;
 
   const formValid = Object.values(requiredFields).every(
-    (value) => value.length > 0,
+    (value) => value?.length > 0,
   );
 
   const toast = useToast();
@@ -98,7 +98,6 @@ const ManageAddress = () => {
     const isAddressDirty =
       formData.name !== (edit_data?.name || "") ||
       formData.receiver_name !== (edit_data?.receiver_name || "") ||
-      formData.country !== (edit_data?.country || "") ||
       formData.province !== (edit_data?.province || "") ||
       formData.city !== (edit_data?.city || "") ||
       formData.district !== (edit_data?.district || "") ||
@@ -116,7 +115,6 @@ const ManageAddress = () => {
         setFormData({
           name: edit_data?.name,
           receiver_name: edit_data?.receiver_name,
-          country: edit_data?.country,
           province: edit_data?.province,
           city: edit_data?.city,
           district: edit_data?.district,
@@ -188,6 +186,8 @@ const ManageAddress = () => {
     }
   }, [editCode]);
 
+  console.log("isdir", isDirty);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
@@ -238,9 +238,9 @@ const ManageAddress = () => {
       <View style={{ padding: 15 }}>
         {edit_data ? (
           <Button
-            isDisabled={!formValid || !isDirty}
+            isDisabled={!isDirty}
             variant="solid"
-            bgColor={!formValid ? COLORS.gray2 : COLORS.primary}
+            bgColor={!isDirty ? COLORS.secondary : COLORS.primary}
             onPress={handleSubmit}
             size="sm"
           >
@@ -258,7 +258,7 @@ const ManageAddress = () => {
           <Button
             isDisabled={!formValid}
             variant="solid"
-            bgColor={!formValid ? COLORS.gray2 : COLORS.primary}
+            bgColor={!formValid ? COLORS.secondary : COLORS.primary}
             onPress={handleSubmit}
             size="sm"
           >

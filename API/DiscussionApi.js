@@ -121,6 +121,76 @@ const useCreateDiscussionApi = () => {
   return { error, loading, createDiscussion, code, setCode };
 };
 
+const useEditDiscussionApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const editDiscussion = async (postId, data) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      let imageUrls = [];
+      if (data.images && data.images.length > 0) {
+        const uploadPromises = data.images.map((image) =>
+          uploadImageToCloudinary(image).catch((error) => {
+            console.error("Image upload failed:", error.message);
+            throw error;
+          }),
+        );
+        imageUrls = await Promise.all(uploadPromises);
+      }
+
+      const newData = { ...data, images: imageUrls };
+
+      const response = await axios.put(`${API_URL}/post/${postId}`, newData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { code } = response?.data;
+      setCode(code);
+      console.log("Post deleted successfully");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  const uploadImageToCloudinary = async (image) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "user_preset");
+      formData.append("api_key", "761147494786172");
+
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dkxeflvuu/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const result = await response.json();
+      return result.secure_url;
+    } catch (error) {
+      console.error("Image upload error:", error);
+      throw error;
+    }
+  };
+
+  return { error, loading, code, setCode, editDiscussion };
+};
+
 //get all post
 const useGetAllDiscussionApi = () => {
   const [error, setError] = useState(null);
@@ -412,40 +482,6 @@ const useDeleteDiscussionApi = () => {
   };
 
   return { error, loading, code, setCode, deleteDiscussion };
-};
-
-const useEditDiscussionApi = () => {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [code, setCode] = useState(null);
-
-  const editDiscussion = async (postId, data) => {
-    setLoading(true);
-    try {
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        console.log("token not found");
-        setLoading(false);
-      }
-
-      const response = await axios.put(`${API_URL}/post/${postId}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const { code } = response?.data;
-      setCode(code);
-      console.log("Post deleted successfully");
-      setLoading(false);
-    } catch (error) {
-      setError(error);
-      console.log("error", error);
-      setLoading(false);
-    }
-  };
-
-  return { error, loading, code, setCode, editDiscussion };
 };
 
 export {

@@ -9,7 +9,7 @@ import {
 } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
@@ -156,6 +156,16 @@ const Profile = () => {
             />
           </>
         )}
+        <SelectionList
+          hasIcon
+          iconName="logo-whatsapp"
+          text="Contact Us"
+          onPress={() =>
+            Linking.openURL(
+              "https://wa.me/6281288892701?text=Saya%20butuh%20bantuan",
+            )
+          }
+        />
         <SelectionList
           hasIcon
           iconName="exit-outline"

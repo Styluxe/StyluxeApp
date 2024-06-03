@@ -342,6 +342,17 @@ const DiscussionDetails = () => {
                   onComment={handleComment}
                 />
               )}
+
+              {!userData && (
+                <View style={styles.counter_container}>
+                  <Text style={styles.counter_text}>Response</Text>
+                  <View style={styles.number_container}>
+                    <Text style={styles.number_text}>
+                      {post?.comments.length}
+                    </Text>
+                  </View>
+                </View>
+              )}
               <FlatList
                 data={sort_data(post?.comments)}
                 keyExtractor={(item, index) => index.toString()}

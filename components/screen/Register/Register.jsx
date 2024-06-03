@@ -2,6 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import {
   Button,
   FormControl,
+  FormControlError,
+  FormControlErrorText,
   FormControlLabel,
   Input,
   InputField,
@@ -34,6 +36,17 @@ const Register = () => {
     password: "",
     repeat_password: "",
   });
+
+  const [emailError, setEmailError] = useState("");
+
+  const handleEmailChange = (email) => {
+    setRegisterData({ ...registerData, email });
+    if (!email.includes("@")) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError("");
+    }
+  };
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -201,22 +214,26 @@ const Register = () => {
                 />
               </Input>
             </FormControl>
-            <FormControl>
+
+            <FormControl isInvalid={!!emailError}>
               <FormControlLabel>
                 <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
                   Email
                 </Text>
               </FormControlLabel>
-              <Input borderRadius={10}>
+              <Input>
                 <InputField
-                  keyboardType="email-address"
-                  placeholder="Enter your email"
                   value={registerData.email}
-                  onChangeText={(e) =>
-                    setRegisterData({ ...registerData, email: e })
-                  }
+                  onChangeText={handleEmailChange}
+                  type="text"
+                  placeholder="Enter your email"
                 />
               </Input>
+              {emailError ? (
+                <FormControlError>
+                  <FormControlErrorText>{emailError}</FormControlErrorText>
+                </FormControlError>
+              ) : null}
             </FormControl>
             <FormControl>
               <FormControlLabel>

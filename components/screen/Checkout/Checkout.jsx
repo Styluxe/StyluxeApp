@@ -302,8 +302,12 @@ const Checkout = () => {
         </View>
 
         <Button
-          disabled={!selectedPayment && !summaryData?.address}
-          bgColor={!selectedPayment ? COLORS.gray2 : COLORS.primary}
+          disabled={!selectedPayment || !summaryData?.address}
+          bgColor={
+            !selectedPayment || !summaryData?.address
+              ? COLORS.gray2
+              : COLORS.primary
+          }
           onPress={() => {
             setShowModal(true);
           }}

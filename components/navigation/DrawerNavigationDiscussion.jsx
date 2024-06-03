@@ -111,23 +111,24 @@ const DrawerNavigationDiscussion = () => {
           drawerLabelStyle: styles.drawerLabelStyle,
         }}
       />
-
-      <Drawer.Screen
-        name="Bookmark"
-        component={DiscussionBookmarks}
-        options={{
-          headerShown: false,
-          drawerIcon: () => (
-            <Ionicons
-              name="bookmarks-outline"
-              size={24}
-              color={COLORS.primary}
-            />
-          ),
-          drawerStyle: styles.drawerStyle,
-          drawerLabelStyle: styles.drawerLabelStyle,
-        }}
-      />
+      {auth && (
+        <Drawer.Screen
+          name="Bookmark"
+          component={DiscussionBookmarks}
+          options={{
+            headerShown: false,
+            drawerIcon: () => (
+              <Ionicons
+                name="bookmarks-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+            ),
+            drawerStyle: styles.drawerStyle,
+            drawerLabelStyle: styles.drawerLabelStyle,
+          }}
+        />
+      )}
     </Drawer.Navigator>
   );
 };

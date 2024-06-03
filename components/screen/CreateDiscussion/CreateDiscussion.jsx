@@ -26,7 +26,10 @@ const CreateDiscussion = () => {
   const [editCategoryName, setEditCategoryName] = useState("");
   const [title, setTitle] = useState("");
   const [discussionText, setDiscussionText] = useState("");
+  const [actualImages, setActualImages] = useState([]);
   const [images, setImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [deleteImages, setDeleteImages] = useState([]);
   const profileData = useSelector(userDataState);
   const [isDirty, setIsDirty] = useState(false);
 
@@ -35,6 +38,8 @@ const CreateDiscussion = () => {
   const route = useRoute();
 
   const { edit_data } = route.params || {};
+
+  const mergeImage = images.concat(newImages);
 
   useEffect(() => {
     if (edit_data) {
@@ -48,6 +53,7 @@ const CreateDiscussion = () => {
         };
       });
       setImages(imageUri);
+      setActualImages(imageUri);
     }
   }, [edit_data]);
 
@@ -56,17 +62,18 @@ const CreateDiscussion = () => {
       title !== edit_data?.title ||
       selectedCategory !== edit_data?.category?.post_category_id ||
       discussionText !== edit_data?.content ||
-      images?.length !== edit_data?.images?.length;
+      actualImages?.length !== mergeImage?.length;
     setIsDirty(isDiscussionDirty);
-  }, [title, selectedCategory, discussionText, images, edit_data]);
+  }, [title, selectedCategory, discussionText, images, edit_data, mergeImage]);
 
   const { getDiscussionCategory, discussionCategory } =
     useGetDiscussionCategoryApi();
-  const { createDiscussion, code, setCode } = useCreateDiscussionApi();
+  const { createDiscussion, code, setCode, loading } = useCreateDiscussionApi();
   const {
     editDiscussion,
     code: editCode,
     setCode: setEditCode,
+    loading: editLoading,
   } = useEditDiscussionApi();
 
   useFocusEffect(
@@ -100,7 +107,7 @@ const CreateDiscussion = () => {
           name: `image${Math.floor(Math.random() * (999 - 100 + 1) + 100)}.jpeg`,
         };
 
-        setImages((prevImages) => [...prevImages, newFile]);
+        setNewImages((prevImages) => [...prevImages, newFile]);
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -139,12 +146,20 @@ const CreateDiscussion = () => {
     category_id: selectedCategory,
     title,
     content: discussionText,
-    images,
+    images: newImages,
+  };
+
+  const editData = {
+    category_id: selectedCategory,
+    title,
+    content: discussionText,
+    images: newImages,
+    delete_images: deleteImages,
   };
 
   const handlePost = () => {
     if (edit_data) {
-      editDiscussion(edit_data?.post_id, postData);
+      editDiscussion(edit_data?.post_id, editData);
     } else {
       createDiscussion(postData);
     }
@@ -190,16 +205,18 @@ const CreateDiscussion = () => {
         />
         {edit_data ? (
           <Button
-            disabled={disabledPost || !isDirty}
+            disabled={disabledPost || !isDirty || editLoading || loading}
             bgColor={
-              disabledPost || !isDirty ? COLORS.secondary : COLORS.primary
+              disabledPost || !isDirty || editLoading
+                ? COLORS.secondary
+                : COLORS.primary
             }
             rounded={20}
             size="sm"
             onPress={handlePost}
           >
             <Text style={{ color: COLORS.white, fontFamily: "bold" }}>
-              Save
+              {editLoading ? "Updating..." : "Update"}
             </Text>
           </Button>
         ) : (
@@ -211,7 +228,7 @@ const CreateDiscussion = () => {
             onPress={handlePost}
           >
             <Text style={{ color: COLORS.white, fontFamily: "bold" }}>
-              Post
+              {loading ? "Posting..." : "Post"}
             </Text>
           </Button>
         )}
@@ -286,9 +303,9 @@ const CreateDiscussion = () => {
           />
 
           <View style={{ flexDirection: "row", gap: 10 }}>
-            {images.length > 0 && (
+            {mergeImage.length > 0 && (
               <FlatList
-                data={images}
+                data={mergeImage}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ gap: 15 }}
@@ -319,9 +336,25 @@ const CreateDiscussion = () => {
                         top: 20,
                         right: 5,
                       }}
-                      onPress={() =>
-                        setImages(images.filter((_, i) => i !== index))
-                      }
+                      onPress={() => {
+                        if (item?.type) {
+                          setNewImages((prevImages) => {
+                            return prevImages.filter(
+                              (image) => image.uri !== item.uri,
+                            );
+                          });
+                        } else {
+                          setImages((prevImages) => {
+                            return prevImages.filter(
+                              (image) => image.uri !== item.uri,
+                            );
+                          });
+
+                          setDeleteImages((prevImages) => {
+                            return [...prevImages, item.uri];
+                          });
+                        }
+                      }}
                     />
                   </View>
                 )}
@@ -345,7 +378,7 @@ const CreateDiscussion = () => {
           size={24}
           color={COLORS.primary}
           onPress={() => {
-            if (images.length < 4) handleImagePick();
+            if (mergeImage.length < 4) handleImagePick();
             else alert("Max 4 images");
           }}
         />

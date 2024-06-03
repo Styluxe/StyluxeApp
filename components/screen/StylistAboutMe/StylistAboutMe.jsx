@@ -32,7 +32,8 @@ import { useKeyboardVisibility } from "../../../hook/hook";
 const StylistAboutMe = () => {
   const navigation = useNavigation();
   const { getStylistByAuth, stylistData } = useGetStylistByAuthApi();
-  const { updateStylistById, code, setCode } = useUpdateStylistByIdApi();
+  const { updateStylistById, code, setCode, loading } =
+    useUpdateStylistByIdApi();
   const [isEditing, setIsEditing] = useState(false);
   const [actualData, setActualData] = useState(null);
   const [editData, setEditData] = useState({
@@ -44,7 +45,11 @@ const StylistAboutMe = () => {
   });
   const [buttonVisible, setButtonVisible] = useState(true);
   const [images, setImages] = useState([]);
+  const [actualImages, setActualImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
+  const [deleteImages, setDeleteImages] = useState([]);
+
+  const mergeImage = images.concat(newImages);
 
   const handleImagePick = async () => {
     try {
@@ -85,6 +90,7 @@ const StylistAboutMe = () => {
         };
       });
       setImages(image_uri);
+      setActualImages(image_uri);
     }
   }, [stylistData]);
 
@@ -137,6 +143,7 @@ const StylistAboutMe = () => {
       price: actualData?.price,
       type: actualData?.type,
     });
+    setImages(actualImages);
   };
 
   const handleEdit = () => {
@@ -150,7 +157,17 @@ const StylistAboutMe = () => {
   };
 
   const onSave = () => {
-    updateStylistById(editData);
+    const edit_data = {
+      brand_name: editData?.brand_name,
+      about: editData?.about,
+      price: editData?.price,
+      type: editData?.type,
+      images: newImages,
+      delete_images: deleteImages,
+    };
+
+    updateStylistById(edit_data);
+    setNewImages([]);
   };
 
   return (
@@ -411,7 +428,7 @@ const StylistAboutMe = () => {
               <View style={{ flexDirection: "row", gap: 10 }}>
                 {images.length > 0 && (
                   <FlatList
-                    data={images}
+                    data={mergeImage}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ gap: 15 }}
@@ -442,9 +459,25 @@ const StylistAboutMe = () => {
                             top: 5,
                             right: 5,
                           }}
-                          onPress={() =>
-                            setNewImages(images.filter((_, i) => i !== index))
-                          }
+                          onPress={() => {
+                            if (item?.type) {
+                              setNewImages((prevImages) => {
+                                return prevImages.filter(
+                                  (image) => image.uri !== item.uri,
+                                );
+                              });
+                            } else {
+                              setImages((prevImages) => {
+                                return prevImages.filter(
+                                  (image) => image.uri !== item.uri,
+                                );
+                              });
+
+                              setDeleteImages((prevImages) => {
+                                return [...prevImages, item.uri];
+                              });
+                            }
+                          }}
                         />
                       </View>
                     )}
@@ -459,13 +492,14 @@ const StylistAboutMe = () => {
       {buttonVisible && (
         <View style={{ padding: 10 }}>
           <Button
-            bgColor={COLORS.primary}
+            disabled={loading}
+            bgColor={loading ? COLORS.secondary : COLORS.primary}
             onPress={() => (isEditing ? onSave() : handleEdit())}
           >
             <Text
               style={{ color: COLORS.white, fontFamily: "bold", fontSize: 20 }}
             >
-              {isEditing ? "Save" : "Edit About Me"}
+              {isEditing ? "Save" : loading ? "Saving..." : "Edit About Me"}
             </Text>
           </Button>
         </View>

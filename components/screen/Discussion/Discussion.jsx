@@ -6,7 +6,6 @@ import {
   Animated,
   FlatList,
   RefreshControl,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";

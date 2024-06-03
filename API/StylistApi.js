@@ -62,7 +62,20 @@ const useUpdateStylistByIdApi = () => {
         return;
       }
 
-      const response = await axios.put(`${API_URL}/stylist/profile`, data, {
+      let imageUrls = [];
+      if (data.images && data.images.length > 0) {
+        const uploadPromises = data.images.map((image) =>
+          uploadImageToCloudinary(image).catch((error) => {
+            console.error("Image upload failed:", error.message);
+            throw error;
+          }),
+        );
+        imageUrls = await Promise.all(uploadPromises);
+      }
+
+      const newData = { ...data, images: imageUrls };
+
+      const response = await axios.put(`${API_URL}/stylist/profile`, newData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,12 +85,37 @@ const useUpdateStylistByIdApi = () => {
 
       setCode(code);
       console.log("update stylist by id");
+      setLoading(false);
     } catch (error) {
       setError(error);
       console.log("error", error);
       setLoading(false);
     }
   };
+
+  const uploadImageToCloudinary = async (image) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "user_preset");
+      formData.append("api_key", "761147494786172");
+
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dkxeflvuu/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const result = await response.json();
+      return result.secure_url;
+    } catch (error) {
+      console.error("Image upload error:", error);
+      throw error;
+    }
+  };
+
   return { updateStylistById, loading, error, code, setCode };
 };
 

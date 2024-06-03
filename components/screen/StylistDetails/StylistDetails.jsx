@@ -308,14 +308,20 @@ const StylistDetails = () => {
         )}
       />
 
-      <View style={styles.footer_container}>
-        <TouchableOpacity>
-          <View style={styles.like_btn}>
-            <AntDesign name="hearto" size={24} color={COLORS.primary} />
-          </View>
-        </TouchableOpacity>
-
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          paddingHorizontal: 14,
+          paddingVertical: 10,
+        }}
+      >
         <TouchableOpacity
+          style={{
+            backgroundColor: COLORS.primary,
+            padding: 10,
+            borderRadius: 5,
+            alignItems: "center",
+          }}
           onPress={() => {
             if (no_auth) {
               dispatch(setLoginModalOpen(true));
@@ -325,11 +331,21 @@ const StylistDetails = () => {
               });
             }
           }}
-          style={{ flex: 1 }}
         >
-          <View style={styles.consult_btn}>
-            <Text style={styles.consult_text}>Consult Now</Text>
-          </View>
+          <Text
+            onPress={() => {
+              if (no_auth) {
+                dispatch(setLoginModalOpen(true));
+              } else {
+                navigation.navigate("StylistDate", {
+                  stylist_id: stylistData.stylist_id,
+                });
+              }
+            }}
+            style={styles.consult_text}
+          >
+            Book Now
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
