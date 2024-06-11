@@ -57,6 +57,8 @@ const useProfileApi = () => {
     email,
     mobile,
     gender,
+    password,
+    new_password,
   ) => {
     setLoading(true);
     try {
@@ -75,6 +77,8 @@ const useProfileApi = () => {
           email,
           mobile,
           gender,
+          password,
+          new_password,
         },
         {
           headers: {
@@ -89,7 +93,8 @@ const useProfileApi = () => {
       setCode(code);
     } catch (error) {
       setError(error);
-      console.error("Error updating profile", error);
+      console.log("Error updating profile", error);
+      setCode(error.response.status);
     } finally {
       setLoading(false);
     }

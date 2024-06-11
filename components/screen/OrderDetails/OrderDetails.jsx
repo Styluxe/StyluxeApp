@@ -1,5 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Divider, HStack, VStack } from "@gluestack-ui/themed";
+import {
+  Button,
+  Divider,
+  HStack,
+  Toast,
+  ToastTitle,
+  VStack,
+  useToast,
+} from "@gluestack-ui/themed";
 import {
   useFocusEffect,
   useNavigation,
@@ -14,6 +22,7 @@ import {
   useCancelOrderApi,
   useGetBookingById,
   useGetOrderById,
+  useUpdateStatus,
 } from "../../../API/OrderAPI";
 import { useAddStylistReviewApi } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
@@ -32,12 +41,21 @@ const OrderDetails = () => {
     code: cancelCode,
     setCode: setCancelCode,
   } = useCancelOrderApi();
+  const {
+    updateStatus,
+    code: statusCode,
+    loading,
+    setCode: setStatusCode,
+  } = useUpdateStatus();
 
   const { order_id, booking_id, routeFrom } = route.params;
+
+  const toast = useToast();
 
   const modalRef = useRef();
   const [showModal, setShowModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
+  const [deliveredModal, setDeliveredModal] = useState(false);
   const [reviewData, setReviewData] = useState({
     rating: 0,
     feedback: "",
@@ -47,6 +65,8 @@ const OrderDetails = () => {
   const isBooking = !!booking_id;
   const bookingComplete =
     isBooking && bookingData?.status === "done" && !bookingData?.isReviewed;
+
+  const delivered = orderData?.order_status === "delivered";
 
   const fullbookingDate =
     isBooking && `${bookingData?.booking_date}T00:00:00.000Z`;
@@ -61,6 +81,9 @@ const OrderDetails = () => {
   const handleReview = () => {
     console.log(reviewRequest);
     addStylistReview(reviewRequest);
+  };
+  const handleDelivered = () => {
+    updateStatus(order_id, null, "accepted");
   };
 
   const handleCancelOrder = () => {
@@ -80,8 +103,42 @@ const OrderDetails = () => {
       getOrderById(order_id);
       setCancelCode(null);
       setConfirmModal(false);
+      toast.show({
+        description: "Order Cancelled",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Order Cancelled</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     }
-  }, [code, cancelCode, booking_id, order_id]);
+
+    if (statusCode === 200) {
+      getOrderById(order_id);
+      setStatusCode(null);
+      setDeliveredModal(false);
+      toast.show({
+        description: "Order Delivered",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Thank you for your order</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+    }
+  }, [code, cancelCode, booking_id, order_id, statusCode, toast]);
 
   useFocusEffect(
     useCallback(() => {
@@ -131,7 +188,7 @@ const OrderDetails = () => {
         };
       case "delivered":
         return {
-          color: COLORS.green,
+          color: COLORS.blue,
           message: "Delivered",
         };
       case "cancelled":
@@ -139,15 +196,25 @@ const OrderDetails = () => {
           color: COLORS.red,
           message: "Cancelled",
         };
-      case "accepted":
+      case "on going":
         return {
           color: COLORS.primary,
-          message: "Accepted by Stylist",
+          message: "On Going",
+        };
+      case "scheduled":
+        return {
+          color: COLORS.primary,
+          message: "Scheduled",
         };
       case "done":
         return {
           color: COLORS.green,
           message: "Consultation Completed",
+        };
+      case "accepted":
+        return {
+          color: COLORS.green,
+          message: "Product Accepted",
         };
       default:
         return {
@@ -521,6 +588,20 @@ const OrderDetails = () => {
               </Text>
             </Button>
           )}
+
+          {delivered && (
+            <Button
+              size="sm"
+              bgColor={COLORS.primary}
+              onPress={() => setDeliveredModal(true)}
+            >
+              <Text
+                style={{ fontFamily: "medium", fontSize: 14, color: "white" }}
+              >
+                i have received my product
+              </Text>
+            </Button>
+          )}
         </View>
       </ScrollView>
       <ReviewModal
@@ -543,6 +624,19 @@ const OrderDetails = () => {
         btnPositiveColor="red"
         content="Are you sure you want to cancel this order? You will not be able to undo this action."
         handlePositive={handleCancelOrder}
+      />
+
+      <ConfirmationModal
+        modalRef={modalRef}
+        setShowModal={setDeliveredModal}
+        showModal={deliveredModal}
+        title="Order Delivered"
+        header_color="green"
+        btnPositiveText="Confirm"
+        btnNegativeText="Back"
+        btnPositiveColor="green"
+        content="Are you sure you have received your product?"
+        handlePositive={handleDelivered}
       />
     </SafeAreaView>
   );

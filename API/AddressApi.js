@@ -168,10 +168,85 @@ const useEditAddressApi = () => {
   return { error, loading, editAddress, code, setCode };
 };
 
+const useProvinceApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [province, setProvince] = useState([]);
+
+  const getProvince = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json`,
+      );
+
+      setProvince(response?.data);
+      console.log("fetch province");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+    }
+    setLoading(false);
+  };
+  return { error, loading, province, getProvince };
+};
+
+const useCityApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [city, setCity] = useState([]);
+
+  const getCity = async (provinceId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${provinceId}.json`,
+      );
+
+      setCity(response?.data);
+      console.log("fetch city");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+    }
+    setLoading(false);
+  };
+  return { error, loading, city, getCity };
+};
+
+const useDistrictApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [district, setDistrict] = useState([]);
+
+  const getDistrict = async (cityId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://emsifa.github.io/api-wilayah-indonesia/api/districts/${cityId}.json`,
+      );
+
+      setDistrict(response?.data);
+      console.log("fetch district");
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+    }
+    setLoading(false);
+  };
+  return { error, loading, district, getDistrict };
+};
+
 export {
   useAddressApi,
   usePostAddressApi,
   useSetPrimaryAddressApi,
   useDeleteAddressApi,
   useEditAddressApi,
+  useProvinceApi,
+  useCityApi,
+  useDistrictApi,
 };

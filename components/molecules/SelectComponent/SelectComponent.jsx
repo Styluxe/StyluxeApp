@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
+  ScrollView,
   Select,
   SelectBackdrop,
   SelectContent,
@@ -9,16 +10,23 @@ import {
   SelectTrigger,
 } from "@gluestack-ui/themed";
 import React from "react";
+import { COLORS } from "../../../constants";
 
 const SelectComponent = ({
   placeholder,
   items = [],
   onValueChange,
   defaultValue,
+  disabled = false,
 }) => {
   return (
     <Select onValueChange={onValueChange} selectedValue={defaultValue}>
-      <SelectTrigger variant="outline" size="sm">
+      <SelectTrigger
+        variant="outline"
+        size="sm"
+        disabled={disabled}
+        bg={disabled ? COLORS.lightGray : COLORS.white}
+      >
         <SelectInput
           style={{ fontFamily: "medium", fontSize: 12 }}
           placeholder={placeholder}
@@ -28,9 +36,11 @@ const SelectComponent = ({
       <SelectPortal>
         <SelectBackdrop />
         <SelectContent>
-          {items.map((item, index) => (
-            <SelectItem key={index} label={item?.label} value={item?.value} />
-          ))}
+          <ScrollView w="100%">
+            {items.map((item, index) => (
+              <SelectItem key={index} label={item?.label} value={item?.value} />
+            ))}
+          </ScrollView>
         </SelectContent>
       </SelectPortal>
     </Select>

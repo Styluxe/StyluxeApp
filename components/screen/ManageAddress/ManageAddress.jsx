@@ -19,8 +19,15 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useEditAddressApi, usePostAddressApi } from "../../../API/AddressApi";
+import {
+  useCityApi,
+  useDistrictApi,
+  useEditAddressApi,
+  usePostAddressApi,
+  useProvinceApi,
+} from "../../../API/AddressApi";
 import { COLORS } from "../../../constants";
+import { SelectComponent } from "../../molecules";
 
 const fields = [
   {
@@ -33,9 +40,6 @@ const fields = [
     placeholder: "Enter Receiver Name",
     key: "receiver_name",
   },
-  { label: "Province", placeholder: "Enter Province", key: "province" },
-  { label: "City", placeholder: "Enter City", key: "city" },
-  { label: "District", placeholder: "Enter District", key: "district" },
   {
     label: "Postal Code",
     placeholder: "Enter Postal Code",
@@ -75,6 +79,8 @@ const ManageAddress = () => {
   };
   const [formData, setFormData] = useState(baseData);
   const [isDirty, setIsDirty] = useState(false);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
 
   const { postAddress, code, setCode } = usePostAddressApi();
   const {
@@ -82,6 +88,9 @@ const ManageAddress = () => {
     code: editCode,
     setCode: setEditCode,
   } = useEditAddressApi();
+  const { getProvince, province } = useProvinceApi();
+  const { city, getCity } = useCityApi();
+  const { district, getDistrict } = useDistrictApi();
 
   const { telephone, ...requiredFields } = formData;
 
@@ -93,6 +102,18 @@ const ManageAddress = () => {
 
   const route = useRoute();
   const { edit_data } = route.params;
+
+  useEffect(() => {
+    getProvince();
+
+    if (selectedProvince?.id) {
+      getCity(selectedProvince?.id);
+    }
+
+    if (selectedCity?.id) {
+      getDistrict(selectedCity?.id);
+    }
+  }, [selectedProvince?.id, selectedCity?.id]);
 
   useEffect(() => {
     const isAddressDirty =
@@ -132,7 +153,12 @@ const ManageAddress = () => {
     setFormData(baseData);
   };
   const handleChange = (key, value) => {
-    setFormData((prevState) => ({ ...prevState, [key]: value }));
+    if (key === "telephone" || key === "mobile") {
+      const numericValue = value.replace(/[^0-9]/g, "");
+      setFormData((prevState) => ({ ...prevState, [key]: numericValue }));
+    } else {
+      setFormData((prevState) => ({ ...prevState, [key]: value }));
+    }
   };
 
   const handleSubmit = () => {
@@ -186,7 +212,35 @@ const ManageAddress = () => {
     }
   }, [editCode]);
 
-  console.log("isdir", isDirty);
+  const provinceDropdown = () => {
+    return province?.map((item) => {
+      return {
+        id: item.id,
+        label: item.name,
+        value: item,
+      };
+    });
+  };
+
+  const cityDropdown = () => {
+    return city?.map((item) => {
+      return {
+        id: item.id,
+        label: item.name,
+        value: item,
+      };
+    });
+  };
+
+  const districtDropdown = () => {
+    return district?.map((item) => {
+      return {
+        id: item.id,
+        label: item.name,
+        value: item,
+      };
+    });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -214,6 +268,66 @@ const ManageAddress = () => {
           style={{ paddingHorizontal: 15, backgroundColor: COLORS.white }}
         >
           <View style={{ gap: 24, paddingVertical: 15 }}>
+            <FormControl>
+              <FormControlLabel>
+                <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
+                  Province
+                </Text>
+              </FormControlLabel>
+              <SelectComponent
+                placeholder="Province"
+                items={provinceDropdown()}
+                onValueChange={(value) => {
+                  setSelectedProvince(value);
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    province: value?.name,
+                  }));
+                }}
+                defaultValue={edit_data?.province}
+              />
+            </FormControl>
+            <FormControl>
+              <FormControlLabel>
+                <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
+                  City
+                </Text>
+              </FormControlLabel>
+              <SelectComponent
+                placeholder="City"
+                items={cityDropdown()}
+                onValueChange={(value) => {
+                  setSelectedCity(value);
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    city: value?.name,
+                  }));
+                }}
+                defaultValue={edit_data?.city}
+                disabled={!selectedProvince?.id && !edit_data?.province}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormControlLabel>
+                <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
+                  District
+                </Text>
+              </FormControlLabel>
+              <SelectComponent
+                placeholder="District"
+                items={districtDropdown()}
+                onValueChange={(value) => {
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    district: value?.name,
+                  }));
+                }}
+                defaultValue={edit_data?.district}
+                disabled={!selectedCity?.id && !edit_data?.city}
+              />
+            </FormControl>
+
             {fields.map(({ label, placeholder, key, keyboardType }) => (
               <FormControl key={key}>
                 <FormControlLabel>

@@ -27,7 +27,6 @@ import { useDispatch, useSelector } from "react-redux";
 import useAuth from "../../../API/AuthAPI";
 import { COLORS } from "../../../constants";
 import {
-  authKeyState,
   loginModalState,
   setLoginModalOpen,
 } from "../../../redux/slice/app.slice";
@@ -37,14 +36,13 @@ const LoginModal = () => {
   const showModal = useSelector(loginModalState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const auth = useSelector(authKeyState);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (showModal) {
       setEmail("");
       setPassword("");
-      setEmailError("");
+      setErrorMessage("");
     }
   }, [showModal]);
 
@@ -75,57 +73,15 @@ const LoginModal = () => {
       });
       setCode(null);
     } else if (code === 401) {
-      console.log(error);
-      toast.show({
-        description: "Login failed!",
-        placement: "bottom right",
-        render: ({ id }) => {
-          const toastId = "toast-" + id;
-          return (
-            <Toast nativeID={toastId} action="error" variant="solid">
-              <VStack>
-                <ToastTitle>Wrong Password</ToastTitle>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+      setErrorMessage("Wrong Password");
       setCode(null);
     } else if (code === 404) {
-      console.log(error);
-      toast.show({
-        description: "Login failed!",
-        placement: "bottom right",
-        render: ({ id }) => {
-          const toastId = "toast-" + id;
-          return (
-            <Toast nativeID={toastId} action="error" variant="solid">
-              <VStack>
-                <ToastTitle>Email Not Found</ToastTitle>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+      setErrorMessage("Email Not Found");
       setCode(null);
     }
   }, [code]);
 
-  const handleEmailChange = (email) => {
-    setEmail(email);
-    if (!email.includes("@")) {
-      setEmailError("Please enter a valid email address");
-    } else {
-      setEmailError("");
-    }
-  };
-
   const handleLogin = () => {
-    if (!email.includes("@")) {
-      setEmailError("Please enter a valid email address");
-      return;
-    }
-    setEmailError("");
     login(email, password);
   };
 
@@ -134,6 +90,7 @@ const LoginModal = () => {
       isOpen={showModal}
       onClose={() => {
         dispatch(setLoginModalOpen(false));
+        setErrorMessage("");
       }}
     >
       <ModalBackdrop />
@@ -168,7 +125,7 @@ const LoginModal = () => {
         </ModalHeader>
         <ModalBody>
           <VStack space="md">
-            <FormControl isInvalid={!!emailError}>
+            <FormControl isInvalid={errorMessage !== ""}>
               <FormControlLabel>
                 <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
                   Email
@@ -177,19 +134,14 @@ const LoginModal = () => {
               <Input>
                 <InputField
                   value={email}
-                  onChangeText={handleEmailChange}
                   type="text"
                   placeholder="Enter your email"
+                  onChangeText={setEmail}
                 />
               </Input>
-              {emailError ? (
-                <FormControlError>
-                  <FormControlErrorText>{emailError}</FormControlErrorText>
-                </FormControlError>
-              ) : null}
             </FormControl>
 
-            <FormControl isInvalid={false}>
+            <FormControl isInvalid={errorMessage !== ""}>
               <FormControlLabel>
                 <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
                   Password
@@ -214,7 +166,7 @@ const LoginModal = () => {
                 </InputSlot>
               </Input>
               <FormControlError>
-                <FormControlErrorText>Error</FormControlErrorText>
+                <FormControlErrorText>{errorMessage}</FormControlErrorText>
               </FormControlError>
             </FormControl>
 
@@ -249,7 +201,13 @@ const LoginModal = () => {
         </ModalBody>
         <ModalFooter>
           <VStack space="lg" w="$full">
-            <Button onPress={handleLogin} backgroundColor={COLORS.primary}>
+            <Button
+              disabled={!email || !password}
+              onPress={handleLogin}
+              backgroundColor={
+                !email || !password ? COLORS.secondary : COLORS.primary
+              }
+            >
               <Text
                 style={{
                   color: COLORS.white,

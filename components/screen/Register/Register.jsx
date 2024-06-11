@@ -38,6 +38,8 @@ const Register = () => {
   });
 
   const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [repeatPasswordError, setRepeatPasswordError] = useState("");
 
   const handleEmailChange = (email) => {
     setRegisterData({ ...registerData, email });
@@ -45,6 +47,32 @@ const Register = () => {
       setEmailError("Please enter a valid email address");
     } else {
       setEmailError("");
+    }
+  };
+
+  const handlePasswordChange = (password) => {
+    setRegisterData({ ...registerData, password });
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+    } else {
+      setPasswordError("");
+    }
+    if (
+      registerData.repeat_password &&
+      password !== registerData.repeat_password
+    ) {
+      setRepeatPasswordError("Passwords do not match");
+    } else {
+      setRepeatPasswordError("");
+    }
+  };
+
+  const handleRepeatPasswordChange = (repeat_password) => {
+    setRegisterData({ ...registerData, repeat_password });
+    if (registerData.password !== repeat_password) {
+      setRepeatPasswordError("Passwords do not match");
+    } else {
+      setRepeatPasswordError("");
     }
   };
 
@@ -109,7 +137,10 @@ const Register = () => {
   }, [code]);
 
   const validatePassword = () => {
-    if (registerData.password !== registerData.repeat_password) {
+    if (
+      registerData.password.length < 8 ||
+      registerData.password !== registerData.repeat_password
+    ) {
       return false;
     }
     return true;
@@ -243,18 +274,19 @@ const Register = () => {
               </FormControlLabel>
               <Input borderRadius={10}>
                 <InputField
+                  type="number"
                   keyboardType="number-pad"
                   placeholder="Enter your email"
                   value={registerData.mobile}
-                  onChangeText={(e) =>
-                    setRegisterData({ ...registerData, mobile: e })
-                  }
+                  onChangeText={(e) => {
+                    const numericValue = e.replace(/[^0-9]/g, "");
+                    setRegisterData({ ...registerData, mobile: numericValue });
+                  }}
                 />
               </Input>
             </FormControl>
 
-            {/* formcontrol password */}
-            <FormControl>
+            <FormControl isInvalid={!!passwordError}>
               <FormControlLabel>
                 <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
                   Password
@@ -265,9 +297,7 @@ const Register = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={registerData.password}
-                  onChangeText={(e) =>
-                    setRegisterData({ ...registerData, password: e })
-                  }
+                  onChangeText={handlePasswordChange}
                 />
                 <InputSlot
                   pr="$3"
@@ -279,22 +309,25 @@ const Register = () => {
                   />
                 </InputSlot>
               </Input>
+              {passwordError ? (
+                <FormControlError>
+                  <FormControlErrorText>{passwordError}</FormControlErrorText>
+                </FormControlError>
+              ) : null}
             </FormControl>
 
-            <FormControl>
+            <FormControl isInvalid={!!repeatPasswordError}>
               <FormControlLabel>
                 <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-                  Repeat Password
+                  Confirm Password
                 </Text>
               </FormControlLabel>
               <Input borderRadius={10}>
                 <InputField
                   value={registerData.repeat_password}
-                  onChangeText={(e) =>
-                    setRegisterData({ ...registerData, repeat_password: e })
-                  }
+                  onChangeText={handleRepeatPasswordChange}
                   type={showRepeatPassword ? "text" : "password"}
-                  placeholder="Repeat password"
+                  placeholder="Confirm password"
                 />
                 <InputSlot
                   pr="$3"
@@ -308,6 +341,13 @@ const Register = () => {
                   />
                 </InputSlot>
               </Input>
+              {repeatPasswordError ? (
+                <FormControlError>
+                  <FormControlErrorText>
+                    {repeatPasswordError}
+                  </FormControlErrorText>
+                </FormControlError>
+              ) : null}
             </FormControl>
 
             <View style={{ flexDirection: "row", gap: 5 }}>

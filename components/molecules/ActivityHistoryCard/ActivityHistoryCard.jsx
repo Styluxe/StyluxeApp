@@ -12,6 +12,8 @@ const ActivityHistoryCard = ({ item }) => {
     ? item?.order_items[0].product.images[0]
     : item?.stylist?.images?.[0];
 
+  const isOrder = item?.order_items?.length > 0;
+
   const statusSwitch = (status) => {
     switch (status) {
       case "pending":
@@ -36,7 +38,7 @@ const ActivityHistoryCard = ({ item }) => {
         };
       case "delivered":
         return {
-          color: COLORS.green,
+          color: COLORS.blue,
           message: "Delivered",
         };
       case "done":
@@ -46,8 +48,18 @@ const ActivityHistoryCard = ({ item }) => {
         };
       case "accepted":
         return {
+          color: COLORS.green,
+          message: "Product Accepted",
+        };
+      case "scheduled":
+        return {
           color: COLORS.primary,
-          message: "Accepted by Stylist",
+          message: "Scheduled",
+        };
+      case "on going":
+        return {
+          color: COLORS.primary,
+          message: "On Going",
         };
       case "cancelled":
         return {

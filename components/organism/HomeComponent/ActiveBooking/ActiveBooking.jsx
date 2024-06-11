@@ -31,7 +31,7 @@ const ActiveBooking = ({ role }) => {
   const filterBookingStylist = bookingsStylist
     ?.filter(
       (booking) =>
-        booking?.status === "accepted" || booking?.status === "scheduled",
+        booking?.status === "on going" || booking?.status === "scheduled",
     )
     .sort((a, b) => {
       const dateA = new Date(`${a.booking_date}T${a.booking_time}:00+07:00`);
@@ -42,7 +42,7 @@ const ActiveBooking = ({ role }) => {
   const filterBookingUser = data
     ?.filter(
       (booking) =>
-        booking?.status === "scheduled" || booking?.status === "accepted",
+        booking?.status === "scheduled" || booking?.status === "on going",
     )
     .sort((a, b) => {
       const dateA = new Date(`${a.booking_date}T${a.booking_time}:00+07:00`);

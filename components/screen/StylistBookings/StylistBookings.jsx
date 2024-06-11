@@ -1,12 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Switch } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useAcceptBookingApi } from "../../../API/OrderAPI";
 import {
   useGetActiveBookings,
   useGetStylistByAuthApi,
@@ -26,7 +24,6 @@ const StylistBookings = () => {
   } = useUpdateOnlineStatus();
 
   const { getActiveBookings, data } = useGetActiveBookings();
-  const { acceptBooking, code, setCode } = useAcceptBookingApi();
 
   const isOnline = stylistData?.online_status === "online";
 
@@ -46,37 +43,10 @@ const StylistBookings = () => {
   const filterBookings = (menu) => {
     switch (menu) {
       case "active":
+        return data?.filter((booking) => booking?.status === "on going");
+      case "scheduled":
         return data?.filter((booking) => booking?.status === "scheduled");
-      case "upcoming":
-        return data
-          ?.filter(
-            (booking) =>
-              booking?.status === "waiting for confirmation" ||
-              booking?.status === "accepted",
-          )
-          .sort((a, b) => {
-            // First sort by status
-            if (
-              a.status === "waiting for confirmation" &&
-              b.status !== "waiting for confirmation"
-            ) {
-              return -1;
-            }
-            if (
-              a.status !== "waiting for confirmation" &&
-              b.status === "waiting for confirmation"
-            ) {
-              return 1;
-            }
 
-            const dateA = new Date(
-              `${a.booking_date}T${a.booking_time}:00+07:00`,
-            );
-            const dateB = new Date(
-              `${b.booking_date}T${b.booking_time}:00+07:00`,
-            );
-            return dateA - dateB;
-          });
       case "past":
         return data?.filter(
           (booking) =>
@@ -95,21 +65,17 @@ const StylistBookings = () => {
   );
 
   useEffect(() => {
-    if (code === 200) {
-      getActiveBookings();
-      setCode(null);
-    }
     if (statusCode === 200) {
       getStylistByAuth();
       setStatusCode(null);
     }
-  }, [code, statusCode]);
+  }, [statusCode]);
 
   useEffect(() => {
     setFilteredBookings(filterBookings(selectedMenu));
   }, [selectedMenu, data]);
 
-  const menu = ["active", "upcoming", "past"];
+  const menu = ["active", "scheduled", "past"];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -199,19 +165,7 @@ const StylistBookings = () => {
               No Data
             </Text>
           }
-          renderItem={({ item }) => (
-            <BookingCard
-              data={item}
-              handleAccept={async () => {
-                const fullDate = `${item?.booking_date}T${item?.booking_time}:00+07:00`;
-
-                const startDate = moment(fullDate).toISOString();
-                const endDate = moment(fullDate).add(30, "m").toISOString();
-
-                await acceptBooking(item?.booking_id, startDate, endDate);
-              }}
-            />
-          )}
+          renderItem={({ item }) => <BookingCard data={item} />}
         />
       </View>
     </SafeAreaView>

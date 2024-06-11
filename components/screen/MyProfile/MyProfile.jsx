@@ -19,6 +19,8 @@ import {
   useToast,
   Toast,
   ToastTitle,
+  FormControlError,
+  FormControlErrorText,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
@@ -40,14 +42,21 @@ const MyProfile = () => {
     email: userData?.email || "",
     mobile: userData?.mobile || "",
     gender: userData?.gender || "",
+    password: "",
+    new_password: "",
+    repeat_password: "",
   });
   const [showPassword, setShowPassword] = useState(true);
+  const [showNewPassword, setShowNewPassword] = useState(true);
   const [showRepeatPassword, setShowRepeatPassword] = useState(true);
   const navigation = useNavigation();
   const { updateProfileImage } = useProfilePictureApi();
   const { updateProfile, code, setCode } = useProfileApi();
   const [isDirty, setIsDirty] = useState(false);
-
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [repeatPasswordError, setRepeatPasswordError] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
   const toast = useToast();
 
   const handleUpdateProfile = () => {
@@ -57,7 +66,31 @@ const MyProfile = () => {
       profileData.email,
       profileData.mobile,
       profileData.gender,
+      profileData.password,
+      profileData.new_password,
     );
+  };
+
+  const isPasswordValid = () => {
+    let valid = false;
+
+    const isOldPasswordValid =
+      profileData.password !== "" && passwordError === "";
+    const isNewPasswordValid =
+      profileData.new_password !== "" && newPasswordError === "";
+    const doPasswordsMatch =
+      profileData.new_password === profileData.repeat_password &&
+      repeatPasswordError === "";
+
+    if (
+      profileData.password ||
+      profileData.new_password ||
+      profileData.repeat_password
+    ) {
+      valid = isOldPasswordValid && isNewPasswordValid && doPasswordsMatch;
+    }
+
+    return valid;
   };
 
   useEffect(() => {
@@ -90,6 +123,23 @@ const MyProfile = () => {
 
       navigation.goBack();
       setCode(null);
+    } else if (code === 401) {
+      toast.show({
+        description: "Wrong password",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="error" variant="solid">
+              <VStack>
+                <ToastTitle>Wrong password</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+
+      setCode(null);
     }
   }, [code]);
 
@@ -115,6 +165,42 @@ const MyProfile = () => {
       // Handle any errors that occur during the image picking process
       console.error("Error picking image:", error);
       // Provide feedback to the user that an error occurred
+    }
+  };
+
+  const handleEmailChange = (email) => {
+    setProfileData({ ...profileData, email });
+    if (!email.includes("@")) {
+      setEmailError("Please enter a valid email address");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const handlePasswordChange = (password) => {
+    setProfileData({ ...profileData, password });
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+    } else {
+      setPasswordError("");
+    }
+  };
+
+  const handleNewPasswordChange = (new_password) => {
+    setProfileData({ ...profileData, new_password });
+    if (new_password.length < 8) {
+      setNewPasswordError("Password must be at least 8 characters");
+    } else {
+      setNewPasswordError("");
+    }
+  };
+
+  const handleRepeatPasswordChange = (repeat_password) => {
+    setProfileData({ ...profileData, repeat_password });
+    if (profileData.new_password !== repeat_password) {
+      setRepeatPasswordError("Passwords do not match");
+    } else {
+      setRepeatPasswordError("");
     }
   };
 
@@ -219,7 +305,7 @@ const MyProfile = () => {
                   />
                 </Input>
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={!!emailError}>
                 <FormControlLabel>
                   <Text
                     style={{
@@ -236,11 +322,14 @@ const MyProfile = () => {
                     keyboardType="email-address"
                     placeholder="Enter your email"
                     value={profileData.email}
-                    onChangeText={(text) =>
-                      setProfileData({ ...profileData, email: text })
-                    }
+                    onChangeText={handleEmailChange}
                   />
                 </Input>
+                {emailError && (
+                  <FormControlError>
+                    <FormControlErrorText>{emailError}</FormControlErrorText>
+                  </FormControlError>
+                )}
               </FormControl>
               <FormControl>
                 <FormControlLabel>
@@ -259,9 +348,10 @@ const MyProfile = () => {
                     keyboardType="number-pad"
                     placeholder="Enter your email"
                     value={profileData.mobile}
-                    onChangeText={(text) =>
-                      setProfileData({ ...profileData, mobile: text })
-                    }
+                    onChangeText={(text) => {
+                      const numericValue = text.replace(/[^0-9]/g, "");
+                      setProfileData({ ...profileData, mobile: numericValue });
+                    }}
                   />
                 </Input>
               </FormControl>
@@ -316,7 +406,7 @@ const MyProfile = () => {
               </Text>
               <VStack gap={14}>
                 {/* formcontrol password */}
-                <FormControl>
+                <FormControl isInvalid={!!passwordError}>
                   <FormControlLabel>
                     <Text
                       style={{
@@ -330,8 +420,10 @@ const MyProfile = () => {
                   </FormControlLabel>
                   <Input borderRadius={10}>
                     <InputField
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      onChangeText={handlePasswordChange}
+                      value={profileData.password}
                     />
                     <InputSlot
                       pr="$3"
@@ -343,8 +435,15 @@ const MyProfile = () => {
                       />
                     </InputSlot>
                   </Input>
+                  {passwordError ? (
+                    <FormControlError>
+                      <FormControlErrorText>
+                        {passwordError}
+                      </FormControlErrorText>
+                    </FormControlError>
+                  ) : null}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!newPasswordError}>
                   <FormControlLabel>
                     <Text
                       style={{
@@ -358,12 +457,14 @@ const MyProfile = () => {
                   </FormControlLabel>
                   <Input borderRadius={10}>
                     <InputField
-                      type="password"
-                      placeholder="Enter your password"
+                      type={showNewPassword ? "text" : "password"}
+                      placeholder="Enter your new password"
+                      onChangeText={handleNewPasswordChange}
+                      value={profileData.new_password}
                     />
                     <InputSlot
                       pr="$3"
-                      onPress={() => setShowPassword(!showPassword)}
+                      onPress={() => setShowNewPassword(!showNewPassword)}
                     >
                       <Ionicons
                         name={showPassword ? "eye-off-outline" : "eye-outline"}
@@ -371,9 +472,16 @@ const MyProfile = () => {
                       />
                     </InputSlot>
                   </Input>
+                  {newPasswordError ? (
+                    <FormControlError>
+                      <FormControlErrorText>
+                        {newPasswordError}
+                      </FormControlErrorText>
+                    </FormControlError>
+                  ) : null}
                 </FormControl>
 
-                <FormControl>
+                <FormControl isInvalid={!!repeatPasswordError}>
                   <FormControlLabel>
                     <Text
                       style={{
@@ -382,11 +490,16 @@ const MyProfile = () => {
                         color: COLORS.darkGray,
                       }}
                     >
-                      Repeat Password
+                      Confirm Password
                     </Text>
                   </FormControlLabel>
                   <Input borderRadius={10}>
-                    <InputField type="password" placeholder="Repeat password" />
+                    <InputField
+                      type={showRepeatPassword ? "text" : "password"}
+                      placeholder="Confirm password"
+                      onChangeText={handleRepeatPasswordChange}
+                      value={profileData.repeat_password}
+                    />
                     <InputSlot
                       pr="$3"
                       onPress={() => setShowRepeatPassword(!showPassword)}
@@ -399,13 +512,24 @@ const MyProfile = () => {
                       />
                     </InputSlot>
                   </Input>
+                  {repeatPasswordError ? (
+                    <FormControlError>
+                      <FormControlErrorText>
+                        {repeatPasswordError}
+                      </FormControlErrorText>
+                    </FormControlError>
+                  ) : null}
                 </FormControl>
               </VStack>
             </View>
 
             <Button
-              disabled={!isDirty}
-              bgColor={!isDirty ? COLORS.secondary : COLORS.primary}
+              disabled={!isDirty && !isPasswordValid()} // Button is disabled only if both isDirty and isPasswordValid are false
+              bgColor={
+                !isDirty && !isPasswordValid()
+                  ? COLORS.secondary
+                  : COLORS.primary
+              }
               onPress={handleUpdateProfile}
             >
               <Text

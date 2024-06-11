@@ -81,36 +81,34 @@ const BottomTabNav = () => {
         }}
       />
 
-      {!isStylist && (
-        <Tab.Screen
-          name="Discussion"
-          component={DrawerNavigationDiscussion}
-          options={{
-            tabBarIcon: ({ focused }) => {
-              return (
-                <Ionicons
-                  name={focused ? "chatbubbles" : "chatbubbles-outline"}
-                  size={20}
-                  color={focused ? COLORS.primary : COLORS.gray2}
-                />
-              );
-            },
-            tabBarLabel: ({ focused }) => {
-              return (
-                <Text
-                  style={{
-                    fontFamily: "bold",
-                    color: focused ? COLORS.primary : COLORS.gray2,
-                    fontSize: 12,
-                  }}
-                >
-                  Discussion
-                </Text>
-              );
-            },
-          }}
-        />
-      )}
+      <Tab.Screen
+        name="Discussion"
+        component={DrawerNavigationDiscussion}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Ionicons
+                name={focused ? "chatbubbles" : "chatbubbles-outline"}
+                size={20}
+                color={focused ? COLORS.primary : COLORS.gray2}
+              />
+            );
+          },
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text
+                style={{
+                  fontFamily: "bold",
+                  color: focused ? COLORS.primary : COLORS.gray2,
+                  fontSize: 12,
+                }}
+              >
+                Discussion
+              </Text>
+            );
+          },
+        }}
+      />
 
       {isStylist ? (
         <Tab.Screen

@@ -119,7 +119,7 @@ const useCreateOrder = () => {
   const [responseData, setResponseData] = useState(null);
   const [code, setCode] = useState(null);
 
-  const createOrder = async (payment_provider, address_id, discount) => {
+  const createOrder = async (payment_provider, address_id) => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem("token");
@@ -131,7 +131,7 @@ const useCreateOrder = () => {
 
       const response = await axios.post(
         `${API_URL}/order/create-order`,
-        { payment_provider, address_id, discount },
+        { payment_provider, address_id },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -362,48 +362,6 @@ const useUpdateBookingStatus = () => {
   return { error, loading, updateBookingStatus, responseData, code, setCode };
 };
 
-const useAcceptBookingApi = () => {
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [code, setCode] = useState(null);
-
-  const acceptBooking = async (bookingId, start_time, end_time) => {
-    setLoading(true);
-    try {
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        console.log("token not found");
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.put(
-        `${API_URL}/booking/accept-booking/${bookingId}`,
-        {
-          start_time,
-          end_time,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const { code } = response?.data;
-
-      console.log("accept booking");
-      setCode(code);
-      setLoading(false);
-    } catch (error) {
-      setError(error);
-      console.log("error", error);
-      setLoading(false);
-    }
-  };
-  return { error, loading, acceptBooking, code, setCode };
-};
-
 const usePublicGetBookingsApi = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -478,6 +436,46 @@ const useEndBookingApi = () => {
   return { error, loading, endBooking, code, setCode };
 };
 
+const useRefundBookingAPI = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const refundBooking = async (bookingId) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/booking/refund-booking/${bookingId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      console.log("refund booking");
+      setCode(code);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+      setCode(error?.response?.status);
+    }
+  };
+  return { error, loading, refundBooking, code, setCode };
+};
+
 const useCancelOrderApi = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -529,7 +527,7 @@ export {
   useGetBookingById,
   useGetBookingsApi,
   useUpdateBookingStatus,
-  useAcceptBookingApi,
   usePublicGetBookingsApi,
   useEndBookingApi,
+  useRefundBookingAPI,
 };

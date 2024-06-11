@@ -80,6 +80,20 @@ const DiscussionListCard = ({ postData, onPressDelete }) => {
     }
   };
 
+  const onComment = async () => {
+    try {
+      if (!userData) {
+        dispatch(setLoginModalOpen(true));
+        return;
+      }
+      navigation.navigate("DiscussionDetails", {
+        post_id: postData.post_id,
+      });
+    } catch (error) {
+      console.error("Failed to comment on the post:", error);
+    }
+  };
+
   const onBookmark = async () => {
     if (!userData) {
       dispatch(setLoginModalOpen(true));
@@ -212,13 +226,7 @@ const DiscussionListCard = ({ postData, onPressDelete }) => {
                 onPress={onBookmark}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("DiscussionDetails", {
-                  post_id: postData.post_id,
-                })
-              }
-            >
+            <TouchableOpacity onPress={onComment}>
               <View style={styles.commentContainer}>
                 <Ionicons name="chatbubble" size={18} color={COLORS.primary} />
                 <Text style={styles.commentText}>

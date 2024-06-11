@@ -119,7 +119,7 @@ const Profile = () => {
           text="My Profile"
           onPress={() => navigation.navigate("MyProfile")}
         />
-        {isStylist ? (
+        {isStylist && (
           <>
             <SelectionList
               hasIcon
@@ -140,22 +140,21 @@ const Profile = () => {
               onPress={() => navigation.navigate("StylistReviewList")}
             />
           </>
-        ) : (
-          <>
-            <SelectionList
-              hasIcon
-              iconName="bookmarks-outline"
-              text="My Address"
-              onPress={() => navigation.navigate("MyAddress")}
-            />
-            <SelectionList
-              hasIcon
-              iconName="clipboard-outline"
-              text="My Activity"
-              onPress={() => navigation.navigate("MyActivity")}
-            />
-          </>
         )}
+
+        <SelectionList
+          hasIcon
+          iconName="bookmarks-outline"
+          text="My Address"
+          onPress={() => navigation.navigate("MyAddress")}
+        />
+        <SelectionList
+          hasIcon
+          iconName="clipboard-outline"
+          text="My Activity"
+          onPress={() => navigation.navigate("MyActivity")}
+        />
+
         <SelectionList
           hasIcon
           iconName="logo-whatsapp"

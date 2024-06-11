@@ -10,6 +10,18 @@ const MyBookingCard = ({ item, role }) => {
   const navigation = useNavigation();
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+  const fullDate = `${item?.booking_date}T${item?.booking_time}:00+07:00`;
+
+  const [timeFromNow, setTimeFromNow] = useState(moment(fullDate).fromNow());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeFromNow(moment(fullDate).fromNow());
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, [fullDate]);
+
   const fullOrderDateTime = `${item?.booking_date}T${item?.booking_time}:00+07:00`;
   const product_image = item?.order_items?.[0]?.product?.images?.[0]
     ? item?.order_items[0].product.images[0]
@@ -39,13 +51,23 @@ const MyBookingCard = ({ item, role }) => {
         };
       case "delivered":
         return {
-          color: COLORS.green,
+          color: COLORS.blue,
           message: "Delivered",
         };
-      case "accepted":
+      case "scheduled":
         return {
           color: COLORS.primary,
-          message: "Accepted by Stylist",
+          message: "Scheduled",
+        };
+      case "on going":
+        return {
+          color: COLORS.primary,
+          message: "On Going",
+        };
+      case "cancelled":
+        return {
+          color: COLORS.red,
+          message: "Cancelled",
         };
       default:
         return { color: COLORS.primary, message: status };
@@ -194,7 +216,7 @@ const MyBookingCard = ({ item, role }) => {
         ) : (
           <Button bgColor={COLORS.secondary} disabled>
             <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>
-              Chat will be open {moment(fullOrderDateTime).fromNow()}
+              Chat will be open in {timeFromNow}
             </Text>
           </Button>
         )}

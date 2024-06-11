@@ -21,21 +21,12 @@ import {
   setLoginModalOpen,
   userDataState,
 } from "../../../redux/slice/app.slice";
-import { CartIcon, MyCoins } from "../../molecules";
-import {
-  ActiveBooking,
-  NewestCollection,
-  PopularStylist,
-} from "../../organism/HomeComponent";
+import { CartIcon } from "../../molecules";
+import { ActiveBooking, NewestCollection } from "../../organism/HomeComponent";
 
 const Home = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  // const slides = [
-  //   "https://tlz.ae/wp-content/uploads/2022/10/TZ_featured-image.png",
-  //   "https://media.glamourmagazine.co.uk/photos/657b2069cd763cb5be091396/16:9/w_1280,c_limit/AW%20FASHION%20TRENDS%20141223%20AW-FASHION-TRENDS-MAIN.jpg",
-  //   "https://www.womanindonesia.co.id/wp-content/uploads/2021/11/Trend-fashion-2022-terins-dari-flora-dan-fauna_womanindonesia.jpg",
-  // ];
   const auth = useSelector(authKeyState);
   const profile = useSelector(userDataState);
 
@@ -74,10 +65,6 @@ const Home = () => {
     useCallback(() => {
       checkExpiryDate();
 
-      // if (!auth) {
-      //   dispatch(setLoginModalOpen(true));
-      // }
-
       if (auth) {
         getProfile();
       }
@@ -100,14 +87,6 @@ const Home = () => {
         </View>
 
         <View style={styles.header_action_list}>
-          <TouchableOpacity onPress={() => alert("Coming Soon")}>
-            <Ionicons
-              name="notifications-outline"
-              size={24}
-              color={COLORS.primary}
-            />
-          </TouchableOpacity>
-
           <CartIcon />
 
           <TouchableOpacity
@@ -158,21 +137,13 @@ const Home = () => {
             style={{ width: "100%", height: "100%", resizeMode: "cover" }}
             source={require("../../../assets/content/dummy_header.jpg")}
           />
-          {/* <ImageBackground
-            source={require("../../../assets/content/dummy_header.jpg")}
-          >
-            <View style={styles.tagline_container}>
-              <Text style={styles.h1_tagline}>Place to Find</Text>
-              <Text style={styles.h2_tagline}>Your Fashion Solution</Text>
-            </View>
-          </ImageBackground> */}
         </View>
-
+        {/* 
         {profile?.user_role && profile?.user_role !== "stylist" && (
           <View style={{ paddingHorizontal: 14, paddingVertical: 14 }}>
             <MyCoins />
           </View>
-        )}
+        )} */}
 
         <TouchableOpacity onPress={() => navigation.navigate("Search")}>
           <View style={styles.search_container}>

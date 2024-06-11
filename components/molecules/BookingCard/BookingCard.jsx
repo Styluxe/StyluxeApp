@@ -8,7 +8,7 @@ import { COLORS } from "../../../constants";
 import { formatTimeWithAMPM } from "../../../hook/hook";
 import { StarRating } from "../StarRating";
 
-const BookingCard = ({ data, handleAccept, handleReject }) => {
+const BookingCard = ({ data }) => {
   const navigation = useNavigation();
 
   const fullDate = `${data?.booking_date}T${data?.booking_time}:00+07:00`;
@@ -17,9 +17,8 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
 
   const endTime = moment(endDate).format("HH:mm");
 
-  const isAccepted = data?.status === "accepted";
-  const isScheduled = data?.status === "scheduled";
-  const past = data?.status === "done";
+  const isAccepted = data?.status === "scheduled";
+  const isScheduled = data?.status === "on going";
 
   const [timeFromNow, setTimeFromNow] = useState(moment(fullDate).fromNow());
 
@@ -76,12 +75,10 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
         </Text>
       </View>
 
-      {past ? (
-        <StarRating total_likes={data?.review?.rating || 0} />
-      ) : isAccepted ? (
+      {isAccepted ? (
         <Button disabled bgColor={COLORS.secondary}>
           <Text style={{ fontFamily: "semibold", color: COLORS.offwhite }}>
-            Chat will be open in {timeFromNow}
+            Chat will be open {timeFromNow}
           </Text>
         </Button>
       ) : isScheduled ? (
@@ -95,48 +92,7 @@ const BookingCard = ({ data, handleAccept, handleReject }) => {
             Open Chat with customer
           </Text>
         </Button>
-      ) : (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            gap: 20,
-          }}
-        >
-          <Button
-            onPress={handleReject}
-            variant="outline"
-            borderColor={COLORS.primary}
-            flex={1}
-          >
-            <Text
-              style={{
-                fontFamily: "semibold",
-                fontSize: 18,
-                color: COLORS.primary,
-              }}
-            >
-              Reject
-            </Text>
-          </Button>
-          <Button
-            onPress={handleAccept}
-            flex={1}
-            variant="solid"
-            bgColor={COLORS.primary}
-          >
-            <Text
-              style={{
-                fontFamily: "semibold",
-                fontSize: 18,
-                color: COLORS.white,
-              }}
-            >
-              Accept
-            </Text>
-          </Button>
-        </View>
-      )}
+      ) : null}
     </View>
   );
 };

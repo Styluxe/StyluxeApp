@@ -10,20 +10,23 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 
 import { useGetBookingsApi, useGetOrderApi } from "../../../API/OrderAPI";
 import { useGetAllActivityApi } from "../../../API/ProfileApi";
 import { COLORS } from "../../../constants";
+import { userDataState } from "../../../redux/slice/app.slice";
 import { ActivityFilterMenu, ActivityHistoryCard } from "../../molecules";
 
 const MyActivity = () => {
   const navigation = useNavigation();
+  const userData = useSelector(userDataState);
+  const isStylist = userData?.user_role === "stylist" || false;
+
   const [showFilter, setShowFilter] = useState(false);
-  const filterItems = [
-    "All Activity",
-    "Fashion Purchase",
-    "Stylist Consultation",
-  ];
+  const filterItems = isStylist
+    ? ["Fashion Purchase"]
+    : ["All Activity", "Fashion Purchase", "Stylist Consultation"];
   const [selectedFilter, setSelectedFilter] = useState(filterItems[0]);
   const filterRef = useRef(null);
 
@@ -58,6 +61,8 @@ const MyActivity = () => {
   const handlePressOutsideFilter = () => {
     setShowFilter(false);
   };
+
+  console.log("selected", selectedFilter);
 
   const data =
     selectedFilter === "All Activity"
@@ -94,7 +99,10 @@ const MyActivity = () => {
 
             <TouchableOpacity
               style={{ flexDirection: "row", gap: 5, alignItems: "center" }}
-              onPress={() => setShowFilter(!showFilter)}
+              disabled={isStylist}
+              onPress={() => {
+                setShowFilter(!showFilter);
+              }}
             >
               <Text
                 style={{
@@ -105,12 +113,7 @@ const MyActivity = () => {
               >
                 {selectedFilter}
               </Text>
-              <AntDesign
-                name="filter"
-                size={24}
-                color={COLORS.primary}
-                onPress={() => setShowFilter(!showFilter)}
-              />
+              <AntDesign name="filter" size={24} color={COLORS.primary} />
             </TouchableOpacity>
           </View>
           {loading ? (

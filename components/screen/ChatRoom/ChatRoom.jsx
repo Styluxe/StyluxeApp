@@ -13,6 +13,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
+import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
@@ -20,8 +21,6 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
-  Image,
-  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -33,10 +32,15 @@ import {
   useGetMessageById,
   usePostMessage,
 } from "../../../API/ConversationAPI";
-import { useEndBookingApi } from "../../../API/OrderAPI";
+import { useEndBookingApi, useRefundBookingAPI } from "../../../API/OrderAPI";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
-import { ChatBox, ChatModal, ImageModal } from "../../molecules";
+import {
+  ChatBox,
+  ChatModal,
+  ConfirmationModal,
+  ImageModal,
+} from "../../molecules";
 
 const ChatRoom = () => {
   const [inputText, setInputText] = useState("");
@@ -49,6 +53,7 @@ const ChatRoom = () => {
   const [remainingTime, setRemainingTime] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
+  const [showRefundModal, setShowRefundModal] = useState(false);
   const timerIntervalRef = useRef();
 
   const route = useRoute();
@@ -62,6 +67,11 @@ const ChatRoom = () => {
     code: endBookingCode,
     setCode: setEndBookingCode,
   } = useEndBookingApi();
+  const {
+    refundBooking,
+    code: refundCode,
+    setCode: setRefundCode,
+  } = useRefundBookingAPI();
   const {
     getMessageById,
     message: fetchedMessages,
@@ -192,6 +202,26 @@ const ChatRoom = () => {
     endBooking(booking_id);
   };
 
+  const handleRefund = () => {
+    refundBooking(booking_id);
+    toast.show({
+      description: "Booking ended!",
+      placement: "bottom",
+      render: ({ id }) => {
+        const toastId = "toast-" + id;
+        return (
+          <Toast nativeID={toastId} action="success" variant="solid">
+            <VStack>
+              <ToastTitle>
+                Your booking has been ended, and it will be refunded in 24 hours
+              </ToastTitle>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
+  };
+
   useEffect(() => {
     if (endBookingCode === 200) {
       toast.show({
@@ -210,8 +240,31 @@ const ChatRoom = () => {
       });
       navigation.goBack();
       setEndBookingCode(null);
+      setShowModal(false);
+      setEndBookingCode(null);
     }
-  }, [endBookingCode]);
+
+    if (refundCode === 200) {
+      setRefundCode(null);
+      setShowRefundModal(false);
+      toast.show({
+        description: "Booking refunded!",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>
+                  Your booking has been ended, and it will be refunded shortly
+                </ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+    }
+  }, [endBookingCode, refundCode]);
 
   const handleImagePick = async () => {
     try {
@@ -235,6 +288,23 @@ const ChatRoom = () => {
       // Handle any errors that occur during the image picking process
       console.error("Error picking image:", error);
       // Provide feedback to the user that an error occurred
+    }
+  };
+
+  //const handle show refund button if no message from other participant after 10 minutes from start_time
+  const showRefundButton = () => {
+    const filterConversation = messages?.filter(
+      (m) => m?.participant?.user_id !== userData?.user_id,
+    );
+
+    const now = moment();
+    const start = moment(conversation?.start_time);
+    const timediff = now.diff(start, "minutes");
+
+    if (filterConversation.length === 0 && timediff > 10) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -263,6 +333,29 @@ const ChatRoom = () => {
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 15 }}>
+          {isCustomer && !isEnded && showRefundButton() && (
+            <TouchableOpacity
+              onPress={() => setShowRefundModal(true)}
+              activeOpacity={0.8}
+              style={{
+                padding: 5,
+                backgroundColor: COLORS.primary,
+                borderRadius: 5,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "semibold",
+                  fontSize: 12,
+                  color: COLORS.white,
+                }}
+              >
+                Refund Bookings
+              </Text>
+            </TouchableOpacity>
+          )}
           <View style={{ flexDirection: "row", gap: 5 }}>
             <Ionicons name="timer-outline" size={24} color="black" />
             {/* timer */}
@@ -391,6 +484,19 @@ const ChatRoom = () => {
         modalRef={ref}
         setShowModal={setShowImageModal}
         showModal={showImageModal}
+      />
+
+      <ConfirmationModal
+        showModal={showRefundModal}
+        modalRef={ref}
+        setShowModal={setShowRefundModal}
+        title="Refund Booking"
+        header_color={COLORS.primary}
+        content="Are you sure you want to refund this booking?"
+        btnPositiveText="Refund"
+        btnNegativeText="Back"
+        btnPositiveColor={COLORS.primary}
+        handlePositive={handleRefund}
       />
     </SafeAreaView>
   );

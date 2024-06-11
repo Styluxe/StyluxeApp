@@ -158,35 +158,6 @@ const StylistPayment = () => {
               selectedPayment={selectedPayment}
               setSelectedPayment={setSelectedPayment}
             />
-            {/* 
-            <TouchableOpacity style={{ alignSelf: "flex-start" }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  paddingVertical: 3,
-                  paddingHorizontal: 10,
-                  backgroundColor: COLORS.gray2,
-                  borderRadius: 20,
-                  gap: 11,
-                  alignItems: "center",
-                }}
-              >
-                <View>
-                  <Text style={{ fontFamily: "bold", fontSize: 10 }}>
-                    Use Styluxe Point
-                  </Text>
-                  <Text style={{ fontFamily: "semibold", fontSize: 8 }}>
-                    25.000 points
-                  </Text>
-                </View>
-
-                <Ionicons
-                  name="radio-button-off-outline"
-                  size={16}
-                  color="black"
-                />
-              </View>
-            </TouchableOpacity> */}
           </View>
         </ScrollView>
       </View>

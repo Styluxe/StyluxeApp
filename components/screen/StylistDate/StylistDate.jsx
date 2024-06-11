@@ -24,7 +24,6 @@ const StylistDate = () => {
 
   const { getScheduleById, data } = useGetScheduleByIdApi();
   const { bookingsData, getBookings } = usePublicGetBookingsApi();
-
   useFocusEffect(
     useCallback(() => {
       getScheduleById(stylist_id);
@@ -162,12 +161,22 @@ const StylistDate = () => {
                       moment(date).isSame(new Date(), "day") &&
                       moment(new Date()).format("HH:mm") > item.time;
 
+                    const isWithin30Minutes =
+                      moment(date).isSame(new Date(), "day") &&
+                      moment(new Date()).add(30, "minutes").format("HH:mm") >
+                        item.time;
+
                     return (
                       <TimeSelect
                         setSelectedTime={setSelectedTime}
                         data={item}
                         selectedTime={selectedTime}
-                        disabled={isUnavailable || isBooked || timeIsPast}
+                        disabled={
+                          isUnavailable ||
+                          isBooked ||
+                          timeIsPast ||
+                          isWithin30Minutes
+                        }
                       />
                     );
                   }}

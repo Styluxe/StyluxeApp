@@ -127,7 +127,7 @@ const PaymentDetails = () => {
       updateStatus(order_id, "paid", "waiting for confirmation");
     }
     if (isBooking) {
-      updateBookingStatus(booking_id, "paid", "waiting for confirmation");
+      updateBookingStatus(booking_id, "paid", "scheduled");
     }
   };
 

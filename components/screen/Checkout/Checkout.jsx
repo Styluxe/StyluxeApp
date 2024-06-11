@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Button, ButtonText } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCreateOrder, useGetPaymentSummary } from "../../../API/OrderAPI";
@@ -21,7 +21,6 @@ const Checkout = () => {
   } = useGetPaymentSummary();
   const [selectedPayment, setSelectedPayment] = useState(null);
   const { createOrder, responseData, code, setCode } = useCreateOrder();
-  const [discount, setDiscount] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
 
@@ -44,7 +43,7 @@ const Checkout = () => {
   );
 
   const handleCheckout = () => {
-    createOrder(selectedPayment, summaryData.address?.address_id, discount);
+    createOrder(selectedPayment, summaryData.address?.address_id);
     setShowModal(false);
   };
 
@@ -206,53 +205,6 @@ const Checkout = () => {
               selectedPayment={selectedPayment}
               setSelectedPayment={setSelectedPayment}
             />
-
-            <TouchableOpacity
-              style={{ alignSelf: "flex-start" }}
-              onPress={() => {
-                if (summaryData?.user_coin?.coin_amount > 0) {
-                  setDiscount(summaryData?.user_coin?.coin_amount);
-                }
-                if (discount) {
-                  setDiscount(null);
-                }
-              }}
-              disabled={summaryData?.user_coin?.coin_amount <= 0}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  paddingVertical: 3,
-                  paddingHorizontal: 10,
-                  backgroundColor:
-                    summaryData?.user_coin?.coin_amount <= 0
-                      ? COLORS.secondary
-                      : COLORS.gray2,
-                  borderRadius: 20,
-                  gap: 11,
-                  alignItems: "center",
-                }}
-              >
-                <View>
-                  <Text style={{ fontFamily: "bold", fontSize: 10 }}>
-                    Use Styluxe Point
-                  </Text>
-                  <Text style={{ fontFamily: "semibold", fontSize: 10 }}>
-                    {summaryData?.user_coin?.coin_amount} points
-                  </Text>
-                </View>
-
-                <Ionicons
-                  name={
-                    discount
-                      ? "radio-button-on-sharp"
-                      : "radio-button-off-sharp"
-                  }
-                  size={20}
-                  color={COLORS.primary}
-                />
-              </View>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
@@ -279,26 +231,8 @@ const Checkout = () => {
             Your Total
           </Text>
           <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
-            Rp{" "}
-            {parseInt(
-              discount
-                ? summaryData.total_price - discount
-                : summaryData.total_price,
-              10,
-            ).toLocaleString("id-ID")}
+            Rp {parseInt(summaryData.total_price, 10).toLocaleString("id-ID")}
           </Text>
-          {discount && (
-            <Text
-              style={{
-                fontFamily: "medium",
-                fontSize: 10,
-                color: "green",
-              }}
-            >
-              you saved Rp {parseInt(discount, 10).toLocaleString("id-ID")} from
-              using styluxe point!
-            </Text>
-          )}
         </View>
 
         <Button
