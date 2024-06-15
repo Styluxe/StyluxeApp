@@ -150,7 +150,7 @@ const StylistDate = () => {
                     </Text>
                   }
                   renderItem={({ item }) => {
-                    const isUnavailable = item?.status === "unavailable";
+                    const isUnavailable = item?.status === "Unavailable";
                     const isBooked = allBookingDate?.some(
                       (booking) =>
                         moment(booking.date).isSame(date, "day") &&

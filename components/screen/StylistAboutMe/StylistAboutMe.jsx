@@ -1,6 +1,7 @@
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import {
   Button,
+  Select,
   Toast,
   ToastTitle,
   VStack,
@@ -28,6 +29,7 @@ import {
 } from "../../../API/StylistApi";
 import { COLORS, SHADOWS } from "../../../constants";
 import { useKeyboardVisibility } from "../../../hook/hook";
+import { SelectComponent } from "../../molecules";
 
 const StylistAboutMe = () => {
   const navigation = useNavigation();
@@ -304,7 +306,7 @@ const StylistAboutMe = () => {
 
               {isEditing ? (
                 <View style={{ flexDirection: "row", gap: 5 }}>
-                  <TextInput
+                  {/* <TextInput
                     value={editData?.type}
                     placeholder="Stylist Type"
                     onChangeText={(text) =>
@@ -319,6 +321,25 @@ const StylistAboutMe = () => {
                       borderBottomColor: COLORS.gray2,
                       minWidth: "30%",
                     }}
+                  /> */}
+                  <SelectComponent
+                    placeholder="Stylist Type"
+                    items={[
+                      {
+                        id: 1,
+                        label: "Party Stylist",
+                        value: "Party Stylist",
+                      },
+                      {
+                        id: 2,
+                        label: "Wedding Stylist",
+                        value: "Wedding Stylist",
+                      },
+                    ]}
+                    onValueChange={(value) =>
+                      setEditData({ ...editData, type: value })
+                    }
+                    defaultValue={editData?.type}
                   />
 
                   <Feather name="edit" size={18} color={COLORS.primary} />

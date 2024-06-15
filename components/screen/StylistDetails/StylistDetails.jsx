@@ -42,6 +42,12 @@ const StylistDetails = () => {
   const dispatch = useDispatch();
   const no_auth = !user?.user_role;
 
+  useEffect(() => {
+    if (user?.user_role === "stylist") {
+      navigation.navigate("Home");
+    }
+  }, [user?.user_role]);
+
   useFocusEffect(
     useCallback(() => {
       getStylistById(stylist_id);

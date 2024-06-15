@@ -6,8 +6,6 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect } from "react";
-import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 
 import { LoginModal } from "./components/molecules";
@@ -36,6 +34,7 @@ import {
   CreateDiscussion,
   DiscussionAuthor,
   StylistReviewList,
+  StylistBalance,
 } from "./components/screen";
 import store from "./redux/store";
 
@@ -148,6 +147,11 @@ export default function App() {
             <Stack.Screen
               name="MyActivity"
               component={MyActivity}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="StylistBalance"
+              component={StylistBalance}
               options={{ headerShown: false }}
             />
             <Stack.Screen

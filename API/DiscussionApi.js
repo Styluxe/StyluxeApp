@@ -484,6 +484,76 @@ const useDeleteDiscussionApi = () => {
   return { error, loading, code, setCode, deleteDiscussion };
 };
 
+const useGetNotificationApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState([]);
+
+  const getNotification = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      const response = await axios.get(`${API_URL}/post/notifications`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { data } = response?.data;
+
+      console.log("fetching notification");
+      setNotification(data);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, notification, getNotification };
+};
+
+const useGetUnreadNotificationApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState([]);
+
+  const getUnreadNotification = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+      }
+
+      const response = await axios.get(`${API_URL}/post/unread/notifications`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { data } = response?.data;
+
+      console.log("fetching unread notification");
+      setNotification(data);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+    }
+  };
+
+  return { error, loading, notification, getUnreadNotification };
+};
+
 export {
   useGetDiscussionCategoryApi,
   useCreateDiscussionApi,
@@ -497,4 +567,6 @@ export {
   useGetBookmarksApi,
   useDeleteDiscussionApi,
   useEditDiscussionApi,
+  useGetNotificationApi,
+  useGetUnreadNotificationApi,
 };

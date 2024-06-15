@@ -204,22 +204,6 @@ const ChatRoom = () => {
 
   const handleRefund = () => {
     refundBooking(booking_id);
-    toast.show({
-      description: "Booking ended!",
-      placement: "bottom",
-      render: ({ id }) => {
-        const toastId = "toast-" + id;
-        return (
-          <Toast nativeID={toastId} action="success" variant="solid">
-            <VStack>
-              <ToastTitle>
-                Your booking has been ended, and it will be refunded in 24 hours
-              </ToastTitle>
-            </VStack>
-          </Toast>
-        );
-      },
-    });
   };
 
   useEffect(() => {
@@ -247,6 +231,7 @@ const ChatRoom = () => {
     if (refundCode === 200) {
       setRefundCode(null);
       setShowRefundModal(false);
+      navigation.goBack();
       toast.show({
         description: "Booking refunded!",
         placement: "bottom",
@@ -301,7 +286,7 @@ const ChatRoom = () => {
     const start = moment(conversation?.start_time);
     const timediff = now.diff(start, "minutes");
 
-    if (filterConversation.length === 0 && timediff > 10) {
+    if (filterConversation.length === 0 && timediff >= 10) {
       return true;
     } else {
       return false;

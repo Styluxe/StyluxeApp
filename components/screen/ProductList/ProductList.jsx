@@ -141,14 +141,13 @@ const ProductList = () => {
                   <Text
                     style={{ fontFamily: "semibold", color: COLORS.primary }}
                   >
-                    {search} ({products?.length})
+                    {search} ({productdata?.length})
                   </Text>
                 ) : (
                   <Text
                     style={{ fontFamily: "semibold", color: COLORS.primary }}
                   >
-                    {productCategory?.sub_category_name} (
-                    {productCategory?.products?.length})
+                    {productCategory?.sub_category_name} ({productdata?.length})
                   </Text>
                 )}
               </Text>

@@ -28,3 +28,4 @@ export * from "./DiscussionProfile";
 export * from "./DiscussionAuthor";
 export * from "./DiscussionBookmarks";
 export * from "./StylistReviewList";
+export * from "./StylistBalance";

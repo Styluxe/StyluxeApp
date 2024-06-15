@@ -71,6 +71,18 @@ const MyProfile = () => {
     );
   };
 
+  const isProfileValid = () => {
+    return (
+      profileData.first_name !== "" &&
+      profileData.last_name !== "" &&
+      profileData.email !== "" &&
+      profileData.mobile !== "" &&
+      profileData.gender !== ""
+    );
+  };
+
+  console.log("valid", isProfileValid());
+
   const isPasswordValid = () => {
     let valid = false;
 
@@ -526,7 +538,7 @@ const MyProfile = () => {
             <Button
               disabled={!isDirty && !isPasswordValid()} // Button is disabled only if both isDirty and isPasswordValid are false
               bgColor={
-                !isDirty && !isPasswordValid()
+                (!isPasswordValid() && !isProfileValid()) || !isDirty
                   ? COLORS.secondary
                   : COLORS.primary
               }

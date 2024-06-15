@@ -129,6 +129,12 @@ const Profile = () => {
             />
             <SelectionList
               hasIcon
+              iconName="wallet-outline"
+              text="My Balance"
+              onPress={() => navigation.navigate("StylistBalance")}
+            />
+            <SelectionList
+              hasIcon
               iconName="calendar-outline"
               text="Manage Schedule"
               onPress={() => navigation.navigate("ManageSchedule")}

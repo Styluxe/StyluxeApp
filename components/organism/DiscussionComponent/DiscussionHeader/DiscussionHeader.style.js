@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderBottomWidth: 1,
     borderColor: COLORS.gray2,
-    justifyContent: "space-between",
   },
   title: {
     fontFamily: "bold",

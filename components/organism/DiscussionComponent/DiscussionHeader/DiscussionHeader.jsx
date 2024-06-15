@@ -14,16 +14,11 @@ const DiscussionHeader = ({ title }) => {
       <TouchableOpacity onPress={() => navigation.openDrawer()}>
         <Ionicons name="menu" size={32} color={COLORS.primary} />
       </TouchableOpacity>
-      <View style={{ alignItems: "center" }}>
-        <Text style={styles.title}>{title}</Text>
+      <View style={{ alignItems: "center", flex: 1 }}>
+        <View style={{ alignItems: "center" }}>
+          <Text style={styles.title}>{title}</Text>
+        </View>
       </View>
-      <TouchableOpacity>
-        <Ionicons
-          name="notifications-outline"
-          size={32}
-          color={COLORS.primary}
-        />
-      </TouchableOpacity>
     </View>
   );
 };
