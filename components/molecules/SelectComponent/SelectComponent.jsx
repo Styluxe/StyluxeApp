@@ -18,6 +18,7 @@ const SelectComponent = ({
   onValueChange,
   defaultValue,
   disabled = false,
+  minWidth,
 }) => {
   return (
     <Select onValueChange={onValueChange} selectedValue={defaultValue}>
@@ -26,6 +27,7 @@ const SelectComponent = ({
         size="sm"
         disabled={disabled}
         bg={disabled ? COLORS.lightGray : COLORS.white}
+        minWidth={minWidth}
       >
         <SelectInput
           style={{ fontFamily: "medium", fontSize: 12 }}

@@ -306,22 +306,6 @@ const StylistAboutMe = () => {
 
               {isEditing ? (
                 <View style={{ flexDirection: "row", gap: 5 }}>
-                  {/* <TextInput
-                    value={editData?.type}
-                    placeholder="Stylist Type"
-                    onChangeText={(text) =>
-                      setEditData({ ...editData, type: text })
-                    }
-                    style={{
-                      fontFamily: "regular",
-                      fontSize: 14,
-                      color: COLORS.darkGray,
-                      maxWidth: "80%",
-                      borderBottomWidth: 1,
-                      borderBottomColor: COLORS.gray2,
-                      minWidth: "30%",
-                    }}
-                  /> */}
                   <SelectComponent
                     placeholder="Stylist Type"
                     items={[
@@ -336,6 +320,7 @@ const StylistAboutMe = () => {
                         value: "Wedding Stylist",
                       },
                     ]}
+                    minWidth="40%"
                     onValueChange={(value) =>
                       setEditData({ ...editData, type: value })
                     }

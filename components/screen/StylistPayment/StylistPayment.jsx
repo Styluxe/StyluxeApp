@@ -7,7 +7,7 @@ import {
 } from "@react-navigation/native";
 import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCreateBookingApi } from "../../../API/OrderAPI";
@@ -100,6 +100,7 @@ const StylistPayment = () => {
               orderDate={date}
               orderTime={time}
               isStylist
+              image={data?.images?.[0]?.image_url || ""}
             />
           </View>
 
@@ -186,15 +187,6 @@ const StylistPayment = () => {
           <Text style={{ fontFamily: "semibold", fontSize: 14 }}>
             Rp {parseInt(data?.price, 10).toLocaleString("id-ID")}
           </Text>
-          {/* <Text
-            style={{
-              fontFamily: "medium",
-              fontSize: 10,
-              color: "green",
-            }}
-          >
-            you saved 25.000 from using styluxe point!
-          </Text> */}
         </View>
 
         <Button

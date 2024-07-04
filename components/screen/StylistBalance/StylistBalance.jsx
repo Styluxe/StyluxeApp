@@ -73,7 +73,8 @@ const StylistBalance = () => {
               My Balance
             </Text>
             <Text style={{ fontSize: 14, fontFamily: "semibold" }}>
-              Rp. {parseFloat(stylistData?.balance).toLocaleString("id-ID")}
+              Rp.{" "}
+              {parseFloat(stylistData?.balance || 0).toLocaleString("id-UD")}
             </Text>
           </View>
         </View>
@@ -93,10 +94,10 @@ const StylistBalance = () => {
             onChangeText={(text) => {
               if (text > stylistData?.balance) {
                 setAmount(stylistData?.balance);
-                return;
+              } else {
+                const numericValue = text.replace(/[^0-9]/g, "");
+                setAmount(numericValue);
               }
-              const numericValue = text.replace(/[^0-9]/g, "");
-              setAmount(numericValue);
             }}
             value={amount}
           />

@@ -1,22 +1,28 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { Button } from "@gluestack-ui/themed";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   useGetLikedPostByAuthorIdApi,
   useGetPostByAuthorIdApi,
 } from "../../../API/DiscussionApi";
 import { COLORS, SIZES } from "../../../constants";
-import { userDataState } from "../../../redux/slice/app.slice";
+import {
+  authKeyState,
+  setLoginModalOpen,
+  userDataState,
+} from "../../../redux/slice/app.slice";
 import { DiscussionListCard } from "../../organism";
 
 const DiscussionProfile = () => {
   const navigation = useNavigation();
   const user = useSelector(userDataState);
+  const auth = useSelector(authKeyState);
+  const dispatch = useDispatch();
 
   const navMenu = [
     {
@@ -204,6 +210,29 @@ const DiscussionProfile = () => {
         //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         // }
       />
+
+      <TouchableOpacity
+        onPress={() => {
+          if (!auth) {
+            dispatch(setLoginModalOpen(true));
+          } else {
+            navigation.navigate("CreateDiscussion");
+          }
+        }}
+      >
+        <View
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 20,
+            padding: 15,
+            backgroundColor: COLORS.primary,
+            borderRadius: 50,
+          }}
+        >
+          <Feather name="edit" size={24} color="white" />
+        </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

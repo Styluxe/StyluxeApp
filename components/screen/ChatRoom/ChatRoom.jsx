@@ -33,6 +33,7 @@ import {
   usePostMessage,
 } from "../../../API/ConversationAPI";
 import { useEndBookingApi, useRefundBookingAPI } from "../../../API/OrderAPI";
+import { API_URL } from "../../../API/constant";
 import { COLORS } from "../../../constants";
 import { userDataState } from "../../../redux/slice/app.slice";
 import {
@@ -93,7 +94,7 @@ const ChatRoom = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const socket = io("http://10.0.2.2:8080");
+      const socket = io(API_URL);
 
       socket.on("connect", () => {
         console.log("connected to server");
@@ -377,6 +378,7 @@ const ChatRoom = () => {
                 setSelectedImage(item?.media);
                 setShowImageModal(true);
               }}
+              profpic={item?.participant?.user?.profile_picture}
             />
           )}
           ref={flatListRef}

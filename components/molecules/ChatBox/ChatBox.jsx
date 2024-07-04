@@ -4,7 +4,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 
 import { COLORS, SHADOWS } from "../../../constants";
 
-const ChatBox = ({ isSender, content, time, image, onPressImage }) => {
+const ChatBox = ({ isSender, content, time, image, onPressImage, profpic }) => {
   return (
     <View style={{ flexDirection: isSender ? "row-reverse" : "row", gap: 10 }}>
       {!isSender && (
@@ -18,7 +18,11 @@ const ChatBox = ({ isSender, content, time, image, onPressImage }) => {
           }}
         >
           <Image
-            source={require("../../../assets/content/profpic.png")}
+            source={
+              profpic
+                ? { uri: profpic }
+                : require("../../../assets/content/profpic.png")
+            }
             style={{
               width: "100%",
               height: "100%",

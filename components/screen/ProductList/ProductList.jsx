@@ -123,8 +123,7 @@ const ProductList = () => {
           data={productdata}
           numColumns={2}
           columnWrapperStyle={{
-            // justifyContent: "space-between",
-            gap: 40,
+            justifyContent: "space-between",
             paddingHorizontal: 15,
           }}
           ListHeaderComponent={() => (

@@ -91,6 +91,7 @@ const LoginModal = () => {
       onClose={() => {
         dispatch(setLoginModalOpen(false));
         setErrorMessage("");
+        setShowPassword(false);
       }}
     >
       <ModalBackdrop />
@@ -202,10 +203,12 @@ const LoginModal = () => {
         <ModalFooter>
           <VStack space="lg" w="$full">
             <Button
-              disabled={!email || !password}
+              disabled={!email || !password || loading}
               onPress={handleLogin}
               backgroundColor={
-                !email || !password ? COLORS.secondary : COLORS.primary
+                !email || !password || loading
+                  ? COLORS.secondary
+                  : COLORS.primary
               }
             >
               <Text
