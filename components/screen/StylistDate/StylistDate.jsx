@@ -50,6 +50,7 @@ const StylistDate = () => {
       booking_id: o.booking_id,
       date: o.booking_date,
       time: o.booking_time,
+      status: o.status,
     };
   });
 
@@ -154,7 +155,8 @@ const StylistDate = () => {
                     const isBooked = allBookingDate?.some(
                       (booking) =>
                         moment(booking.date).isSame(date, "day") &&
-                        booking.time === item.time,
+                        booking.time === item.time &&
+                        booking.status !== "cancelled",
                     );
 
                     const timeIsPast =

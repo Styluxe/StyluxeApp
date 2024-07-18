@@ -106,6 +106,7 @@ const useGetLatestProductApi = () => {
       const { data, code } = response?.data;
       setProducts(data);
       setCode(code);
+      setLoading(false);
     } catch (error) {
       setError(error);
       console.log("error", error);

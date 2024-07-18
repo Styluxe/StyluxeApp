@@ -290,6 +290,7 @@ const useGetAllStylistApi = () => {
       setData(data);
       console.log("fetch all stylist");
       setCode(code);
+      setLoading(false);
     } catch (error) {
       setError(error);
       console.log("error", error);

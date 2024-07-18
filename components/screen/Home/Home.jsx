@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +30,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const auth = useSelector(authKeyState);
   const profile = useSelector(userDataState);
+  const [refreshing, setRefreshing] = useState(false);
 
   const { checkExpiryDate } = useAuth();
   const { getProfile } = useGetProfileApi();
@@ -71,6 +73,12 @@ const Home = () => {
     }, [auth]),
   );
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -131,7 +139,12 @@ const Home = () => {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}
+      >
         <View style={{ height: 200 }}>
           <Image
             style={{ width: "100%", height: "100%", resizeMode: "cover" }}

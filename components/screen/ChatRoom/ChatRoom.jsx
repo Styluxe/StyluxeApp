@@ -223,10 +223,10 @@ const ChatRoom = () => {
           );
         },
       });
-      navigation.goBack();
       setEndBookingCode(null);
       setShowModal(false);
       setEndBookingCode(null);
+      setRemainingTime(0);
     }
 
     if (refundCode === 200) {

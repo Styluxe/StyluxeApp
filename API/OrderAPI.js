@@ -161,10 +161,14 @@ const useUpdateStatus = () => {
   const [responseData, setResponseData] = useState(null);
   const [code, setCode] = useState(null);
 
-  const updateStatus = async (order_id, payment_status, order_status) => {
+  const updateStatus = async (
+    order_id,
+    payment_status,
+    order_status,
+    image,
+  ) => {
     setLoading(true);
 
-    console.log("update status", order_id, payment_status, order_status);
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
@@ -173,9 +177,11 @@ const useUpdateStatus = () => {
         return;
       }
 
+      const imageUrl = await uploadImageToCloudinary(image);
+
       const response = await axios.put(
         `${API_URL}/order/order-status/${order_id}`,
-        { payment_status, order_status },
+        { payment_status, order_status, receipt: imageUrl },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -194,6 +200,24 @@ const useUpdateStatus = () => {
       console.log("error", error);
       setLoading(false);
     }
+  };
+
+  const uploadImageToCloudinary = async (image) => {
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", "user_preset");
+    formData.append("api_key", "761147494786172");
+
+    const uploadResponse = await fetch(
+      "https://api.cloudinary.com/v1_1/dkxeflvuu/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    const uploadData = await uploadResponse.json();
+    return uploadData.secure_url;
   };
 
   return { error, loading, updateStatus, responseData, code, setCode };
@@ -516,6 +540,46 @@ const useCancelOrderApi = () => {
   return { error, loading, cancelOrder, code, setCode };
 };
 
+const useCancelBookingApi = () => {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState(null);
+
+  const cancelBooking = async (bookingId) => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        console.log("token not found");
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_URL}/booking/cancel-booking/${bookingId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const { code } = response?.data;
+
+      console.log("cancel booking");
+      setCode(code);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      console.log("error", error);
+      setLoading(false);
+      setCode(error?.response?.status);
+    }
+  };
+  return { error, loading, cancelBooking, code, setCode };
+};
+
 export {
   useGetOrderApi,
   useGetOrderById,
@@ -530,4 +594,5 @@ export {
   usePublicGetBookingsApi,
   useEndBookingApi,
   useRefundBookingAPI,
+  useCancelBookingApi,
 };

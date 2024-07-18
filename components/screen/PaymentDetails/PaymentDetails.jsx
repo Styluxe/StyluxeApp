@@ -15,6 +15,7 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
 import * as ImagePicker from "expo-image-picker";
 import moment from "moment";
 import React, { useCallback, useEffect, useRef } from "react";
@@ -102,7 +103,6 @@ const PaymentDetails = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        // aspect: [4, 3],
         quality: 1,
       });
 
@@ -124,11 +124,15 @@ const PaymentDetails = () => {
 
   const handlePayment = () => {
     if (isProduct) {
-      updateStatus(order_id, "paid", "waiting for confirmation");
+      updateStatus(order_id, "paid", "waiting for confirmation", imageReceipt);
     }
     if (isBooking) {
       updateBookingStatus(booking_id, "paid", "scheduled");
     }
+  };
+
+  const copyToClipboard = async (text) => {
+    await Clipboard.setStringAsync(text);
   };
 
   const isFromCheckout = routeFrom === "Checkout";
@@ -291,7 +295,15 @@ const PaymentDetails = () => {
                   color: "blue",
                   textDecorationLine: "underline",
                 }}
-                onPress={() => {}}
+                onPress={() =>
+                  copyToClipboard(
+                    providerAccountNumberSwitch(
+                      isProduct
+                        ? orderData?.payment_details?.provider
+                        : bookingData?.payment_details?.provider,
+                    ),
+                  )
+                }
               >
                 Copy
               </Text>
@@ -337,7 +349,13 @@ const PaymentDetails = () => {
                   color: "blue",
                   textDecorationLine: "underline",
                 }}
-                onPress={() => {}}
+                onPress={() => {
+                  copyToClipboard(
+                    isProduct
+                      ? orderData?.payment_details?.transfer_amount.toString()
+                      : bookingData?.payment_details?.transfer_amount.toString(),
+                  );
+                }}
               >
                 Copy
               </Text>
@@ -451,8 +469,10 @@ const PaymentDetails = () => {
           )}
 
           <Button
-            bgColor={imageReceipt?.uri ? COLORS.primary : COLORS.secondary}
-            disabled={!imageReceipt?.uri}
+            bgColor={
+              imageReceipt?.uri && !loading ? COLORS.primary : COLORS.secondary
+            }
+            disabled={!imageReceipt?.uri || loading}
             onPress={handlePayment}
           >
             <Text
@@ -472,6 +492,7 @@ const PaymentDetails = () => {
           onClose={() => {
             setShowModal(false);
             navigation.navigate("MyActivity");
+            setImageReceipt(null);
           }}
           finalFocusRef={modalRef}
           closeOnOverlayClick={false}
@@ -502,6 +523,7 @@ const PaymentDetails = () => {
                 onPress={() => {
                   navigation.navigate("MyActivity");
                   setShowModal(false);
+                  setImageReceipt(null);
                 }}
               >
                 <ButtonText

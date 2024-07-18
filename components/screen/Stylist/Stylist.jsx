@@ -14,10 +14,11 @@ import { styles } from "./Stylist.style";
 import { useGetAllStylistApi } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
 import { StylistDetailCard } from "../../organism";
+import { Spinner } from "@gluestack-ui/themed";
 
 const Stylist = () => {
   const [stylistList, setStylistList] = useState([]);
-  const { getAllStylist, code, data, setCode } = useGetAllStylistApi();
+  const { getAllStylist, code, data, setCode, loading } = useGetAllStylistApi();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -110,23 +111,27 @@ const Stylist = () => {
       </View>
 
       <View style={styles.card_list_container}>
-        <FlatList
-          ListHeaderComponent={() => (
-            <View>
-              <Text style={{ fontFamily: "semibold" }}>
-                Stylist Recommendation
-              </Text>
-              <Text style={styles.header_2}>
-                consultations with our top stylists
-              </Text>
-            </View>
-          )}
-          data={filteredStylistList()}
-          renderItem={({ item }) => <StylistDetailCard stylist={item} />}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={{ gap: 10 }}
-          showsVerticalScrollIndicator={false}
-        />
+        {loading ? (
+          <Spinner color={COLORS.primary} />
+        ) : (
+          <FlatList
+            ListHeaderComponent={() => (
+              <View>
+                <Text style={{ fontFamily: "semibold" }}>
+                  Stylist Recommendation
+                </Text>
+                <Text style={styles.header_2}>
+                  consultations with our top stylists
+                </Text>
+              </View>
+            )}
+            data={filteredStylistList()}
+            renderItem={({ item }) => <StylistDetailCard stylist={item} />}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={{ gap: 10 }}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

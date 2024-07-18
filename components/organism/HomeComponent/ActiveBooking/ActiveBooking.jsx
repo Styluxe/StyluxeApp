@@ -24,7 +24,7 @@ const ActiveBooking = ({ role }) => {
       } else if (role === "user" || role === "admin") {
         getMyBookings();
       }
-    }, []),
+    }, [role]),
   );
 
   //filter booking stylist

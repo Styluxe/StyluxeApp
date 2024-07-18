@@ -19,6 +19,7 @@ import { View, Text, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
+  useCancelBookingApi,
   useCancelOrderApi,
   useGetBookingById,
   useGetOrderById,
@@ -47,6 +48,12 @@ const OrderDetails = () => {
     loading,
     setCode: setStatusCode,
   } = useUpdateStatus();
+  const {
+    cancelBooking,
+    loading: cancelBookingLoading,
+    code: cancelBookingCode,
+    setCode: setCancelBookingCode,
+  } = useCancelBookingApi();
 
   const { order_id, booking_id, routeFrom } = route.params;
 
@@ -89,6 +96,8 @@ const OrderDetails = () => {
   const handleCancelOrder = () => {
     if (isProduct) {
       cancelOrder(order_id);
+    } else if (isBooking) {
+      cancelBooking(booking_id);
     }
   };
 
@@ -138,7 +147,35 @@ const OrderDetails = () => {
         },
       });
     }
-  }, [code, cancelCode, booking_id, order_id, statusCode, toast]);
+
+    if (cancelBookingCode === 200) {
+      getBookingById(booking_id);
+      setCancelBookingCode(null);
+      setConfirmModal(false);
+      toast.show({
+        description: "Booking Cancelled",
+        placement: "bottom",
+        render: ({ id }) => {
+          const toastId = "toast-" + id;
+          return (
+            <Toast nativeID={toastId} action="success" variant="solid">
+              <VStack>
+                <ToastTitle>Booking Cancelled</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+    }
+  }, [
+    code,
+    cancelCode,
+    booking_id,
+    order_id,
+    statusCode,
+    toast,
+    cancelBookingCode,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
