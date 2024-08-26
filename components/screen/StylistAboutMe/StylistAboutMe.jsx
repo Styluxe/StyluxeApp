@@ -210,42 +210,7 @@ const StylistAboutMe = () => {
         <View style={styles.detail_body_container}>
           <View style={styles.card_container}>
             <View style={styles.image_container}>
-              <Swiper
-                showsButtons={images?.length > 1}
-                activeDotColor={COLORS.primary}
-                nextButton={
-                  <View
-                    style={{
-                      padding: 5,
-                      backgroundColor: COLORS.white,
-                      borderRadius: 100,
-                      ...SHADOWS.medium,
-                    }}
-                  >
-                    <AntDesign
-                      name="arrowright"
-                      size={24}
-                      color={COLORS.primary}
-                    />
-                  </View>
-                }
-                prevButton={
-                  <View
-                    style={{
-                      padding: 5,
-                      backgroundColor: COLORS.white,
-                      borderRadius: 100,
-                      ...SHADOWS.medium,
-                    }}
-                  >
-                    <AntDesign
-                      name="arrowleft"
-                      size={24}
-                      color={COLORS.primary}
-                    />
-                  </View>
-                }
-              >
+              <Swiper activeDotColor={COLORS.primary}>
                 {images.length === 0 ? (
                   <View
                     style={{
@@ -318,6 +283,16 @@ const StylistAboutMe = () => {
                         id: 2,
                         label: "Wedding Stylist",
                         value: "Wedding Stylist",
+                      },
+                      {
+                        id: 3,
+                        label: "Event Stylist",
+                        value: "Event Stylist",
+                      },
+                      {
+                        id: 4,
+                        label: "Other",
+                        value: "Other",
                       },
                     ]}
                     minWidth="40%"

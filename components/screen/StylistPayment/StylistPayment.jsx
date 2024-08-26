@@ -24,7 +24,8 @@ const StylistPayment = () => {
 
   const { getStylistById, data } = useGetStylistByIdApi();
   const [selectedPayment, setSelectedPayment] = useState(null);
-  const { createBooking, code, responseData, setCode } = useCreateBookingApi();
+  const { createBooking, code, responseData, setCode, loading } =
+    useCreateBookingApi();
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
 
@@ -213,6 +214,9 @@ const StylistPayment = () => {
         content="Are you sure you have double check on your booking details and continue to payment?"
         title="Confirm Booking Details"
         handlePositive={handlePayment}
+        disabled={loading}
+        btnPositiveColor={loading ? COLORS.gray2 : COLORS.primary}
+        btnPositiveText={loading ? "Loading..." : "Confirm & Pay"}
       />
     </SafeAreaView>
   );

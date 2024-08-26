@@ -36,6 +36,17 @@ const StylistDate = () => {
   const schedule = data;
   const times = schedule.filter((s) => s.day === day)[0]?.times;
 
+  const sortedTimes = times?.slice().sort((a, b) => {
+    const [aHour, aMinute] = a.time.split(":").map(Number);
+    const [bHour, bMinute] = b.time.split(":").map(Number);
+
+    if (aHour === bHour) {
+      return aMinute - bMinute;
+    } else {
+      return aHour - bHour;
+    }
+  });
+
   const fullDate = moment(date).format("dddd, DD MMMM YYYY");
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -44,7 +55,6 @@ const StylistDate = () => {
     setSelectedTime(null);
   };
 
-  //get all the order date and time from dummyOrder
   const allBookingDate = bookingsData?.map((o) => {
     return {
       booking_id: o.booking_id,
@@ -140,7 +150,7 @@ const StylistDate = () => {
                 </Text>
 
                 <FlatList
-                  data={times}
+                  data={sortedTimes}
                   numColumns={3}
                   columnWrapperStyle={{ gap: 10, marginTop: 10 }}
                   ListEmptyComponent={

@@ -8,14 +8,16 @@ import { COLORS } from "../../../constants";
 import { CategoryMenu, SubCategoryItems } from "../../organism";
 
 const Category = () => {
-  const { getCategory, category, loading } = useCategoryApi();
+  const { getCategory, loading, category } = useCategoryApi();
   const [selectedCategory, setSelectedCategory] = useState([]);
   useEffect(() => {
     getCategory();
   }, []);
 
   useEffect(() => {
-    setSelectedCategory(category[0]);
+    if (category && category.length > 0) {
+      setSelectedCategory(category[0]);
+    }
   }, [category]);
 
   return (

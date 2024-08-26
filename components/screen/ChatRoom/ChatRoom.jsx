@@ -113,6 +113,13 @@ const ChatRoom = () => {
           }
         });
 
+        socket.on("close-conversation", (closeData) => {
+          console.log("Received close data", closeData);
+          if (closeData?.conversationId === conversation?.conversation_id) {
+            console.log("Closing conversation");
+          }
+        });
+
         socket.on("error", (error) => {
           console.error("Socket error:", error);
         });
@@ -209,6 +216,8 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (endBookingCode === 200) {
+      setEndBookingCode(null);
+      setShowModal(false);
       toast.show({
         description: "Booking ended!",
         placement: "bottom",
@@ -217,16 +226,14 @@ const ChatRoom = () => {
           return (
             <Toast nativeID={toastId} action="success" variant="solid">
               <VStack>
-                <ToastTitle>Booking Ended</ToastTitle>
+                <ToastTitle>Conversation Ended</ToastTitle>
               </VStack>
             </Toast>
           );
         },
       });
-      setEndBookingCode(null);
-      setShowModal(false);
-      setEndBookingCode(null);
       setRemainingTime(0);
+      navigation.goBack();
     }
 
     if (refundCode === 200) {

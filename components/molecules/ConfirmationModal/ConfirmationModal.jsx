@@ -28,6 +28,7 @@ const ConfirmationModal = ({
   btnPositiveColor = COLORS.primary,
   btnPositiveTextColor = COLORS.white,
   btnNegativeTextColor = COLORS.white,
+  disabled = false,
 }) => {
   return (
     <Modal
@@ -73,6 +74,7 @@ const ConfirmationModal = ({
             bgColor={btnPositiveColor}
             borderWidth="$0"
             onPress={handlePositive}
+            disabled={disabled}
           >
             <ButtonText
               style={{ color: btnPositiveTextColor, fontFamily: "medium" }}

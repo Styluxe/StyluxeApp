@@ -48,6 +48,20 @@ const StylistReviewList = () => {
       <FlatList
         data={reviewData}
         contentContainerStyle={{ padding: 15, gap: 15 }}
+        ListEmptyComponent={() => {
+          return (
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 18,
+                fontFamily: "semibold",
+                color: COLORS.darkGray,
+              }}
+            >
+              No Review
+            </Text>
+          );
+        }}
         renderItem={({ item }) => (
           <StylistReviewBox
             content={item.feedback}

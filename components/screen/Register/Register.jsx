@@ -8,6 +8,7 @@ import {
   Input,
   InputField,
   InputSlot,
+  Spinner,
   Toast,
   ToastTitle,
   VStack,
@@ -27,7 +28,12 @@ import { setLoginModalOpen } from "../../../redux/slice/app.slice";
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-  const { register, code, setCode } = useRegisterApi();
+  const {
+    register,
+    code,
+    setCode,
+    loading: registerLoading,
+  } = useRegisterApi();
   const [registerData, setRegisterData] = useState({
     first_name: "",
     last_name: "",
@@ -372,9 +378,11 @@ const Register = () => {
           <View>
             <Button
               onPress={handleRegister}
-              isDisabled={!isFormValid()}
+              isDisabled={!isFormValid() || registerLoading}
               backgroundColor={
-                !isFormValid() ? COLORS.darkGray : COLORS.primary
+                !isFormValid() || registerLoading
+                  ? COLORS.darkGray
+                  : COLORS.primary
               }
             >
               <Text
@@ -384,8 +392,9 @@ const Register = () => {
                   fontSize: 16,
                 }}
               >
-                Register
+                {registerLoading ? "Registering..." : "Register"}
               </Text>
+              {registerLoading && <Spinner color={COLORS.primary} />}
             </Button>
           </View>
         </View>

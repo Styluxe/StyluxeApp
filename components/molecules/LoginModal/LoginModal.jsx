@@ -43,6 +43,7 @@ const LoginModal = () => {
       setEmail("");
       setPassword("");
       setErrorMessage("");
+      setShowPassword(false);
     }
   }, [showModal]);
 

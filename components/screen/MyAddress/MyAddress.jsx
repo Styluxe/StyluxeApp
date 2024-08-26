@@ -163,6 +163,21 @@ const MyAddress = () => {
       <FlatList
         data={search ? searchAddress() : address}
         keyExtractor={(item) => item.address_id.toString()}
+        ListEmptyComponent={() => (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text
+              style={{
+                fontFamily: "medium",
+                fontSize: 14,
+                color: COLORS.darkGray,
+              }}
+            >
+              No address found
+            </Text>
+          </View>
+        )}
         renderItem={({ item }) => (
           <AddressCard
             addressData={item}

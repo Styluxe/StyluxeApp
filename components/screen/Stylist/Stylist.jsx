@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { Spinner } from "@gluestack-ui/themed";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -14,7 +15,6 @@ import { styles } from "./Stylist.style";
 import { useGetAllStylistApi } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
 import { StylistDetailCard } from "../../organism";
-import { Spinner } from "@gluestack-ui/themed";
 
 const Stylist = () => {
   const [stylistList, setStylistList] = useState([]);

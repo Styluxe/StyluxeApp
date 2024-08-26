@@ -145,6 +145,8 @@ const useGetScheduleApi = () => {
 
       console.log("fetch schedule");
 
+      setLoading(false);
+
       dispatch(setStylistSchedule(data));
     } catch (error) {
       setError(error);

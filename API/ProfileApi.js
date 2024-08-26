@@ -185,6 +185,7 @@ const useRegisterApi = () => {
       setError(error);
       setCode(error.response.status);
       console.error("Error registering", error);
+      setLoading(false);
     }
   };
 

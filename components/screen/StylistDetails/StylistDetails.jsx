@@ -323,11 +323,15 @@ const StylistDetails = () => {
       >
         <TouchableOpacity
           style={{
-            backgroundColor: COLORS.primary,
+            backgroundColor:
+              stylistData?.online_status === "online"
+                ? COLORS.primary
+                : COLORS.gray2,
             padding: 10,
             borderRadius: 5,
             alignItems: "center",
           }}
+          disabled={stylistData?.online_status !== "online"}
           onPress={() => {
             if (no_auth) {
               dispatch(setLoginModalOpen(true));

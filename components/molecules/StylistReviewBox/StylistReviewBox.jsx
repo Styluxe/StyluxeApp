@@ -1,9 +1,9 @@
+import moment from "moment";
 import React from "react";
 import { View, Text } from "react-native";
 
 import { COLORS } from "../../../constants";
 import { StarRating } from "../StarRating";
-import moment from "moment";
 
 const StylistReviewBox = ({ fullName, rating, content, date }) => {
   return (
@@ -21,9 +21,12 @@ const StylistReviewBox = ({ fullName, rating, content, date }) => {
             flexDirection: "row",
             gap: 15,
             alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <Text style={{ fontFamily: "semibold" }}>{fullName}</Text>
+          <Text style={{ fontFamily: "semibold", maxWidth: "80%" }}>
+            {fullName}
+          </Text>
           <StarRating total_likes={rating} fontSize={14} iconSize={20} />
         </View>
         <Text style={{ fontFamily: "medium", color: COLORS.darkGray }}>

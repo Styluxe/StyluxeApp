@@ -2,13 +2,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
@@ -93,7 +87,6 @@ const ShoppingCart = () => {
       )}
       <FlatList
         contentContainerStyle={{
-          flex: 1,
           paddingHorizontal: 15,
           paddingVertical: 10,
           gap: 15,

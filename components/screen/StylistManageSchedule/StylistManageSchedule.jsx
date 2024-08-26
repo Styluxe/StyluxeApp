@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAddTimeApi, useGetScheduleApi } from "../../../API/StylistApi";
 import { COLORS } from "../../../constants";
 import { EditableTimeSelect } from "../../molecules";
+import { Spinner } from "@gluestack-ui/themed";
 
 const daysOfWeek = [
   "Monday",
@@ -21,7 +22,7 @@ const daysOfWeek = [
 ];
 
 const StylistManageSchedule = () => {
-  const { getSchedule, scheduleData } = useGetScheduleApi();
+  const { getSchedule, scheduleData, loading } = useGetScheduleApi();
   const { addTime } = useAddTimeApi();
   const [sortedScheduleData, setSortedScheduleData] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -33,14 +34,44 @@ const StylistManageSchedule = () => {
 
   useEffect(() => {
     if (scheduleData) {
-      const sortedData = [...scheduleData].sort((a, b) => {
-        return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
-      });
+      const sortedData = scheduleData
+        .map((item) => {
+          const sortedTimes = [...item.times].sort((a, b) => {
+            const [aHour, aMinute] = a.time.split(":").map(Number);
+            const [bHour, bMinute] = b.time.split(":").map(Number);
+
+            if (aHour === bHour) {
+              return aMinute - bMinute;
+            } else {
+              return aHour - bHour;
+            }
+          });
+
+          return { ...item, times: sortedTimes };
+        })
+        .sort((a, b) => {
+          return daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day);
+        });
+
       setSortedScheduleData(sortedData);
     }
   }, [scheduleData]);
 
   const navigation = useNavigation();
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spinner color={COLORS.primary} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View
